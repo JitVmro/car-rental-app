@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { User } from '../../../models/User';
 
-export interface User {
-  id: string;
-  name: string;
-  surname?: string;
-  email: string;
-}
+
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +13,7 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   private users: User[] = [
-    { id: '1', name: 'Demo', email: 'dobrota@gmail.com' },
+    { id: '1', name: 'Demo', email: 'dobrota@gmail.com',role:'client' },
   ];
 
   private userPasswords: Record<string, string> = {
@@ -65,6 +61,7 @@ export class AuthService {
       name: userData.name,
       surname: userData.surname,
       email: userData.email,
+      role: 'client',
     };
 
     this.users.push(newUser);
