@@ -31,7 +31,7 @@ export class HeaderComponent {
   getName() {
     if(!this.user?.image){
       this.userImage=false;
-      return (this.user?.name?.charAt(0)?.toUpperCase() ?? '') + (this.user?.surname?.charAt(0)?.toUpperCase() ?? '')
+      return (this.user?.name?.charAt(0)?.toUpperCase() ?? '') 
     }
     return null;
   }
