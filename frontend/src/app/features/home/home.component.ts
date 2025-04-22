@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from "../../layout/header/header.component";
-import { FooterComponent } from "../../layout/footer/footer.component";
+
+import { CarFilterComponent } from "../car-filter/car-filter.component";
+import { CardsComponent } from "../cards/cards.component";
+import { AboutUsComponent } from "../about-us/about-us.component";
+import { ReviewSliderComponent } from "../review-slider/review-slider.component";
+import { FaqComponent } from "../faq/faq.component";
 
 @Component({
   selector: 'app-home',
   
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent]
 })
 export class HomeComponent {
 
