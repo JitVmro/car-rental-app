@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/home']);
     }
     this.registrationSuccess =
       this.route.snapshot.queryParams['registered'] === 'true';
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
         console.log('Login Success');
       },
       error: (error) => {
