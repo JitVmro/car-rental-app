@@ -5,6 +5,10 @@ html {
     font-family: "Inter", sans-serif;
 }
 
+body{
+    background-color: #FFFBF3;
+}
+
 .hide-scrollbar {
     -ms-overflow-style: none;
     /* IE and Edge */

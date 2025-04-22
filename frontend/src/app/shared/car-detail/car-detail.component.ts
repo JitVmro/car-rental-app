@@ -1,18 +1,40 @@
-import { DatePipe, NgFor } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'
 import { Car, CarFeature, ClimateControlOption, FuelType, GearBoxType, Status } from '../../models/car';
 import { Feedback } from '../../models/feedback';
 
+
+interface CalendarDate {
+  date: Date;
+  isSelected?: boolean;
+  isDisabled?: boolean;
+  isGrayed?: boolean;
+  isToday?: boolean;
+}
+
+interface CalendarMonth {
+  year: number;
+  month: number;
+  dates: CalendarDate[];
+}
+
 @Component({
   selector: 'app-car-detail',
   templateUrl: './car-detail.component.html',
   styleUrls: ['./car-detail.component.css'],
-  imports: [NgFor, DatePipe, FormsModule]
+  imports: [NgFor, DatePipe, FormsModule, NgIf]
 })
-
 export class CarDetailComponent implements OnInit {
+
+  weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  months = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  currentDate = new Date();
+  displayMonths: CalendarMonth[] = [];
+  pickupTime: string = '07:00';
+  dropoffTime: string = '10:30';
 
   carDetails: Car = {
     carId: '87578587',

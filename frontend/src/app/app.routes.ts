@@ -10,9 +10,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
-  // { path: '', component: AppComponent },
   { path: 'all-cars', component: CarsPageComponent },
   { path: 'all-cars/booking/:id', component: BookingPageComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' },
 ];
