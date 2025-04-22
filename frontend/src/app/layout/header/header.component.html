@@ -17,7 +17,7 @@
   <!-- Navigation Links -->
   <section ngClass="{'min-[1200px]:ml-[240px]':loggedIn}"
     class="navbar-links max-[700px]:hidden flex justify-center items-center gap-[21px] min-[750px]:gap-[42px] min-[800px]:ml-[80px]">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
     <a routerLink="/cars" routerLinkActive="active">Cars</a>
     <a *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
   </section>
