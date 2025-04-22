@@ -1,0 +1,68 @@
+{
+    "cars": [
+      {
+        "id": 1,
+        "brand": "Nissan",
+        "model": "Z",
+        "year": 2024,
+        "category": "Passenger car",
+        "gearboxType": "Automatic",
+        "engineType": "Gasoline",
+        "seats": 2,
+        "fuelConsumption": 9.8,
+        "pricePerDay": 550,
+        "rating": 4.8,
+        "imageUrl": "assets/images/nissan-z.jpg",
+        "location": "Kyiv, Ukraine",
+        "available": true
+      },
+      {
+        "id": 2,
+        "brand": "Audi",
+        "model": "A6 Quattro",
+        "year": 2023,
+        "category": "Passenger car",
+        "gearboxType": "Automatic",
+        "engineType": "Gasoline",
+        "seats": 5,
+        "fuelConsumption": 7.5,
+        "pricePerDay": 180,
+        "rating": 4.8,
+        "imageUrl": "assets/images/audi-a6.jpg",
+        "location": "Kyiv, Ukraine",
+        "available": true
+      },
+      {
+        "id": 3,
+        "brand": "Ford",
+        "model": "Focus",
+        "year": 2019,
+        "category": "Passenger car",
+        "gearboxType": "Manual",
+        "engineType": "Gasoline",
+        "seats": 5,
+        "fuelConsumption": 6.2,
+        "pricePerDay": 110,
+        "rating": 4.8,
+        "imageUrl": "assets/images/ford-focus.jpg",
+        "location": "Kyiv, Ukraine",
+        "available": true
+      },
+      {
+        "id": 4,
+        "brand": "Jeep",
+        "model": "Grand Cherokee",
+        "year": 2020,
+        "category": "SUV",
+        "gearboxType": "Automatic",
+        "engineType": "Diesel",
+        "seats": 5,
+        "fuelConsumption": 10.5,
+        "pricePerDay": 220,
+        "rating": 4.8,
+        "imageUrl": "assets/images/jeep-grand-cherokee.jpg",
+        "location": "Kyiv, Ukraine",
+        "available": true
+      }
+    ]
+  }

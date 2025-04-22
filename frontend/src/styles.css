@@ -3,3 +3,11 @@ input::placeholder {
     font-weight: 400;
     color: gray;
   }
+
+*{
+    font-family: "Inter", sans-serif;
+}
+
+body{
+    background: #FFFBF3;
+}
