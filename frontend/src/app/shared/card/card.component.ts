@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Car } from '../../models/car.model';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -9,5 +10,22 @@ import { CommonModule } from '@angular/common';
   styleUrl: './card.component.css'
 })
 export class CardComponent {
-  @Input() car!:Car;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+
+  }
+
+  navigateToBookingConfirmation() {
+    this.router.navigateByUrl(`/cars/${47}`)
+  }
+
+  openCarPopup() {
+    const popup = document.getElementById("carDetailPopup");
+    popup?.classList.remove("hidden");
+  }
+
+  @Input() car!: Car;
 }
