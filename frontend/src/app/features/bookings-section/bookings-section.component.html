@@ -1,12 +1,29 @@
-<h1 class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-9">My Bookings</h1>
+<h1 class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-9 mb-4">My Bookings</h1>
 <section 
-class="ml-0 min-[800px]:ml-8 flex flex-col min-[800px]:flex-row items-center gap-4 min-[800px]:gap-8 justify-start">
-<a 
-class="">
-All Bookings</a>
-<a href="">Reserved</a>
-<a href="">Service Started</a>
-<a href="">Service Provided</a>
-<a href="">Booking Finished</a>
-<a href="">Cancelled</a>
+class="mx-2 my-4 min-[800px]:ml-8 flex overflow-x-auto text-nowrap justify-between min-[800px]:flex-row items-center gap-4 min-[800px]:gap-8 min-[800px]:justify-start">
+<a (click)="setActive(0)"
+[ngClass]="{' text-black border-b-2':active === 0,
+            ' text-[#666]':active!==0}"
+            >
+            All Services</a>
+
+<a (click)="setActive(1)"
+[ngClass]="{' text-black border-b-2':active === 1,
+            ' text-[#666]':active!==1}"
+            >
+            Service Started</a>
+
+<a (click)="setActive(2)"
+[ngClass]="{' text-black border-b-2':active === 2,
+            ' text-[#666]':active!==2}"
+>Service Provided</a>
+
+<a (click)="setActive(3)" 
+[ngClass]="{' text-black border-b-2':active === 3,
+            ' text-[#666]':active!==3}">
+Booking Finished</a>
+
+<a (click)="setActive(4)"
+[ngClass]="{' text-black border-b-2':active === 4,
+            ' text-[#666]':active!==4}"> Cancelled</a>
 </section>
