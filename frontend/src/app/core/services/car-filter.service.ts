@@ -187,7 +187,7 @@ export class CarFilterService {
       fuelConsumption: 12,
       pricePerDay: 700,
       rating: 4.9,
-      imageUrl: 'assets/images/porsche-911.jpg',
+      imageUrl: 'assets/images/porsche-911-2021.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
     },
