@@ -9,10 +9,10 @@ import { CarDetailComponent } from "../../shared/car-detail/car-detail.component
 
 @Component({
   selector: 'app-home',
-  
+
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, CarDetailComponent]
+  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent]
 })
 export class HomeComponent {
 

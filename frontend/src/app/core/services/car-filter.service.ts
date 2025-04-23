@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Car } from '../../models/car.model';
+import { Car, ClimateControlOption, FuelType, GearBoxType, Status } from '../../models/car.model';
 import { FilterCriteria } from '../../models/filter.model';
 
 @Injectable({
@@ -9,203 +9,287 @@ import { FilterCriteria } from '../../models/filter.model';
 export class CarFilterService {
   // BehaviorSubject to store and emit the filtered cars
   private filteredCarsSubject = new BehaviorSubject<Car[]>([]);
-  
+
   // Observable that components can subscribe to
   filteredCars$: Observable<Car[]> = this.filteredCarsSubject.asObservable();
-  
+
   // Mock cars data
   private mockCars: Car[] = [
     {
-      id: 1,
+      carId: '1',
       brand: 'Nissan',
       model: 'Z',
-      year: 2024,
+      year: '2024',
       category: 'Passenger car',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Gasoline',
-      seats: 2,
-      fuelConsumption: 10,
-      pricePerDay: 550,
-      rating: 4.8,
+      engineCapacity: '3.0L',
+      seats: '2',
+      fuelConsumption: '10',
+      pricePerDay: '550',
+      carRating: '4.8',
       imageUrl: '/assets/images/Nissan-Z-2021.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
+      climateControlOption: ClimateControlOption.AIR_CONDITIONER,
+      fuelType: FuelType.PETROL,
+      images: ['/assets/images/Nissan-Z-2021.jpg'],
+      passengerCapacity: '2',
+      serviceRating: '4.7',
+      status: Status.AVAILABLE
     },
     {
-      id: 2,
+      carId: '2',
       brand: 'Audi',
       model: 'A6 Quattro',
-      year: 2023,
+      year: '2023',
       category: 'Sedan',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Petrol',
-      seats: 5,
-      fuelConsumption: 8,
-      pricePerDay: 180,
-      rating: 4.8,
+      engineCapacity: '2.0L',
+      seats: '5',
+      fuelConsumption: '8',
+      pricePerDay: '180',
+      carRating: '4.8',
       imageUrl: 'assets/images/Audi-rs7-2022.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/Audi-rs7-2022.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.8',
+      status: Status.AVAILABLE
     },
     {
-      id: 3,
+      carId: '3',
       brand: 'Ford',
       model: 'Focus',
-      year: 2019,
+      year: '2019',
       category: 'Hatchback',
-      gearboxType: 'Manual',
+      gearBoxType: GearBoxType.MANUAL,
       engineType: 'Diesel',
-      seats: 5,
-      fuelConsumption: 6,
-      pricePerDay: 110,
-      rating: 4.8,
+      engineCapacity: '1.5L',
+      seats: '5',
+      fuelConsumption: '6',
+      pricePerDay: '110',
+      carRating: '4.8',
       imageUrl: 'assets/images/ford-focus.jpg',
       location: 'Ukraine, Lviv',
       available: true,
+      climateControlOption: ClimateControlOption.AIR_CONDITIONER,
+      fuelType: FuelType.DIESEL,
+      images: ['assets/images/ford-focus.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.6',
+      status: Status.AVAILABLE
     },
     {
-      id: 4,
+      carId: '4',
       brand: 'Jeep',
       model: 'Grand Cherokee',
-      year: 2020,
+      year: '2020',
       category: 'SUV',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Petrol',
-      seats: 5,
-      fuelConsumption: 12,
-      pricePerDay: 220,
-      rating: 4.8,
+      engineCapacity: '3.6L',
+      seats: '5',
+      fuelConsumption: '12',
+      pricePerDay: '220',
+      carRating: '4.8',
       imageUrl: 'assets/images/jeep.jpg',
       location: 'Ukraine, Odesa',
       available: true,
+      climateControlOption: ClimateControlOption.CLIMATE_CONTROL,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/jeep.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.7',
+      status: Status.AVAILABLE
     },
     {
-      id: 5,
+      carId: '5',
       brand: 'Tesla',
       model: 'Model 3',
-      year: 2022,
+      year: '2022',
       category: 'Sedan',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Electric',
-      seats: 5,
-      fuelConsumption: 0,
-      pricePerDay: 300,
-      rating: 4.9,
+      engineCapacity: 'N/A',
+      seats: '5',
+      fuelConsumption: '0',
+      pricePerDay: '300',
+      carRating: '4.9',
       imageUrl: 'assets/images/tesla-model3.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.ELECTRIC,
+      images: ['assets/images/tesla-model3.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.9',
+      status: Status.AVAILABLE
     },
     {
-      id: 6,
+      carId: '6',
       brand: 'BMW',
       model: 'X5',
-      year: 2021,
+      year: '2021',
       category: 'SUV',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Diesel',
-      seats: 7,
-      fuelConsumption: 9,
-      pricePerDay: 280,
-      rating: 4.7,
+      engineCapacity: '3.0L',
+      seats: '7',
+      fuelConsumption: '9',
+      pricePerDay: '280',
+      carRating: '4.7',
       imageUrl: 'assets/images/bmw-x5.jpg',
       location: 'Ukraine, Kharkiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.DIESEL,
+      images: ['assets/images/bmw-x5.jpg'],
+      passengerCapacity: '7',
+      serviceRating: '4.8',
+      status: Status.AVAILABLE
     },
     {
-      id: 7,
+      carId: '7',
       brand: 'Toyota',
       model: 'Corolla',
-      year: 2022,
+      year: '2022',
       category: 'Sedan',
-      gearboxType: 'Manual',
+      gearBoxType: GearBoxType.MANUAL,
       engineType: 'Gasoline',
-      seats: 5,
-      fuelConsumption: 7,
-      pricePerDay: 120,
-      rating: 4.5,
+      engineCapacity: '1.8L',
+      seats: '5',
+      fuelConsumption: '7',
+      pricePerDay: '120',
+      carRating: '4.5',
       imageUrl: 'assets/images/toyota-corolla.jpg',
       location: 'Ukraine, Lviv',
       available: true,
+      climateControlOption: ClimateControlOption.AIR_CONDITIONER,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/toyota-corolla.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.6',
+      status: Status.AVAILABLE
     },
     {
-      id: 8,
+      carId: '8',
       brand: 'Mercedes',
       model: 'C-Class',
-      year: 2023,
+      year: '2023',
       category: 'Sedan',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Gasoline',
-      seats: 5,
-      fuelConsumption: 8,
-      pricePerDay: 250,
-      rating: 4.8,
+      engineCapacity: '2.0L',
+      seats: '5',
+      fuelConsumption: '8',
+      pricePerDay: '250',
+      carRating: '4.8',
       imageUrl: 'assets/images/mercedes-c.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/mercedes-c.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.9',
+      status: Status.AVAILABLE
     },
     {
-      id: 9,
+      carId: '9',
       brand: 'Honda',
       model: 'Civic',
-      year: 2021,
+      year: '2021',
       category: 'Hatchback',
-      gearboxType: 'Manual',
+      gearBoxType: GearBoxType.MANUAL,
       engineType: 'Gasoline',
-      seats: 5,
-      fuelConsumption: 6,
-      pricePerDay: 100,
-      rating: 4.6,
+      engineCapacity: '1.5L',
+      seats: '5',
+      fuelConsumption: '6',
+      pricePerDay: '100',
+      carRating: '4.6',
       imageUrl: 'assets/images/honda-civic.jpg',
       location: 'Ukraine, Odesa',
       available: true,
+      climateControlOption: ClimateControlOption.AIR_CONDITIONER,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/honda-civic.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.5',
+      status: Status.AVAILABLE
     },
     {
-      id: 10,
+      carId: '10',
       brand: 'Volkswagen',
       model: 'Golf',
-      year: 2022,
+      year: '2022',
       category: 'Hatchback',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Diesel',
-      seats: 5,
-      fuelConsumption: 5,
-      pricePerDay: 130,
-      rating: 4.7,
+      engineCapacity: '2.0L',
+      seats: '5',
+      fuelConsumption: '5',
+      pricePerDay: '130',
+      carRating: '4.7',
       imageUrl: 'assets/images/vw-golf.jpg',
       location: 'Ukraine, Lviv',
       available: true,
+      climateControlOption: ClimateControlOption.CLIMATE_CONTROL,
+      fuelType: FuelType.DIESEL,
+      images: ['assets/images/vw-golf.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.6',
+      status: Status.AVAILABLE
     },
     {
-      id: 11,
+      carId: '11',
       brand: 'Porsche',
       model: '911',
-      year: 2023,
+      year: '2023',
       category: 'Sports',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Gasoline',
-      seats: 2,
-      fuelConsumption: 12,
-      pricePerDay: 700,
-      rating: 4.9,
+      engineCapacity: '3.0L',
+      seats: '2',
+      fuelConsumption: '12',
+      pricePerDay: '700',
+      carRating: '4.9',
       imageUrl: 'assets/images/porsche-911.jpg',
       location: 'Ukraine, Kyiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.PETROL,
+      images: ['assets/images/porsche-911.jpg'],
+      passengerCapacity: '2',
+      serviceRating: '5.0',
+      status: Status.AVAILABLE
     },
     {
-      id: 12,
+      carId: '12',
       brand: 'Hyundai',
       model: 'Tucson',
-      year: 2022,
+      year: '2022',
       category: 'SUV',
-      gearboxType: 'Automatic',
+      gearBoxType: GearBoxType.AUTOMATIC,
       engineType: 'Hybrid',
-      seats: 5,
-      fuelConsumption: 7,
-      pricePerDay: 170,
-      rating: 4.6,
+      engineCapacity: '1.6L',
+      seats: '5',
+      fuelConsumption: '7',
+      pricePerDay: '170',
+      carRating: '4.6',
       imageUrl: 'assets/images/hyundai-tucson.jpg',
       location: 'Ukraine, Kharkiv',
       available: true,
+      climateControlOption: ClimateControlOption.TWO_ZONE_CLIMATE_CONTROL,
+      fuelType: FuelType.HYBRID,
+      images: ['assets/images/hyundai-tucson.jpg'],
+      passengerCapacity: '5',
+      serviceRating: '4.7',
+      status: Status.AVAILABLE
     }
   ];
 
@@ -240,7 +324,7 @@ export class CarFilterService {
   // Get available gearbox types from the cars
   getGearboxTypes(): string[] {
     const types = new Set<string>();
-    this.mockCars.forEach(car => types.add(car.gearboxType));
+    this.mockCars.forEach(car => types.add(car.gearBoxType));
     return Array.from(types);
   }
 
@@ -254,7 +338,7 @@ export class CarFilterService {
   // Filter cars based on criteria
   filterCars(filters: FilterCriteria): Car[] {
     console.log('Applying filters:', filters);
-    
+
     // Start with all cars
     let result = [...this.mockCars];
 
@@ -272,7 +356,7 @@ export class CarFilterService {
     // Apply gearbox filter
     if (filters.gearboxType && filters.gearboxType.trim() !== '') {
       console.log('Filtering by gearbox:', filters.gearboxType);
-      result = result.filter(car => car.gearboxType === filters.gearboxType);
+      result = result.filter(car => car.gearBoxType === filters.gearboxType);
     }
 
     // Apply engine filter
@@ -284,16 +368,16 @@ export class CarFilterService {
     // Apply price range filter
     if (filters.minPrice !== undefined && filters.maxPrice !== undefined) {
       console.log('Filtering by price range:', filters.minPrice, '-', filters.maxPrice);
-      result = result.filter(car => 
-        car.pricePerDay >= filters.minPrice && car.pricePerDay <= filters.maxPrice
+      result = result.filter(car =>
+        parseFloat(car.pricePerDay) >= filters.minPrice && parseFloat(car.pricePerDay) <= filters.maxPrice
       );
     }
-    
+
     console.log('Filtered results:', result.length);
-    
+
     // Update the subject with filtered results
     this.filteredCarsSubject.next(result);
-    
+
     return result;
   }
 
