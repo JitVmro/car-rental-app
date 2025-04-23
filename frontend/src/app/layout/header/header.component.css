@@ -1,0 +1,52 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  
+  
+  .navbar-links a {
+    padding: 8px 2px;
+    font-size: 18px;
+    text-decoration: none;
+    color: black;
+    position: relative;
+  
+    
+  }
+  
+  .navbar-links .active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #c70000;
+  }
+  
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    }
+  
+  .avatar {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+  }
+  
+  .icon {
+    cursor: pointer;
+  }
+  
+  .lang {
+    margin-left: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+  }
+  

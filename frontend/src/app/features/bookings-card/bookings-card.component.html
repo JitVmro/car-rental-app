@@ -1,0 +1,56 @@
+<article class="flex flex-col p-3 w-[320px] sm:w-[332px] bg-[#F0F0F0] rounded-lg items-start relative">
+
+    <!-- Status Indicator -->
+     <section 
+     [ngSwitch]="state"
+     class="font-normal text-sm bg-[#FFF] flex justify-center items-center p-2 rounded-sm absolute top-3 left-3">
+        <span *ngSwitchCase="'Reserved'" class="text-[#0b6a16] z-10">Reserved</span>
+        <span *ngSwitchCase="'FinishedBooking'" class="text-[#E09811] z-10">Booking Finished</span>
+        <span *ngSwitchCase="'FinishedService'" class="text-black">Service Provided</span>
+        <span *ngSwitchCase="'InProgress'" class="text-[#1279C2]">Service Started</span>
+        <span *ngSwitchCase="'Cancelled'" class="text-[#E22D0D]">Cancelled</span>
+     </section>
+
+    <img src="car-images/car 1/Rectangle 39.svg" alt="car" class="w-[300px] mb-4 rounded-s-md">
+
+    <!-- Headings Section -->
+    <section class="flex flex-col items-start mb-4">
+        <h1 class="font-normal text-lg leading-6">Porsche 911 2021</h1>
+        <p class="font-normal text-sm leading-5">Order: #2437 (06.11.24)</p>
+    </section>
+
+    <!-- Buttons Section -->
+    <section 
+    [ngClass]="{'mb-4': state !== (BookingState.Cancelled||BookingState.InProgress),
+        'mb-18': state === (BookingState.Cancelled||BookingState.InProgress) 
+    }"
+    class="flex w-full justify-between gap-1.5 font-medium text-lg">
+        <button *ngIf="state==='Reserved'"
+            class="px-10.5 py-3 border-1 w-1/2 border-black hover:text-white hover:bg-black rounded-4xl">
+            Cancel
+        </button>
+        <button *ngIf="state==='Reserved'"
+            class="px-10.5 py-3 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-1/2  rounded-4xl">Edit</button>
+
+        <button *ngIf="state === 'FinishedService'"
+            class="px-10.5 py-3 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full  rounded-4xl">LeaveFeedBack</button>
+
+        <button *ngIf="state === 'FinishedBooking'"
+            class="px-10.5 py-3 border-1 w-full border-black hover:text-white hover:bg-black rounded-4xl">ViewFeedBack</button>
+    </section>
+
+
+    <!-- Card Footer -->
+    <section class="w-[88%] flex justify-center gap-2 items-center mb-4">
+        <span 
+        class="text-sm leading-5 font-normal text-[#666] ">
+            Have any questions? 
+        </span>
+
+        <span class="underline cursor-pointer font-medium text-sm flex justify-between items-center gap-1">
+            Support Chat
+            <img src="assets/icons/message.svg" alt="chat-icon">
+        </span>
+    </section>
+
+</article>

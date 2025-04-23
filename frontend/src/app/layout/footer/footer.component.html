@@ -1,0 +1,32 @@
+<!-- flexi-ride-navbar.component.html -->
+<footer class="flex items-center justify-between px-4 py-4 md:px-8 md:py-8 bg-[#FFFBF3] border-t border-t-[#D9D9D9]">
+    <!-- Logo -->
+    <div class="flex items-center">
+        <span class="text-lg font-normal">Flexi<span class="text-lg font-extrabold text-[#CC1D1D]">Ride</span></span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="hidden sm:flex items-center space-x-8">
+        <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Home</a>
+        <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Cars</a>
+        <a href="#" *ngIf="isLoggedIn" class=" hover:text-[#CC1D1D] font-normal text-sm">My bookings</a>
+    </div>
+
+    <!-- Social Icons -->
+    <div class="flex items-center space-x-4">
+        <a href="https://www.facebook.com/" class="text-gray-700 hover:text-purple-700" target="_blank">
+            <img src="../../../assets/images/icons/fb.svg" alt="fb">
+        </a>
+        <a href="https://www.instagram.com/" class="text-gray-700 hover:text-purple-700" target="_blank">
+            <img src="../../../assets/images/icons/insta.svg" alt="insta">
+        </a>
+        <a href="https://x.com/" class="text-gray-700 hover:text-purple-700" target="_blank">
+            <img src="../../../assets/images/icons/twitter.svg" alt="twitter">
+        </a>
+    </div>
+</footer>
+
+
+<span class="flex justify-center items-center text-center text-[#666] font-normal text-xs ">
+    ©2025FlexiRide
+</span>

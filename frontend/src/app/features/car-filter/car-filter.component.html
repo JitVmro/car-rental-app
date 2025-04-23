@@ -1,106 +1,160 @@
-<div class="text-[2.5rem] font-bold mb-4">Choose a car for rental</div>
+<div class="text-[2.5rem] font-bold mx-2 md:mx-4 mb-4 mt-4">Choose a car for rental</div>
 
-<div class="bg-white rounded-lg border border-gray-500 shadow-sm p-6 relative">
-  <!-- Clear filters button -->
-  <button 
-    (click)="clearFilters()" 
-    class="absolute top-6 right-6 text-red-600 hover:text-red-800 text-sm"
-  >
-    Clear all filters
-  </button>
+<div class="mx-2 md:mx-4  bg-[#FFFBF3] rounded-lg border border-gray-500 shadow-sm p-6">
+  <div class="flex justify-end relative my-2">
+    <button (click)="clearFilters()" class=" text-red-600 hover:text-red-800 text-sm">
+      Clear all filters
+    </button>
+  </div>
+  <div class="relative">
+    <!-- Clear filters button -->
 
-  <form [formGroup]="filterForm" class="space-y-6">
-    <!-- First row: Locations and Dates -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <!-- Pick-up location -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Pick-up location</label>
-        <div class="relative">
-          <select 
-            formControlName="pickupLocation"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option value="">Choose location</option>
-            <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+
+    <form [formGroup]="filterForm" class="space-y-6">
+      <!-- First row: Locations and Dates -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Pick-up location -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Pick-up location</label>
+          <div class="relative">
+            <select formControlName="pickupLocation"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500">
+              <option value="">Choose location</option>
+              <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Drop-off location -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Drop-off location</label>
-        <div class="relative">
-          <select 
-            formControlName="dropoffLocation"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option value="">Choose location</option>
-            <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+        <!-- Drop-off location -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Drop-off location</label>
+          <div class="relative">
+            <select formControlName="dropoffLocation"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500">
+              <option value="">Choose location</option>
+              <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Pick-up date with calendar -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Pick-up date</label>
-        <div class="relative">
-          <div 
-            (click)="togglePickupCalendar()" 
-            class="w-full border border-gray-300 rounded-md py-2 px-3 cursor-pointer flex justify-between items-center"
-          >
-            <span>{{ filterForm.value.pickupDate }}</span>
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </div>
-          
-          <!-- Calendar dropdown -->
-          <div *ngIf="showPickupCalendar" class="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-            <div class="p-2">
-              <!-- Calendar header -->
-              <div class="flex justify-between items-center mb-2">
-                <button type="button" (click)="prevMonth()" class="p-1 hover:bg-gray-100 rounded">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                  </svg>
-                </button>
-                <span class="font-medium">{{ getCurrentMonthName() }}</span>
-                <button type="button" (click)="nextMonth()" class="p-1 hover:bg-gray-100 rounded">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </button>
-              </div>
-              
-              <!-- Day headers -->
-              <div class="grid grid-cols-7 gap-1 mb-1">
-                <div *ngFor="let day of ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']" class="text-center text-xs font-medium text-gray-500">
-                  {{ day }}
+        <!-- Pick-up date with calendar -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Pick-up date</label>
+          <div class="relative">
+            <div (click)="togglePickupCalendar()"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 cursor-pointer flex justify-between items-center">
+              <span>{{ filterForm.value.pickupDate }}</span>
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+
+            <!-- Calendar dropdown -->
+            <div *ngIf="showPickupCalendar"
+              class="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-2">
+                <!-- Calendar header -->
+                <div class="flex justify-between items-center mb-2">
+                  <button type="button" (click)="prevMonth()" class="p-1 hover:bg-gray-100 rounded">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                  </button>
+                  <span class="font-medium">{{ getCurrentMonthName() }}</span>
+                  <button type="button" (click)="nextMonth()" class="p-1 hover:bg-gray-100 rounded">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Day headers -->
+                <div class="grid grid-cols-7 gap-1 mb-1">
+                  <div *ngFor="let day of ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']"
+                    class="text-center text-xs font-medium text-gray-500">
+                    {{ day }}
+                  </div>
+                </div>
+
+                <!-- Calendar days -->
+                <div class="grid grid-cols-7 gap-1">
+                  <div *ngFor="let dayObj of getMonthDays()" class="text-center p-1 text-sm rounded cursor-pointer"
+                    [class.text-gray-400]="!dayObj.isCurrentMonth"
+                    [class.bg-red-600]="isDateSelected(dayObj.date, 'pickup')"
+                    [class.text-white]="isDateSelected(dayObj.date, 'pickup')"
+                    [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'pickup') && !isDropoffDateDisabled(dayObj.date)"
+                    [class.text-gray-300]="isDropoffDateDisabled(dayObj.date)"
+                    [class.cursor-not-allowed]="isDropoffDateDisabled(dayObj.date)"
+                    (click)="!isDropoffDateDisabled(dayObj.date) && selectDate('pickup', dayObj.date)">
+                    {{ dayObj.day }}
+                  </div>
                 </div>
               </div>
-              
-              <!-- Calendar days -->
-              <div class="grid grid-cols-7 gap-1">
-                <div *ngFor="let dayObj of getMonthDays()" 
-                     class="text-center p-1 text-sm rounded cursor-pointer"
-                     [class.text-gray-400]="!dayObj.isCurrentMonth"
-                     [class.bg-red-600]="isDateSelected(dayObj.date, 'pickup')"
-                     [class.text-white]="isDateSelected(dayObj.date, 'pickup')"
-                     [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'pickup') && !isDateDisabled(dayObj.date)"
-                     [class.text-gray-300]="isDateDisabled(dayObj.date)"
-                     [class.cursor-not-allowed]="isDateDisabled(dayObj.date)"
-                     (click)="!isDateDisabled(dayObj.date) && selectDate('pickup', dayObj.date)">
-                  {{ dayObj.day }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Drop-off date with calendar -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Drop-off date</label>
+          <div class="relative">
+            <div (click)="toggleDropoffCalendar()"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 cursor-pointer flex justify-between items-center">
+              <span>{{ filterForm.value.dropoffDate }}</span>
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+
+            <!-- Calendar dropdown -->
+            <div *ngIf="showDropoffCalendar"
+              class="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-2">
+                <!-- Calendar header -->
+                <div class="flex justify-between items-center mb-2">
+                  <button type="button" (click)="prevMonth()" class="p-1 hover:bg-gray-100 rounded">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                  </button>
+                  <span class="font-medium">{{ getCurrentMonthName() }}</span>
+                  <button type="button" (click)="nextMonth()" class="p-1 hover:bg-gray-100 rounded">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Day headers -->
+                <div class="grid grid-cols-7 gap-1 mb-1">
+                  <div *ngFor="let day of ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']"
+                    class="text-center text-xs font-medium text-gray-500">
+                    {{ day }}
+                  </div>
+                </div>
+
+                <!-- Calendar days -->
+                <div class="grid grid-cols-7 gap-1">
+                  <div *ngFor="let dayObj of getMonthDays()" class="text-center p-1 text-sm rounded cursor-pointer"
+                    [class.text-gray-400]="!dayObj.isCurrentMonth"
+                    [class.bg-red-600]="isDateSelected(dayObj.date, 'dropoff')"
+                    [class.text-white]="isDateSelected(dayObj.date, 'dropoff')"
+                    [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'dropoff') && !isDropoffDateDisabled(dayObj.date)"
+                    [class.text-gray-300]="isDropoffDateDisabled(dayObj.date)"
+                    [class.cursor-not-allowed]="isDropoffDateDisabled(dayObj.date)"
+                    (click)="!isDropoffDateDisabled(dayObj.date) && selectDate('dropoff', dayObj.date)">
+                    {{ dayObj.day }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,151 +162,98 @@
         </div>
       </div>
 
-      <!-- Drop-off date with calendar -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Drop-off date</label>
-        <div class="relative">
-          <div 
-            (click)="toggleDropoffCalendar()" 
-            class="w-full border border-gray-300 rounded-md py-2 px-3 cursor-pointer flex justify-between items-center"
-          >
-            <span>{{ filterForm.value.dropoffDate }}</span>
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </div>
-          
-          <!-- Calendar dropdown -->
-          <div *ngIf="showDropoffCalendar" class="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-300 rounded-md shadow-lg z-10">
-            <div class="p-2">
-              <!-- Calendar header -->
-              <div class="flex justify-between items-center mb-2">
-                <button type="button" (click)="prevMonth()" class="p-1 hover:bg-gray-100 rounded">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                  </svg>
-                </button>
-                <span class="font-medium">{{ getCurrentMonthName() }}</span>
-                <button type="button" (click)="nextMonth()" class="p-1 hover:bg-gray-100 rounded">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </button>
-              </div>
-              
-              <!-- Day headers -->
-              <div class="grid grid-cols-7 gap-1 mb-1">
-                <div *ngFor="let day of ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']" class="text-center text-xs font-medium text-gray-500">
-                  {{ day }}
-                </div>
-              </div>
-              
-              <!-- Calendar days -->
-              <div class="grid grid-cols-7 gap-1">
-                <div *ngFor="let dayObj of getMonthDays()" 
-                     class="text-center p-1 text-sm rounded cursor-pointer"
-                     [class.text-gray-400]="!dayObj.isCurrentMonth"
-                     [class.bg-red-600]="isDateSelected(dayObj.date, 'dropoff')"
-                     [class.text-white]="isDateSelected(dayObj.date, 'dropoff')"
-                     [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'dropoff') && !isDateDisabled(dayObj.date)"
-                     [class.text-gray-300]="isDateDisabled(dayObj.date)"
-                     [class.cursor-not-allowed]="isDateDisabled(dayObj.date)"
-                     (click)="!isDateDisabled(dayObj.date) && selectDate('dropoff', dayObj.date)">
-                  {{ dayObj.day }}
-                </div>
-              </div>
+      <!-- Second row: Car category, Gearbox, Engine type, Price range, Find button -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <!-- Car category -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Car category</label>
+          <div class="relative">
+            <select formControlName="carCategory"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500">
+              <option value="" disabled selected hidden>Choose a category</option>
+              <option *ngFor="let category of carCategories" [value]="category">{{ category }}</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Second row: Car category, Gearbox, Engine type, Price range, Find button -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-      <!-- Car category -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Car category</label>
-        <div class="relative">
-          <select 
-            formControlName="carCategory"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option *ngFor="let category of carCategories" [value]="category">{{ category }}</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+        <!-- Gearbox -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Gearbox</label>
+          <div class="relative">
+            <select formControlName="gearboxType"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500">
+              <option value="" disabled selected hidden>Choose an option</option>
+              <option *ngFor="let type of gearboxTypes" [value]="type">{{ type }}</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Gearbox -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Gearbox</label>
-        <div class="relative">
-          <select 
-            formControlName="gearboxType"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option *ngFor="let type of gearboxTypes" [value]="type">{{ type }}</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+        <!-- Engine type -->
+        <div>
+          <label class="block text-sm text-gray-500 mb-1">Type of engine</label>
+          <div class="relative">
+            <select formControlName="engineType"
+              class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500">
+              <option value="" disabled selected hidden>Choose a type</option>
+              <option *ngFor="let type of engineTypes" [value]="type">{{ type }}</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Engine type -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Type of engine</label>
-        <div class="relative">
-          <select 
-            formControlName="engineType"
-            class="w-full border border-gray-300 rounded-md py-2 px-3 appearance-none focus:outline-none focus:ring-1 focus:ring-red-500"
-          >
-            <option *ngFor="let type of engineTypes" [value]="type">{{ type }}</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+        <!-- Price range -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label class="block text-sm text-gray-500">Price per day</label>
+            <span class="text-sm">${{ filterForm.value.priceRange[0] }} - ${{ filterForm.value.priceRange[1] }}</span>
+          </div>
+
+          <div class="px-2 relative mb-2">
+            <!-- Track background -->
+            <div class="w-full h-1 bg-gray-200 rounded-md"></div>
+
+            <!-- Selected range highlight -->
+            <div class="h-1 bg-red-600 absolute top-0 rounded-md"
+              [style.left]="((filterForm.value.priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100 + '%'"
+              [style.width]="((filterForm.value.priceRange[1] - filterForm.value.priceRange[0]) / (maxPrice - minPrice)) * 100 + '%'">
+            </div>
+
+            <!-- Min handle -->
+            <div class="absolute top-[-2px] transform -translate-y-1/4 -mr-2 w-2 h-4 bg-red-600 rounded-full cursor-pointer"
+              [style.left]="((filterForm.value.priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100 + '%'"
+              (mousedown)="startDragging('min', $event)" (touchstart)="startDragging('min', $event)">
+            </div>
+
+            <!-- Max handle -->
+            <div class="absolute top-[-2px] transform -translate-y-1/4 -ml-2 w-2 h-4 bg-red-600 rounded-full cursor-pointer"
+              [style.left]="((filterForm.value.priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100 + '%'"
+              (mousedown)="startDragging('max', $event)" (touchstart)="startDragging('max', $event)">
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Price range -->
-      <div>
-        <label class="block text-sm text-gray-500 mb-1">Price per day</label>
-        <div class="px-2">
-          <input 
-            type="range" 
-            min="52" 
-            max="400" 
-            step="1" 
-            [value]="filterForm.value.priceRange[1]"
-            class="w-full accent-red-600"
-            (input)="updatePriceRange($event)"
-          >
-          <div class="flex justify-between text-xs text-gray-500 mt-1">
-            <span>${{ filterForm.value.priceRange[0] }}</span>
-            <span>${{ filterForm.value.priceRange[1] }}</span>
-          </div>
+        <!-- Find button -->
+        <div>
+          <button type="button" (click)="findCars()"
+            class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition duration-200 font-medium">
+            Find a car
+          </button>
         </div>
       </div>
-
-      <!-- Find button -->
-      <div>
-        <button 
-          type="button" 
-          (click)="findCars()" 
-          class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition duration-200 font-medium"
-        >
-          Find a car
-        </button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
