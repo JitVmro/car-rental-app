@@ -55,6 +55,10 @@ export class BookingsSectionComponent {
     if (index === 4) {
       this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedBooking);
     }
+
+    if (index === 5) {
+      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Cancelled);
+    }
   }
 
   isActive(index: number) {

@@ -34,6 +34,11 @@ Service Provided</a>
 class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 4,
             ' text-[#666]':active!==4}"> Service Finished</a>
+<a (click)="setActive(5)"
+class="cursor-pointer"
+[ngClass]="{' text-black border-b-2':active === 5,
+            ' text-[#666]':active!==5}"> Cancelled </a>
+
 </section>
 
 <!-- Cards Section -->
