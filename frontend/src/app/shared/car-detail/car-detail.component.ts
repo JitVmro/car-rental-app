@@ -24,7 +24,7 @@ interface CalendarMonth {
   selector: 'app-car-detail',
   templateUrl: './car-detail.component.html',
   styleUrls: ['./car-detail.component.css'],
-  imports: [NgFor, DatePipe, FormsModule, NgIf]
+  imports: [NgFor, DatePipe, FormsModule,]
 })
 export class CarDetailComponent implements OnInit {
 
