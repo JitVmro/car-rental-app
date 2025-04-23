@@ -4,6 +4,8 @@ import { CardComponent } from '../../shared/card/card.component';
 import { Car } from '../../models/car.model';
 import { CarFilterService } from '../../core/services/car-filter.service';
 import { Subscription } from 'rxjs';
+import { CarDetailsService } from '../../core/services/car-details/car-details.service';
+import { CarDetailComponent } from "../../shared/car-detail/car-detail.component";
 
 @Component({
   selector: 'app-cards',
@@ -25,14 +27,17 @@ export class CardsComponent implements OnInit, OnDestroy {
   totalPages: number = 1;
   displayedCars: Car[] = [];
   paginationArray: Array<number | string> = [];
-  
+
   // View state
   showAllCars: boolean = false;
-  
+
   // Subscription to filtered cars
   private subscription: Subscription = new Subscription();
 
-  constructor(private carFilterService: CarFilterService) {}
+  constructor(
+    private carFilterService: CarFilterService,
+    private carService: CarDetailsService
+  ) { }
 
   ngOnInit(): void {
     // Subscribe to filtered cars from the service
@@ -40,7 +45,7 @@ export class CardsComponent implements OnInit, OnDestroy {
       this.allCars = filteredCars;
       // Update featured cars when filters change (first 4)
       this.featuredCars = this.allCars.slice(0, 4);
-      
+
       if (this.showAllCars) {
         this.calculateTotalPages();
         this.currentPage = 1;
@@ -48,7 +53,7 @@ export class CardsComponent implements OnInit, OnDestroy {
         this.updatePaginationArray();
       }
     });
-    
+
     // Initialize pagination
     this.calculateTotalPages();
     this.updateDisplayedCars();
@@ -60,6 +65,11 @@ export class CardsComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  // Selecting single car card for detail popup
+  showCarDetails(car: Car) {
+    this.carService.setSelectedCar(car);
   }
 
   // Calculate total pages based on cars array length and items per page
@@ -79,7 +89,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Update the pagination array with numbers and ellipsis
   updatePaginationArray(): void {
     this.paginationArray = [];
-    
+
     if (this.totalPages <= 5) {
       // If 5 or fewer pages, show all page numbers
       for (let i = 1; i <= this.totalPages; i++) {
@@ -88,20 +98,20 @@ export class CardsComponent implements OnInit, OnDestroy {
     } else {
       // Always show first page
       this.paginationArray.push(1);
-      
+
       if (this.currentPage > 3) {
         this.paginationArray.push('...');
       }
-      
+
       // Show current page and neighbors
       for (let i = Math.max(2, this.currentPage - 1); i <= Math.min(this.totalPages - 1, this.currentPage + 1); i++) {
         this.paginationArray.push(i);
       }
-      
+
       if (this.currentPage < this.totalPages - 2) {
         this.paginationArray.push('...');
       }
-      
+
       // Always show last page
       if (this.totalPages > 1) {
         this.paginationArray.push(this.totalPages);
@@ -151,14 +161,14 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Toggle between home view and all cars view
   toggleViewAllCars(): void {
     this.showAllCars = !this.showAllCars;
-    
+
     if (this.showAllCars) {
       // When showing all cars, calculate pagination
       this.calculateTotalPages();
       this.currentPage = 1;
       this.updateDisplayedCars();
     }
-    
+
     this.updatePaginationArray();
   }
 }

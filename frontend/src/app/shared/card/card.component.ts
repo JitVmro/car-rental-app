@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Car } from '../../models/car.model';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CarDetailsService } from '../../core/services/car-details/car-details.service';
 
 @Component({
   selector: 'app-card',
@@ -13,18 +14,19 @@ export class CardComponent {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
-  ) {
-
-  }
+    private route: ActivatedRoute,
+    private carService: CarDetailsService
+  ) { }
 
   navigateToBookingConfirmation() {
     this.router.navigate(['cars/booking', { id: 47 }])
   }
 
-  openCarPopup() {
-    const popup = document.getElementById("carDetailPopup");
-    popup?.classList.remove("hidden");
+  selectCar(event: Event) {
+    event.preventDefault(); // Prevent any default anchor behavior
+    event.stopPropagation(); // Prevent event bubbling
+    this.carService.setSelectedCar(this.car);
+    this.router.navigate(["/cars"]);
   }
 
   @Input() car!: Car;
