@@ -1,22 +1,20 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
-
 
 @Component({
   selector: 'app-header',
   imports: [NgIf, RouterModule, NgClass],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
-export class HeaderComponent {
-  // We get this from the getLoggedIn() from auth Service Later
+export class HeaderComponent implements OnInit {
   loggedIn: boolean;
-  userImage:boolean = true;
+  isProfileMenuOpen = false;
+  userImage: boolean = true;
 
-  //We get this form the getCurrentUser() from the authService Later
   user: User | null;
 
   ham = false;
@@ -25,14 +23,49 @@ export class HeaderComponent {
   }
 
   constructor(public router: Router, private authService: AuthService) {
-    this.loggedIn = this.authService.isLoggedIn()
+    this.loggedIn = this.authService.isLoggedIn();
     this.user = this.authService.currentUserValue;
   }
+  ngOnInit(): void {
+    this.userImage = this.user?.image ? true : false;
+  }
   getName() {
-    if(!this.user?.image){
-      this.userImage=false;
-      return (this.user?.name?.charAt(0)?.toUpperCase() ?? '') 
+    if (!this.user?.image) {
+      this.userImage = false;
+      return this.user?.name?.charAt(0)?.toUpperCase() ?? '';
     }
     return null;
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  closeProfileMenu(): void {
+    this.isProfileMenuOpen = false;
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+    this.closeProfileMenu();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+    this.closeProfileMenu();
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedElement = event.target as HTMLElement;
+
+    const profileSection = document.querySelector('.profile-section');
+    if (
+      profileSection &&
+      !profileSection.contains(clickedElement) &&
+      this.isProfileMenuOpen
+    ) {
+      this.closeProfileMenu();
+    }
   }
 }
