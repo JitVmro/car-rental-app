@@ -1,12 +1,12 @@
 <!-- flexi-ride-navbar.component.html -->
-<footer class="flex items-center justify-between px-8 pt-8 pb-8 bg-[#FFFBF3] border-t border-t-[#D9D9D9]">
+<footer class="flex items-center justify-between px-4 py-4 md:px-8 md:py-8 bg-[#FFFBF3] border-t border-t-[#D9D9D9]">
     <!-- Logo -->
     <div class="flex items-center">
         <span class="text-lg font-normal">Flexi<span class="text-lg font-extrabold text-[#CC1D1D]">Ride</span></span>
     </div>
 
     <!-- Navigation Links -->
-    <div class="flex items-center space-x-8">
+    <div class="hidden sm:flex items-center space-x-8">
         <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Home</a>
         <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Cars</a>
         <a href="#" *ngIf="isLoggedIn" class=" hover:text-[#CC1D1D] font-normal text-sm">My bookings</a>
