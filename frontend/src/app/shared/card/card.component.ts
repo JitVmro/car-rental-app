@@ -19,7 +19,7 @@ export class CardComponent {
   }
 
   navigateToBookingConfirmation() {
-    this.router.navigateByUrl(`/cars/${47}`)
+    this.router.navigate(['cars/booking', { id: 47 }])
   }
 
   openCarPopup() {
