@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Booking, BookingState } from '../../models/booking.model';
 
-enum BookingState {
-  FinishedService = 'FinishedService',
-  Cancelled = 'Cancelled',
-  InProgress = 'InProgress',
-  FinishedBooking = 'FinishedBooking',
-  Reserved = 'Reserved',
-}
 
 @Component({
   selector: 'app-bookings-card',
@@ -16,6 +10,11 @@ enum BookingState {
   styleUrl: './bookings-card.component.css'
 })
 export class BookingsCardComponent {
+
   BookingState = BookingState;
   state:BookingState = BookingState.FinishedService;
+  
+  @Input() booking!:Booking;
+
+  
 }

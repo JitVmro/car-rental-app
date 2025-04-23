@@ -1,29 +1,52 @@
 <h1 class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-9 mb-4">My Bookings</h1>
+
+<!-- Tabs Section -->
 <section 
-class="mx-2 my-4 min-[800px]:ml-8 flex overflow-x-auto text-nowrap justify-between min-[800px]:flex-row items-center gap-4 min-[800px]:gap-8 min-[800px]:justify-start">
+class="mx-2 my-4 min-[800px]:ml-8 flex overflow-x-auto text-nowrap justify-between min-[800px]:flex-row items-center gap-6 min-[800px]:gap-8 min-[800px]:justify-start pb-4">
+
 <a (click)="setActive(0)"
+class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 0,
             ' text-[#666]':active!==0}"
             >
             All Services</a>
 
 <a (click)="setActive(1)"
+class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 1,
             ' text-[#666]':active!==1}"
             >
-            Service Started</a>
+            Reserved</a>
 
 <a (click)="setActive(2)"
+class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 2,
             ' text-[#666]':active!==2}"
->Service Provided</a>
+>Service Started</a>
 
 <a (click)="setActive(3)" 
+class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 3,
             ' text-[#666]':active!==3}">
-Booking Finished</a>
+Service Provided</a>
 
 <a (click)="setActive(4)"
+class="cursor-pointer"
 [ngClass]="{' text-black border-b-2':active === 4,
-            ' text-[#666]':active!==4}"> Cancelled</a>
+            ' text-[#666]':active!==4}"> Service Finished</a>
+
+<a (click)="setActive(5)"
+class="cursor-pointer"
+[ngClass]="{' text-black border-b-2':active === 5,
+            ' text-[#666]':active!==5}"> Service Finished</a>
+</section>
+
+<!-- Cards Section -->
+ <section
+class="flex flex-col justify-center items-center min-[680px]:grid min-[680px]:grid-cols-2 min-[1035px]:grid-cols-3 min-[1370px]:grid-cols-4 min-[1700px]:grid-cols-5 gap-4 mx-2 my-4 min-[800px]:ml-8">
+ 
+    <app-bookings-card 
+    *ngFor="let booking of bookings"
+    [booking]="booking">
+    </app-bookings-card>
 </section>

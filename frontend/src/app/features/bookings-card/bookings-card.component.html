@@ -2,7 +2,7 @@
 
     <!-- Status Indicator -->
      <section 
-     [ngSwitch]="state"
+     [ngSwitch]="booking.state"
      class="font-normal text-sm bg-[#FFF] flex justify-center items-center p-2 rounded-sm absolute top-3 left-3">
         <span *ngSwitchCase="'Reserved'" class="text-[#0b6a16] z-10">Reserved</span>
         <span *ngSwitchCase="'FinishedBooking'" class="text-[#E09811] z-10">Booking Finished</span>
@@ -21,21 +21,21 @@
 
     <!-- Buttons Section -->
     <section 
-    [ngClass]="{'mb-4': state !== (BookingState.Cancelled||BookingState.InProgress),
-        'mb-18': state === (BookingState.Cancelled||BookingState.InProgress) 
+    [ngClass]="{'mb-4': booking.state !== (BookingState.Cancelled||BookingState.InProgress),
+        'mb-18': booking.state === (BookingState.InProgress) ||booking.state === (BookingState.Cancelled) 
     }"
     class="flex w-full justify-between gap-1.5 font-medium text-lg">
-        <button *ngIf="state==='Reserved'"
+        <button *ngIf="booking.state==='Reserved'"
             class="px-10.5 py-3 border-1 w-1/2 border-black hover:text-white hover:bg-black rounded-4xl">
             Cancel
         </button>
-        <button *ngIf="state==='Reserved'"
+        <button *ngIf="booking.state==='Reserved'"
             class="px-10.5 py-3 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-1/2  rounded-4xl">Edit</button>
 
-        <button *ngIf="state === 'FinishedService'"
+        <button *ngIf="booking.state === 'FinishedService'"
             class="px-10.5 py-3 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full  rounded-4xl">LeaveFeedBack</button>
 
-        <button *ngIf="state === 'FinishedBooking'"
+        <button *ngIf="booking.state === 'FinishedBooking'"
             class="px-10.5 py-3 border-1 w-full border-black hover:text-white hover:bg-black rounded-4xl">ViewFeedBack</button>
     </section>
 
