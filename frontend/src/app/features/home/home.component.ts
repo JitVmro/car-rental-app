@@ -8,14 +8,13 @@ import { FaqComponent } from "../faq/faq.component";
 import { CarDetailComponent } from "../../shared/car-detail/car-detail.component";
 import { MapComponent } from "../map/map.component";
 
-import { BookingsSectionComponent } from "../bookings-section/bookings-section.component";
 
 @Component({
   selector: 'app-home',
   
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, CarDetailComponent, MapComponent,  BookingsSectionComponent]
+  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, CarDetailComponent, MapComponent]
 })
 export class HomeComponent {
 
