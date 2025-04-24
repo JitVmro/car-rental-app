@@ -104,11 +104,23 @@ export class CarFilterComponent implements OnInit {
   togglePickupCalendar(): void {
     this.showPickupCalendar = !this.showPickupCalendar;
     if (this.showPickupCalendar) this.showDropoffCalendar = false;
+    // Reset current month to match selected date
+    this.currentMonth = new Date(
+      this.selectedPickupDate.getFullYear(),
+      this.selectedPickupDate.getMonth(),
+      1
+    );
   }
 
   toggleDropoffCalendar(): void {
     this.showDropoffCalendar = !this.showDropoffCalendar;
     if (this.showDropoffCalendar) this.showPickupCalendar = false;
+    // Reset current month to match selected date
+    this.currentMonth = new Date(
+      this.selectedDropoffDate.getFullYear(),
+      this.selectedDropoffDate.getMonth(),
+      1
+    );
   }
 
   selectDate(type: 'pickup' | 'dropoff', date: Date): void {
@@ -117,11 +129,11 @@ export class CarFilterComponent implements OnInit {
     if (date < today) return;
 
     if (type === 'pickup') {
-      this.selectedPickupDate = date;
+      this.selectedPickupDate = new Date(date);
       this.filterForm.patchValue({ pickupDate: this.formatDate(date) });
 
-      // Auto adjust dropoff if it becomes invalid
-      if (this.selectedDropoffDate <= date) {
+      // If pickup date is after dropoff date, adjust dropoff date
+      if (this.selectedDropoffDate < date) {
         const nextDay = new Date(date);
         nextDay.setDate(date.getDate() + 1);
         this.selectedDropoffDate = nextDay;
@@ -130,8 +142,10 @@ export class CarFilterComponent implements OnInit {
 
       this.showPickupCalendar = false;
     } else {
-      if (date <= this.selectedPickupDate) return;
-      this.selectedDropoffDate = date;
+      // Allow same day for dropoff (Issue 1 fix)
+      if (date < this.selectedPickupDate) return;
+      
+      this.selectedDropoffDate = new Date(date);
       this.filterForm.patchValue({ dropoffDate: this.formatDate(date) });
       this.showDropoffCalendar = false;
     }
@@ -246,11 +260,20 @@ export class CarFilterComponent implements OnInit {
     return date < today;
   }
 
+  // Fixed to allow same day selection for dropoff (Issue 1)
   isDropoffDateDisabled(date: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return date < today || date <= this.selectedPickupDate;
+    
+    // For pickup calendar, only disable dates before today
+    if (!this.showDropoffCalendar) {
+      return date < today;
+    }
+    
+    // For dropoff calendar, disable dates before today and before pickup date
+    return date < today || date < this.selectedPickupDate;
   }
+
   closeCalendars(): void {
     this.showPickupCalendar = false;
     this.showDropoffCalendar = false;
