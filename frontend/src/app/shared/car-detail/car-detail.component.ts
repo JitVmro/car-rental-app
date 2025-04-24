@@ -9,6 +9,7 @@ import { CalendarMonth, CalendarDate } from '../../models/calendar.model';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
 import { Subscription } from 'rxjs';
 import { DatePickerComponent } from "../date-picker/date-picker.component";
+import { AuthService } from '../../core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-car-detail',
@@ -92,6 +93,7 @@ export class CarDetailComponent implements OnInit {
   constructor(
     private router: Router,
     private carService: CarDetailsService,
+    private authService: AuthService
   ) {
 
     effect(() => {
@@ -130,12 +132,10 @@ export class CarDetailComponent implements OnInit {
 
   calculatePrice(): void {
     if (this.startDate && this.endDate && this.selectedCar) {
-      const start = new Date(this.startDate);
-      const end = new Date(this.endDate);
-      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
-      this.totalPrice = days * parseFloat(this.selectedCar.pricePerDay);
+      this.totalPrice = parseFloat(this.selectedCar.pricePerDay);
     } else if (this.selectedCar) {
       this.totalPrice = parseFloat(this.selectedCar.pricePerDay);
+
     }
   }
 
@@ -175,8 +175,14 @@ export class CarDetailComponent implements OnInit {
   }
 
   goToConfirmationPage() {
-    if (this.selectedCar)
-      this.router.navigateByUrl(`/all-cars/booking/${this.selectedCar.carId}`)
+    if (this.authService.isLoggedIn()) {
+      if (this.selectedCar)
+        this.router.navigate(['/cars/booking', { id: this.selectedCar.carId }])
+    }
+    else {
+      document.getElementById('loginAlert')?.classList.remove('hidden')
+      document.getElementById('loginAlert')?.classList.add('flex')
+    }
   }
 
   getStarWidth(position: number, rating: number): string {
@@ -233,6 +239,8 @@ export class CarDetailComponent implements OnInit {
   onDateRangeSelected($event: { startDate: Date; endDate: Date; }) {
     this.startDate = $event.startDate.toString();
     this.endDate = $event.endDate.toString();
+    console.log(this.startDate, this.endDate);
+
   }
 
   openDatePicker() {
@@ -241,6 +249,17 @@ export class CarDetailComponent implements OnInit {
 
   closeDatePicker() {
     document.getElementById('d1')?.classList.add('hidden')
+  }
+
+  onCancel() {
+    document.getElementById('loginAlert')?.classList.add('hidden')
+    document.getElementById('loginAlert')?.classList.remove('flex');
+  }
+
+  onLogin() {
+    document.getElementById('loginAlert')?.classList.remove('hidden');
+    document.getElementById('loginAlert')?.classList.add('flex');
+    this.router.navigate(["/login"]);
   }
 
 }

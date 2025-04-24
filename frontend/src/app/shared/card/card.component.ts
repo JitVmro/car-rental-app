@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Car } from '../../models/car.model';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
 
 @Component({
@@ -14,12 +14,12 @@ export class CardComponent {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private carService: CarDetailsService
   ) { }
 
   navigateToBookingConfirmation() {
-    this.router.navigate(['cars/booking', { id: 47 }])
+    this.carService.setSelectedCar(this.car)
+    this.router.navigate(['cars/booking', { id: this.car.carId }])
   }
 
   selectCar(event: Event) {

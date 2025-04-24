@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CarDetailsService } from '../../core/services/car-details/car-details.service';
+import { Router } from '@angular/router';
+import { Car } from '../../models/car.model';
+import { AuthService } from '../../core/services/auth/auth-service.service';
+import { User } from '../../models/User';
 
 @Component({
   selector: 'app-booking-page',
@@ -8,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule]
 })
-export class BookingPageComponent {
+export class BookingPageComponent implements OnInit {
   bookingData = {
     personalInfo: {
       name: 'Anastasiya Dobrota',
@@ -39,6 +44,38 @@ export class BookingPageComponent {
       deposit: 2000
     }
   };
+
+  selectedCar: Car | null = null
+  currentUser: User | null;
+
+  constructor(
+    private router: Router,
+    private carService: CarDetailsService,
+    private authService: AuthService
+  ) {
+
+    this.currentUser = this.authService.currentUserValue
+    effect(() => {
+      const car = this.carService.selectedCar();
+      console.log(car);
+      if (car) {
+        this.selectedCar = car;
+      }
+      console.log("SLECTED CAR: ", this.selectedCar)
+    })
+
+  }
+
+  ngOnInit(): void {
+    this.setSelectedCar()
+  }
+
+  setSelectedCar() {
+    const car = this.carService.selectedCar();
+    if (car) {
+      this.selectedCar = car;
+    }
+  }
 
   confirmReservation() {
     // Implement reservation logic here

@@ -6,7 +6,6 @@ import { Car } from '../../models/car.model';
 import { CarFilterService } from '../../core/services/car-filter.service';
 import { Subscription } from 'rxjs';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
-import { CarDetailComponent } from "../../shared/car-detail/car-detail.component";
 
 @Component({
   selector: 'app-cards',

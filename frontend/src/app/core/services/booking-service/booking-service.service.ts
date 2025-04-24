@@ -71,17 +71,17 @@ export class BookingServiceService {
         state: BookingState.FinishedService,
       },
     ];;
-   }
+  }
 
-   createBooking(booking:Booking){
+  createBooking(booking: Booking) {
     booking.id = this.bookings.length + 1;
     this.bookings.push(booking);
-    
-   }
 
-   getBookings(user:User): Booking[] {
-    console.log("Service Bookings",this.bookings);
+  }
+
+  getBookings(user: User): Booking[] {
+    console.log("Service Bookings", this.bookings);
     return this.bookings.filter(booking => booking.user.id === user.id);
-   }
+  }
 
 }
