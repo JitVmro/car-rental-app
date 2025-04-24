@@ -111,6 +111,21 @@ export class BookingServiceService {
     this.bookingsSubject.next(updatedBookings);
   }
 
+  completeBooking(bookingId: number): void {
+    const currentBookings = this.bookingsSubject.value;
+    
+    // Create a new array without the cancelled booking
+    const updatedBookings = currentBookings.map(booking => {
+      if (booking.id === bookingId) {
+        return { ...booking, state: BookingState.FinishedBooking };
+      }
+      return booking;
+    });
+    
+    // Emit the new array
+    this.bookingsSubject.next(updatedBookings);
+  }
+
   getAllBookings(): Observable<Booking[]> {
     return this.bookings$;
   }

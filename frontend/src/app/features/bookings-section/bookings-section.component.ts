@@ -80,7 +80,8 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.bookingid = bookingid;
   }
 
-  setshowFeedback() {
+  setshowFeedback(bookingid: number) {
+    this.bookingid = bookingid;
     this.showFeedback = true;
   }
 
@@ -100,6 +101,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
 
   HandleFeedbackSubmit() {
     this.showFeedback = false;
+    this.bookingService.completeBooking(this.bookingid);
     console.log("feedback submitted");
   }
 
