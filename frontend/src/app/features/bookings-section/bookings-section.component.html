@@ -44,9 +44,81 @@ class="cursor-pointer"
 <!-- Cards Section -->
  <section
 class="flex flex-col justify-center items-center min-[680px]:grid min-[680px]:grid-cols-2 min-[1035px]:grid-cols-3 min-[1370px]:grid-cols-4 min-[1700px]:grid-cols-5 gap-4 mx-2 my-4 min-[800px]:ml-8">
- 
     <app-bookings-card 
     *ngFor="let booking of filteredBookings"
-    [booking]="booking">
+    [booking]="booking"
+    (showFeedBackEvent)="setshowFeedback()"
+    (cancelBookingEvent)="setshowPopup()"
+    (viewBookingEvent)="HandleViewFeedback()"
+    (editBookingEvent)="HandleEditBooking()"
+    >
     </app-bookings-card>
 </section>
+
+
+
+  
+  <!-- Popup -->
+  <section  *ngIf="showPopup" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
+    <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] h-[300px] sm:h-[200px] p-6 rounded-lg shadow-lg max-w-md ">
+      <h1 class="text-[26px] leading-6 font-medium mb-4 max-sm:text-center">Cancel Booking?</h1>
+      <p class="text-lg font-normal mb-4 text-[#666666] max-sm:text-center">You are about to cancel your booking. Are you sure you want to proceed?</p>
+      <section class="flex w-full justify-between gap-1.5 font-medium text-lg flex-col sm:flex-row">
+        <button (click)="HandleCancelBooking()"
+            class="cursor-pointer px-3 py-2 border-1 w-full sm:w-1/2 border-black hover:text-white hover:bg-black rounded-4xl text-nowrap">
+            Cancel
+        </button>
+        <button (click)="showPopup = false"
+            class="cursor-pointer px-3 py-2 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full sm:w-1/2  rounded-4xl text-nowrap">Resume Booking</button>
+      </section>
+    </section>
+  </section>
+
+
+  <!-- Feedback -->
+  <section *ngIf="showFeedback" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
+    <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[393px] p-6 rounded-lg shadow-lg max-w-md ">
+      <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">How was your experience?</h1>
+      
+      <h3 class="text-lg font-normal mb-6">Audi A6 Quattro 2023</h3>
+
+      <h5 class="text-[12px] font-normal text-[#666666]">Rate your experience</h5>
+
+      <!-- Star Component -->
+      <section class="flex space-x-1 mb-6">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <svg
+            (click)="setRating(star)"
+            [ngClass]="star <= rating ? 'text-yellow-400' : 'text-[#DCDCDD]'"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            class="w-5 h-5 cursor-pointer transition-colors duration-200"
+          >
+            <path
+              d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+            />
+          </svg>
+        </ng-container>
+      </section>
+
+      <!-- TextBox Component -->
+      <section class="w-full flex flex-col gap-1 mb-6">
+        <h5 class="font-normal text-xs">Review</h5>
+        <textarea class="border border-[#DCDCDD] rounded-lg px-3 py-2 outline-none h-[95px]" name="Review" id="Review" placeholder="Add Your Comment"></textarea>
+      </section>
+
+      <!-- Buttons Section -->
+      <section class="flex w-full justify-between gap-1.5 font-medium text-lg flex-col sm:flex-row">
+        <button (click)="showFeedback = false"
+            class="cursor-pointer px-3 py-2 border-1 w-full sm:w-1/2 border-black hover:text-white hover:bg-black rounded-4xl text-nowrap">
+            Cancel
+        </button>
+        <button (click)="HandleFeedbackSubmit()"
+
+            class="cursor-pointer px-3 py-2 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full sm:w-1/2  rounded-4xl text-nowrap">Submit </button>
+      </section>
+
+    </section>
+  </section>
+  

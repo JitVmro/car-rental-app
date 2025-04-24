@@ -36,6 +36,36 @@ export class BookingsSectionComponent {
 
 
   active: number = 0;
+  showPopup: boolean = false;
+  showFeedback: boolean = false;
+
+
+  setshowPopup(){
+    this.showPopup = true;
+  }
+
+  setshowFeedback(){
+    this.showFeedback = true;
+  }
+
+  HandleViewFeedback(){
+    console.log("view feedback clicked");
+    
+  }
+  HandleEditBooking(){
+    console.log("edit booking clicked");
+    
+  }
+
+  HandleCancelBooking() {
+    this.showPopup = false;
+    console.log("cancel booking clicked");
+  }
+
+  HandleFeedbackSubmit() {
+    this.showFeedback = false;
+    console.log("feedback submitted");
+  }
 
   setActive(index: number) {
     this.active = index;
@@ -63,5 +93,11 @@ export class BookingsSectionComponent {
 
   isActive(index: number) {
     return this.active === index;
+  }
+
+  rating: number = 0;
+
+  setRating(star: number) {
+    this.rating = star;
   }
 }

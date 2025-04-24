@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Booking, BookingState } from '../../models/booking.model';
 
 
@@ -15,6 +15,26 @@ export class BookingsCardComponent {
   state:BookingState = BookingState.FinishedService;
   
   @Input() booking!:Booking;
+  @Output() showFeedBackEvent = new EventEmitter<void>();
+  @Output() cancelBookingEvent = new EventEmitter<void>();
+  @Output() viewBookingEvent = new EventEmitter<void>();
+  @Output() editBookingEvent = new EventEmitter<void>();
+
+  onshowFeedBackEvent() {
+    this.showFeedBackEvent.emit();
+  }
+  onCancelBookingEvent() {
+    this.cancelBookingEvent.emit();
+  }
+
+  onViewBookingEvent() {
+    this.viewBookingEvent.emit();
+  }
+  onEditBookingEvent() {
+    this.editBookingEvent.emit();
+  }
+  
+
 
   
 }
