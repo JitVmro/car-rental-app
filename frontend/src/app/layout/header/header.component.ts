@@ -27,6 +27,9 @@ export class HeaderComponent implements OnInit {
     this.user = this.authService.currentUserValue;
   }
   ngOnInit(): void {
+    this.authService.currentUser$.subscribe(user => {
+      this.user = user;
+    });
     this.userImage = this.user?.image ? true : false;
   }
   getName() {
@@ -52,8 +55,8 @@ export class HeaderComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
     this.closeProfileMenu();
+    this.router.navigate(['/home']);
   }
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
