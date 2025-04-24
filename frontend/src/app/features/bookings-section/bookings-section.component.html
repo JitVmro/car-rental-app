@@ -48,7 +48,7 @@ class="flex flex-col justify-center items-center min-[680px]:grid min-[680px]:gr
     *ngFor="let booking of filteredBookings"
     [booking]="booking"
     (showFeedBackEvent)="setshowFeedback()"
-    (cancelBookingEvent)="setshowPopup()"
+    (cancelBookingEvent)="setshowPopup($event)"
     (viewBookingEvent)="HandleViewFeedback()"
     (editBookingEvent)="HandleEditBooking()"
     >

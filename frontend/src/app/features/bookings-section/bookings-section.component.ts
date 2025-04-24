@@ -18,7 +18,7 @@ export class BookingsSectionComponent {
   userId:User|null;
   filteredBookings: Booking[] = [];
 
-  constructor(private bookingService:BookingServiceService,private authService:AuthService){
+  constructor(public bookingService:BookingServiceService,private authService:AuthService){
     this.userId= this.authService.currentUserValue;
     if(this.userId){
       this.bookings=this.bookingService.getBookings(this.userId);
@@ -38,10 +38,12 @@ export class BookingsSectionComponent {
   active: number = 0;
   showPopup: boolean = false;
   showFeedback: boolean = false;
+  bookingid: number = -1;
 
 
-  setshowPopup(){
+  setshowPopup(bookingid: number) {
     this.showPopup = true;
+    this.bookingid = bookingid;
   }
 
   setshowFeedback(){
@@ -59,6 +61,8 @@ export class BookingsSectionComponent {
 
   HandleCancelBooking() {
     this.showPopup = false;
+    this.bookingService.cancelBooking(this.bookingid);
+    this.bookingService.getAllBookings();
     console.log("cancel booking clicked");
   }
 

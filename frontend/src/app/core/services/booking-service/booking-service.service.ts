@@ -84,4 +84,12 @@ export class BookingServiceService {
     return this.bookings.filter(booking => booking.user.id === user.id);
    }
 
+   cancelBooking(bookingId: number): void {
+    this.bookings = this.bookings.filter(booking => booking.id !== bookingId);
+   }
+
+   getAllBookings(): void{
+    console.log(this.bookings);
+    
+   }
 }

@@ -16,7 +16,7 @@ export class BookingsCardComponent {
   
   @Input() booking!:Booking;
   @Output() showFeedBackEvent = new EventEmitter<void>();
-  @Output() cancelBookingEvent = new EventEmitter<void>();
+  @Output() cancelBookingEvent = new EventEmitter<number>();
   @Output() viewBookingEvent = new EventEmitter<void>();
   @Output() editBookingEvent = new EventEmitter<void>();
 
@@ -24,7 +24,7 @@ export class BookingsCardComponent {
     this.showFeedBackEvent.emit();
   }
   onCancelBookingEvent() {
-    this.cancelBookingEvent.emit();
+    this.cancelBookingEvent.emit(this.booking.id);
   }
 
   onViewBookingEvent() {
