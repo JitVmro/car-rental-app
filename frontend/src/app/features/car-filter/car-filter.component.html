@@ -92,10 +92,10 @@
                     [class.text-gray-400]="!dayObj.isCurrentMonth"
                     [class.bg-red-600]="isDateSelected(dayObj.date, 'pickup')"
                     [class.text-white]="isDateSelected(dayObj.date, 'pickup')"
-                    [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'pickup') && !isDropoffDateDisabled(dayObj.date)"
-                    [class.text-gray-300]="isDropoffDateDisabled(dayObj.date)"
-                    [class.cursor-not-allowed]="isDropoffDateDisabled(dayObj.date)"
-                    (click)="!isDropoffDateDisabled(dayObj.date) && selectDate('pickup', dayObj.date)">
+                    [class.hover:bg-gray-100]="!isDateSelected(dayObj.date, 'pickup') && !isDateDisabled(dayObj.date)"
+                    [class.text-gray-300]="isDateDisabled(dayObj.date)"
+                    [class.cursor-not-allowed]="isDateDisabled(dayObj.date)"
+                    (click)="!isDateDisabled(dayObj.date) && selectDate('pickup', dayObj.date)">
                     {{ dayObj.day }}
                   </div>
                 </div>
