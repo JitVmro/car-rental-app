@@ -30,9 +30,9 @@ export class RegisterComponent {
   ) {
     this.registerForm = this.fb.group(
       {
-        name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]*$/)]],
+        name: ['', [Validators.required, this.nameValidator]],
         surname: ['', [Validators.pattern(/^[a-zA-Z\s]*$/)]],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/)]],
         password: [
           '',
           [
@@ -64,6 +64,20 @@ export class RegisterComponent {
     return null;
   }
 
+  nameValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value ;
+    if(!value)return null;
+    if (value.trim().length === 0) {
+      return { whitespace: true };
+    }
+  
+    const pattern = /^[a-zA-Z\s]+$/;
+    if (!pattern.test(value)) {
+      return { pattern: true };
+    }
+  
+    return null;
+  }
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
