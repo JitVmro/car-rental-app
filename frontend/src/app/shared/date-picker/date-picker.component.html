@@ -1,0 +1,92 @@
+<div class="bg-[#fffbf3] p-4 rounded-lg  shadow-md">
+    <div class="w-full bg-white rounded-lg shadow-md p-6">
+        <!-- Month Navigation -->
+        <div class="flex justify-between items-center mb-6">
+          <button (click)="previousMonth()" class="p-2 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div class="flex gap-16">
+            <span class="text-lg font-medium">
+              {{ months[currentMonth.getMonth()] }} {{ currentMonth.getFullYear() }}
+            </span>
+            <span class="text-lg font-medium">
+              {{ months[nextMonth.getMonth()] }} {{ nextMonth.getFullYear() }}
+            </span>
+          </div>
+          <button (click)="goToNextMonth()" class="p-2 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+  
+        <div class="flex gap-4">
+          <!-- First Month Calendar -->
+          <div class="w-[320px]">
+            <div class="grid grid-cols-7 gap-1">
+              <!-- Weekdays -->
+              <div *ngFor="let day of weekDays" 
+                   class="h-8 flex items-center justify-center text-sm text-gray-500">
+                {{ day }}
+              </div>
+  
+              <!-- Days -->
+              <ng-container *ngFor="let week of calendar1">
+                <div *ngFor="let date of week"
+                     (click)="selectDate(date)"
+                     class="h-8 flex items-center justify-center text-sm cursor-pointer relative"
+                     [class.text-gray-400]="date.getMonth() !== currentMonth.getMonth()"
+                     [class.bg-black]="isStartDate(date) || isEndDate(date)"
+                     [class.text-white]="isStartDate(date) || isEndDate(date)"
+                     [class.bg-gray-200]="isSelected(date) && !isStartDate(date) && !isEndDate(date)">
+                  {{ date.getDate() }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+  
+          <!-- Second Month Calendar -->
+          <div class="w-[320px]">
+            <div class="grid grid-cols-7 gap-1">
+              <!-- Weekdays -->
+              <div *ngFor="let day of weekDays" 
+                   class="h-8 flex items-center justify-center text-sm text-gray-500">
+                {{ day }}
+              </div>
+  
+              <!-- Days -->
+              <ng-container *ngFor="let week of calendar2">
+                <div *ngFor="let date of week"
+                     (click)="selectDate(date)"
+                     class="h-8 flex items-center justify-center text-sm cursor-pointer relative"
+                     [class.text-gray-400]="date.getMonth() !== nextMonth.getMonth()"
+                     [class.bg-black]="isStartDate(date) || isEndDate(date)"
+                     [class.text-white]="isStartDate(date) || isEndDate(date)"
+                     [class.bg-gray-200]="isSelected(date) && !isStartDate(date) && !isEndDate(date)">
+                  {{ date.getDate() }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Time Selection -->
+        <div class="mt-6 flex gap-4">
+          <div class="flex-1">
+            <label class="block text-sm text-gray-600 mb-2">Pick-up time</label>
+            <input type="time" 
+                   [(ngModel)]="pickupTime"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md">
+          </div>
+          
+          <div class="flex-1">
+            <label class="block text-sm text-gray-600 mb-2">Drop-off time</label>
+            <input type="time" 
+                   [(ngModel)]="dropoffTime"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md">
+          </div>
+        </div>
+      </div>
+</div>

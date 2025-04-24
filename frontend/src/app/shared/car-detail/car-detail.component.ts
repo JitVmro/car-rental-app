@@ -8,22 +8,16 @@ import { Feedback } from '../../models/feedback';
 import { CalendarMonth, CalendarDate } from '../../models/calendar.model';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
 import { Subscription } from 'rxjs';
+import { DatePickerComponent } from "../date-picker/date-picker.component";
 
 @Component({
   selector: 'app-car-detail',
   standalone: true,
   templateUrl: './car-detail.component.html',
   styleUrls: ['./car-detail.component.css'],
-  imports: [NgFor, DatePipe, FormsModule, NgIf]
+  imports: [NgFor, DatePipe, FormsModule, NgIf, DatePickerComponent]
 })
 export class CarDetailComponent implements OnInit {
-
-  weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  currentDate = new Date();
-  displayMonths: CalendarMonth[] = [];
-  pickupTime: string = '07:00';
-  dropoffTime: string = '10:30';
 
   feedbacks: Feedback[] = [
     {
@@ -82,8 +76,8 @@ export class CarDetailComponent implements OnInit {
   ];
 
   selectedImageIndex: number = 0;
-  startDate: string = '';
-  endDate: string = '';
+  startDate: string = '' + Date.now();
+  endDate: string = '' + Date.now();
   totalPrice: number = 0;
   sortOrder: string = 'newest';
   carImages!: string[];
@@ -235,4 +229,18 @@ export class CarDetailComponent implements OnInit {
   getName(feedBackUserName: string) {
     return (feedBackUserName.charAt(0)?.toUpperCase() ?? '')
   }
+
+  onDateRangeSelected($event: { startDate: Date; endDate: Date; }) {
+    this.startDate = $event.startDate.toString();
+    this.endDate = $event.endDate.toString();
+  }
+
+  openDatePicker() {
+    document.getElementById('d1')?.classList.remove('hidden');
+  }
+
+  closeDatePicker() {
+    document.getElementById('d1')?.classList.add('hidden')
+  }
+
 }
