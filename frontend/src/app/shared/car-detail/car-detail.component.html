@@ -13,7 +13,7 @@
       <!-- Thumbnail Column -->
       <section class="flex flex-row justify-between lg:grid lg:col-span-4 gap-2 lg:gap-4">
         <section *ngFor="let image of carImages; let i = index" (click)="setMainImage(i)"
-          class="cursor-pointer hover:opacity-75 transition-opacity">
+          class="cursor-pointer hover:opacity-75 transition-opacity w-full">
           <img [src]="image" [alt]="'Car thumbnail ' + (i + 1)"
             class="rounded-lg object-cover w-1/5 h-full lg:w-full lg:h-1/5">
         </section>
@@ -88,9 +88,6 @@
           class="border-b border-[#dcdcdd] flex flex-col py-4 gap-4 xl:flex-row xl:justify-between">
           <!-- Profile picture with name -->
           <section class="flex gap-2 items-center lg:w-1/5">
-            <!-- <section class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-              <img [src]="feedback.userImage" [alt]="feedback.userName" class="w-full h-full object-cover">
-            </section> -->
             <section class="flex gap-3 items-center">
               @if(feedback.userImage)
               {
