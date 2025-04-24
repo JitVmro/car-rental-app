@@ -17,8 +17,17 @@
               placeholder="Write your name">
             <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
               class="text-red-500 text-sm mt-1">
-              <div *ngIf="registerForm.get('name')?.errors?.['required']">Name is required</div>
-              <div *ngIf="registerForm.get('name')?.errors?.['pattern']">Only Latin letters are allowed</div>
+              <div *ngIf="registerForm.get('name')?.errors?.['required']">
+                Name is required
+              </div>
+
+              <div *ngIf="registerForm.get('name')?.errors?.['whitespace']">
+                Name can't be empty 
+              </div>
+
+              <div *ngIf="registerForm.get('name')?.errors?.['pattern']">
+                Only Latin letters and spaces are allowed
+              </div>
             </div>
           </div>
 
@@ -42,7 +51,7 @@
           <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
             class="text-red-500 text-sm mt-1">
             <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
-            <div *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email address</div>
+            <div *ngIf="registerForm.get('email')?.errors?.['pattern']">Please enter a valid email address</div>
             <div *ngIf="registerForm.get('email')?.errors?.['alreadyRegistered']">This email is already registered</div>
           </div>
         </div>
