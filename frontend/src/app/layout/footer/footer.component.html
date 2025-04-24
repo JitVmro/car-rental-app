@@ -7,9 +7,9 @@
 
     <!-- Navigation Links -->
     <div class="hidden sm:flex items-center space-x-8">
-        <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Home</a>
-        <a href="#" class=" hover:text-[#CC1D1D] font-normal text-sm">Cars</a>
-        <a href="#" *ngIf="isLoggedIn" class=" hover:text-[#CC1D1D] font-normal text-sm">My bookings</a>
+        <a routerLink="/home" class=" hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Home</a>
+        <a routerLink="/cars" class=" hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Cars</a>
+        <a routerLink="/bookings" *ngIf="isLoggedIn" class=" hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">My bookings</a>
     </div>
 
     <!-- Social Icons -->
