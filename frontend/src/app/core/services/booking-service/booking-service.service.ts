@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Booking, BookingState } from '../../../models/booking.model';
 import { User } from '../../../models/User';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookingServiceService {
-  private bookings: Booking[];
+  private bookingsSubject: BehaviorSubject<Booking[]>;
+  public bookings$: Observable<Booking[]>;
 
   constructor() {
-    this.bookings = [
+    const initialBookings = [
       {
         id: 1,
         user: {
@@ -70,26 +73,45 @@ export class BookingServiceService {
         carname: 'Mahindra XUV300',
         state: BookingState.FinishedService,
       },
-    ];;
-   }
-
-   createBooking(booking:Booking){
-    booking.id = this.bookings.length + 1;
-    this.bookings.push(booking);
+    ];
     
-   }
+    this.bookingsSubject = new BehaviorSubject<Booking[]>(initialBookings);
+    this.bookings$ = this.bookingsSubject.asObservable();
+  }
 
-   getBookings(user:User): Booking[] {
-    console.log("Service Bookings",this.bookings);
-    return this.bookings.filter(booking => booking.user.id === user.id);
-   }
-
-   cancelBooking(bookingId: number): void {
-    this.bookings = this.bookings.filter(booking => booking.id !== bookingId);
-   }
-
-   getAllBookings(): void{
-    console.log(this.bookings);
+  createBooking(booking: Booking) {
+    const currentBookings = this.bookingsSubject.value;
+    booking.id = currentBookings.length + 1;
     
-   }
+    // Create a new array with the new booking
+    const updatedBookings = [...currentBookings, booking];
+    
+    // Emit the new array
+    this.bookingsSubject.next(updatedBookings);
+  }
+
+  getBookings(user: User): Observable<Booking[]> {
+    return this.bookings$.pipe(
+      map(bookings => bookings.filter(booking => booking.user.id === user.id))
+    );
+  }
+
+  cancelBooking(bookingId: number): void {
+    const currentBookings = this.bookingsSubject.value;
+    
+    // Create a new array without the cancelled booking
+    const updatedBookings = currentBookings.map(booking => {
+      if (booking.id === bookingId) {
+        return { ...booking, state: BookingState.Cancelled };
+      }
+      return booking;
+    });
+    
+    // Emit the new array
+    this.bookingsSubject.next(updatedBookings);
+  }
+
+  getAllBookings(): Observable<Booking[]> {
+    return this.bookings$;
+  }
 }

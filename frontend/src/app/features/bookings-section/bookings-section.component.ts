@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BookingsCardComponent } from "../bookings-card/bookings-card.component";
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
 import { Booking, BookingState } from '../../models/booking.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-bookings-section',
@@ -12,57 +13,88 @@ import { User } from '../../models/User';
   templateUrl: './bookings-section.component.html',
   styleUrl: './bookings-section.component.css'
 })
-export class BookingsSectionComponent {
+export class BookingsSectionComponent implements OnInit, OnDestroy {
   
-  bookings:Booking[]=[];
-  userId:User|null;
+  bookings: Booking[] = [];
+  userId: User | null;
   filteredBookings: Booking[] = [];
-
-  constructor(public bookingService:BookingServiceService,private authService:AuthService){
-    this.userId= this.authService.currentUserValue;
-    if(this.userId){
-      this.bookings=this.bookingService.getBookings(this.userId);
-      this.filteredBookings=this.bookings
-    }
-  
-  }
-
-  ngOnInit() {
-    this.userId = this.authService.currentUserValue;
-    if (this.userId) {
-      this.bookings = this.bookingService.getBookings(this.userId);
-    }
-  }
-
+  private bookingsSubscription: Subscription | null = null;
 
   active: number = 0;
   showPopup: boolean = false;
   showFeedback: boolean = false;
   bookingid: number = -1;
+  rating: number = 0;
 
+  constructor(
+    public bookingService: BookingServiceService,
+    private authService: AuthService
+  ) {
+    this.userId = this.authService.currentUserValue;
+  }
+
+  ngOnInit() {
+    this.userId = this.authService.currentUserValue;
+    if (this.userId) {
+      this.bookingsSubscription = this.bookingService.getBookings(this.userId)
+        .subscribe(bookings => {
+          this.bookings = bookings;
+          this.filterBookingsByActiveTab();
+        });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.bookingsSubscription) {
+      this.bookingsSubscription.unsubscribe();
+    }
+  }
+
+  filterBookingsByActiveTab() {
+    switch (this.active) {
+      case 0:
+        this.filteredBookings = this.bookings;
+        break;
+      case 1:
+        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Reserved);
+        break;
+      case 2:
+        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.InProgress);
+        break;
+      case 3:
+        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedService);
+        break;
+      case 4:
+        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedBooking);
+        break;
+      case 5:
+        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Cancelled);
+        break;
+      default:
+        this.filteredBookings = this.bookings;
+    }
+  }
 
   setshowPopup(bookingid: number) {
     this.showPopup = true;
     this.bookingid = bookingid;
   }
 
-  setshowFeedback(){
+  setshowFeedback() {
     this.showFeedback = true;
   }
 
-  HandleViewFeedback(){
+  HandleViewFeedback() {
     console.log("view feedback clicked");
-    
   }
-  HandleEditBooking(){
+  
+  HandleEditBooking() {
     console.log("edit booking clicked");
-    
   }
 
   HandleCancelBooking() {
     this.showPopup = false;
     this.bookingService.cancelBooking(this.bookingid);
-    this.bookingService.getAllBookings();
     console.log("cancel booking clicked");
   }
 
@@ -73,33 +105,12 @@ export class BookingsSectionComponent {
 
   setActive(index: number) {
     this.active = index;
-    if (index === 0) {
-      this.filteredBookings = this.bookings;
-    }
-    
-    if (index === 1) {
-      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Reserved);
-    }
-    if (index === 2) {
-      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.InProgress);
-    }
-    if (index === 3) {
-      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedService);
-    } 
-    if (index === 4) {
-      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedBooking);
-    }
-
-    if (index === 5) {
-      this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Cancelled);
-    }
+    this.filterBookingsByActiveTab();
   }
 
   isActive(index: number) {
     return this.active === index;
   }
-
-  rating: number = 0;
 
   setRating(star: number) {
     this.rating = star;
