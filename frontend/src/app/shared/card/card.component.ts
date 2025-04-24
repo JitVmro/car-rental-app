@@ -3,6 +3,7 @@ import { Car } from '../../models/car.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
+import { AuthService } from '../../core/services/auth/auth-service.service';
 
 @Component({
   selector: 'app-card',
@@ -14,12 +15,19 @@ export class CardComponent {
 
   constructor(
     private router: Router,
-    private carService: CarDetailsService
+    private carService: CarDetailsService,
+    private authService: AuthService
   ) { }
 
   navigateToBookingConfirmation() {
-    this.carService.setSelectedCar(this.car)
-    this.router.navigate(['cars/booking', { id: this.car.carId }])
+    if (this.authService.isLoggedIn()) {
+      this.carService.setSelectedCar(this.car)
+      this.router.navigate(['cars/booking', { id: this.car.carId }])
+    }
+    else{
+      console.log("Please Login");
+      
+    }
   }
 
   selectCar(event: Event) {

@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Car } from '../../models/car.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
+import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
+import { Booking, BookingState } from '../../models/booking.model';
 
 @Component({
   selector: 'app-booking-page',
@@ -51,7 +53,8 @@ export class BookingPageComponent implements OnInit {
   constructor(
     private router: Router,
     private carService: CarDetailsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private bookingService: BookingServiceService
   ) {
 
     this.currentUser = this.authService.currentUserValue
@@ -88,5 +91,27 @@ export class BookingPageComponent implements OnInit {
 
   changeDates() {
     // Implement dates change logic
+  }
+
+  createBooking() {
+    const user = this.authService.currentUserValue
+
+    if (user && this.selectedCar) {
+      const bookingObj: Booking = {
+        id: 100,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        carimg: this.selectedCar?.imageUrl,
+        carname: this.selectedCar.brand + this.selectedCar.model,
+        state: BookingState.Reserved,
+      }
+      this.bookingService.createBooking(bookingObj)
+    } else {
+      console.log("Failed to book")
+    }
   }
 }
