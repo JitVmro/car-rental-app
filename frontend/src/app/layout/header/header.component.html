@@ -24,15 +24,15 @@
 
   <!-- Right Side: Login/User + Icons -->
   <section class="navbar-actions gap-3 min-[900px]:gap-6">
-    <ng-container *ngIf="loggedIn; else guest">
+    <ng-container *ngIf="user; else guest">
       <div class="relative">
         <section class="flex gap-3 items-center cursor-pointer" (click)="toggleProfileMenu()">
-          <img *ngIf="userImage" [src]="user?.image" alt="avatar" class="avatar">
+          <img *ngIf="userImage" [src]="user.image" alt="avatar" class="avatar">
           <div *ngIf="!userImage"
             class="h-[30px] w-[30px] rounded-full flex justify-center items-center bg-teal-500 text-white">{{getName()}}
           </div>
-          <span class="max-[940px]:hidden">Hello, {{ user?.name }} ({{ user?.role }})</span>
-          <span class="max-[428px]:hidden min-[939px]:hidden">{{ user?.name }}</span>
+          <span class="max-[940px]:hidden">Hello, {{ user.name }} ({{ user.role }})</span>
+          <span class="max-[428px]:hidden min-[939px]:hidden">{{ user.name }}</span>
         </section>
 
         <!-- Dropdown menu -->
