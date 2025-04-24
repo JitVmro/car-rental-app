@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { CardComponent } from '../../shared/card/card.component';
 import { Car } from '../../models/car.model';
 import { CarFilterService } from '../../core/services/car-filter.service';
@@ -15,6 +16,12 @@ import { CarDetailComponent } from "../../shared/car-detail/car-detail.component
   imports: [CommonModule, CardComponent]
 })
 export class CardsComponent implements OnInit, OnDestroy {
+  // Reference to the cars container element
+  @ViewChild('carsContainer') carsContainer!: ElementRef;
+  
+  // Input to determine if this is the home page or cars page
+  @Input() isHomePage: boolean = true;
+  
   // All cars in the system
   allCars: Car[] = [];
 
@@ -23,10 +30,10 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // Pagination properties
   currentPage: number = 1;
-  itemsPerPage: number = 16;
+  itemsPerPage: number = 12; // Set to 12 cars per page
   totalPages: number = 1;
   displayedCars: Car[] = [];
-  paginationArray: Array<number | string> = [];
+  paginationArray: number[] = [];
 
   // View state
   showAllCars: boolean = false;
@@ -36,19 +43,20 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   constructor(
     private carFilterService: CarFilterService,
-    private carService: CarDetailsService
+    private carService: CarDetailsService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     // Subscribe to filtered cars from the service
     this.subscription = this.carFilterService.filteredCars$.subscribe(filteredCars => {
       this.allCars = filteredCars;
-      // Update featured cars when filters change (first 4)
+      
+      // Update featured cars (first 4)
       this.featuredCars = this.allCars.slice(0, 4);
 
-      if (this.showAllCars) {
+      if (this.showAllCars || !this.isHomePage) {
         this.calculateTotalPages();
-        this.currentPage = 1;
         this.updateDisplayedCars();
         this.updatePaginationArray();
       }
@@ -75,7 +83,6 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Calculate total pages based on cars array length and items per page
   calculateTotalPages(): void {
     this.totalPages = Math.ceil(this.allCars.length / this.itemsPerPage);
-    console.log(`Total pages: ${this.totalPages}`);
   }
 
   // Update displayed cars based on current page
@@ -83,79 +90,93 @@ export class CardsComponent implements OnInit, OnDestroy {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = Math.min(startIndex + this.itemsPerPage, this.allCars.length);
     this.displayedCars = this.allCars.slice(startIndex, endIndex);
-    console.log(`Displaying cars ${startIndex + 1} to ${endIndex} (${this.displayedCars.length} cars)`);
   }
 
-  // Update the pagination array with numbers and ellipsis
+  // Update the pagination array based on the current page and total pages
   updatePaginationArray(): void {
     this.paginationArray = [];
 
-    if (this.totalPages <= 5) {
-      // If 5 or fewer pages, show all page numbers
+    if (this.totalPages <= 4) {
+      // If 4 or fewer pages, show all page numbers
       for (let i = 1; i <= this.totalPages; i++) {
         this.paginationArray.push(i);
       }
     } else {
-      // Always show first page
-      this.paginationArray.push(1);
-
-      if (this.currentPage > 3) {
-        this.paginationArray.push('...');
-      }
-
-      // Show current page and neighbors
-      for (let i = Math.max(2, this.currentPage - 1); i <= Math.min(this.totalPages - 1, this.currentPage + 1); i++) {
+      // For more than 4 pages, show a window of 4 pages
+      let startPage = Math.max(1, Math.min(this.currentPage - 1, this.totalPages - 3));
+      let endPage = Math.min(startPage + 3, this.totalPages);
+      
+      for (let i = startPage; i <= endPage; i++) {
         this.paginationArray.push(i);
       }
-
-      if (this.currentPage < this.totalPages - 2) {
-        this.paginationArray.push('...');
-      }
-
-      // Always show last page
-      if (this.totalPages > 1) {
-        this.paginationArray.push(this.totalPages);
-      }
     }
+  }
+
+  // Check if we're on the first set of pages
+  isFirstPageSet(): boolean {
+    return this.paginationArray.length > 0 && this.paginationArray[0] === 1;
+  }
+
+  // Check if we're on the last set of pages
+  isLastPageSet(): boolean {
+    return this.paginationArray.length > 0 && 
+           this.paginationArray[this.paginationArray.length - 1] === this.totalPages;
   }
 
   // Handle page number click
-  handlePageClick(item: number | string): void {
-    if (typeof item === 'number') {
-      this.goToPage(item);
+  goToPage(page: number, event?: Event): void {
+    if (event) {
+      event.preventDefault();
     }
-  }
-
-  // Go to specific page
-  goToPage(page: number): void {
+    
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.updateDisplayedCars();
       this.updatePaginationArray();
+      
+      // Scroll to the cars container after a short delay to ensure DOM update
+      setTimeout(() => {
+        if (this.carsContainer) {
+          this.carsContainer.nativeElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+          });
+        }
+      }, 100);
     }
   }
 
-  // Check if the page item is a number (not ellipsis)
-  isNumber(item: number | string): boolean {
-    return typeof item === 'number';
-  }
-
-  // Go to previous page
-  prevPage(): void {
+  // Go to previous page set (when there are more than 4 pages total)
+  prevPageSet(event: Event): void {
+    event.preventDefault();
     if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updateDisplayedCars();
-      this.updatePaginationArray();
+      // Move back by 4 pages in the pagination window
+      const targetPage = Math.max(1, this.paginationArray[0] - 4);
+      this.goToPage(targetPage);
     }
   }
 
-  // Next page
-  nextPage(): void {
+  // Next page set (when there are more than 4 pages total)
+  nextPageSet(event: Event): void {
+    event.preventDefault();
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updateDisplayedCars();
-      this.updatePaginationArray();
+      // Move forward by 4 pages in the pagination window
+      const targetPage = Math.min(this.totalPages, this.paginationArray[this.paginationArray.length - 1] + 1);
+      this.goToPage(targetPage);
     }
+  }
+
+  // Go to next page
+  nextPage(event: Event): void {
+    event.preventDefault();
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  // Navigate to all cars page
+  viewAllCars(): void {
+    this.router.navigate(['/cars']);
   }
 
   // Toggle between home view and all cars view
