@@ -1,6 +1,6 @@
 <section>
   <h3 #carsContainer class="mt-9 text-[22px] text-[#666] flex justify-center min-[689px]:justify-start min-[689px]:ml-8">
-    {{ isHomePage ? '(POPULAR CARS)' : '(ALL CARS)' }}
+    {{ isHomePage ? 'POPULAR CARS' : '' }}
   </h3>
 
   <!-- Cars Grid -->
@@ -9,11 +9,13 @@
            grid-cols-1
            sm:grid-cols-2
            lg:grid-cols-3
-           xl:grid-cols-4"
+           xl:grid-cols-4 2xl:grid-cols-4"
+    style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));"
   >
     <app-card 
       *ngFor="let car of isHomePage ? featuredCars : displayedCars" 
       [car]="car"
+      class="w-full"
     ></app-card>
   </section>
 

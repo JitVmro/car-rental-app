@@ -12,7 +12,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'cars', component: CarsComponent },
   { path: 'bookings', component: BookingsComponent },
-  { path: 'cars/:id', component: BookingPageComponent },
+  { path: 'cars/booking', component: BookingPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },

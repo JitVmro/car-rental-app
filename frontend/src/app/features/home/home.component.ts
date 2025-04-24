@@ -11,10 +11,10 @@ import { MapComponent } from "../map/map.component";
 
 @Component({
   selector: 'app-home',
-  
+
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, CarDetailComponent, MapComponent]
+  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, MapComponent]
 })
 export class HomeComponent {
 
