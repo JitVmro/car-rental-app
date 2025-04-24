@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./register.component.css'],
   imports: [ReactiveFormsModule, CommonModule],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   isSubmitting = false;
   hidePassword = true;
@@ -32,7 +32,13 @@ export class RegisterComponent {
       {
         name: ['', [Validators.required, this.nameValidator]],
         surname: ['', [Validators.pattern(/^[a-zA-Z\s]*$/)]],
-        email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/)]],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/),
+          ],
+        ],
         password: [
           '',
           [
@@ -45,6 +51,16 @@ export class RegisterComponent {
       },
       { validators: this.passwordMatchValidator }
     );
+  }
+  ngOnInit() {
+    // Trigger validation when either password field changes
+    this.registerForm.get('password')?.valueChanges.subscribe(() => {
+      this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+    });
+
+    this.registerForm.get('confirmPassword')?.valueChanges.subscribe(() => {
+      this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+    });
   }
 
   passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
@@ -65,27 +81,45 @@ export class RegisterComponent {
   }
 
   nameValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value ;
-    if(!value)return null;
+    const value = control.value;
+    if (!value) return null;
     if (value.trim().length === 0) {
       return { whitespace: true };
     }
-  
+
     const pattern = /^[a-zA-Z\s]+$/;
     if (!pattern.test(value)) {
       return { pattern: true };
     }
-  
+
     return null;
   }
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
 
+    // Get the confirmPassword control
+    const confirmControl = control.get('confirmPassword');
+
     if (password && confirmPassword && password !== confirmPassword) {
-      control.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+      // Set the error if passwords don't match
+      confirmControl?.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     } else {
+      // Clear the passwordMismatch error if passwords match
+      // but preserve any other errors the confirmPassword field might have
+      if (confirmControl?.errors) {
+        const errors = { ...confirmControl.errors };
+        delete errors['passwordMismatch'];
+
+        // If there are other errors, set them back
+        if (Object.keys(errors).length > 0) {
+          confirmControl.setErrors(errors);
+        } else {
+          // If no other errors, clear errors completely
+          confirmControl.setErrors(null);
+        }
+      }
       return null;
     }
   }
@@ -111,9 +145,9 @@ export class RegisterComponent {
 
     this.authService.register(userData).subscribe({
       next: () => {
-        this.authService.logout(); 
-        this.router.navigate(['/login'], { 
-          queryParams: { registered: 'true', email: userData.email } 
+        this.authService.logout();
+        this.router.navigate(['/login'], {
+          queryParams: { registered: 'true', email: userData.email },
         });
       },
       error: (error) => {
