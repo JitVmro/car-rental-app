@@ -25,6 +25,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   showFeedback: boolean = false;
   bookingid: number = -1;
   rating: number = 0;
+  congo: boolean = true;
 
   constructor(
     public bookingService: BookingServiceService,
@@ -78,6 +79,10 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   setshowPopup(bookingid: number) {
     this.showPopup = true;
     this.bookingid = bookingid;
+  }
+
+  closeCongo(){
+    this.congo = false;
   }
 
   setshowFeedback(bookingid: number) {
