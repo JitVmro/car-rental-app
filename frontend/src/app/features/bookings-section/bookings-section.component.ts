@@ -25,7 +25,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   showFeedback: boolean = false;
   bookingid: number = -1;
   rating: number = 0;
-  congo: boolean = true;
+  congo: boolean = false;
 
   constructor(
     public bookingService: BookingServiceService,
