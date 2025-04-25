@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardComponent } from '../../shared/card/card.component';
 import { Car } from '../../models/car.model';
@@ -20,6 +20,11 @@ export class CardsComponent implements OnInit, OnDestroy {
   
   // Input to determine if this is the home page or cars page
   @Input() isHomePage: boolean = true;
+  @Output() loginPopup: EventEmitter<void> = new EventEmitter<void>();
+
+  handleLoginPopup() {
+    this.loginPopup.emit();
+  }
   
   // All cars in the system
   allCars: Car[] = [];

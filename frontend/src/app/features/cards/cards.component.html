@@ -16,8 +16,12 @@
       *ngFor="let car of isHomePage ? featuredCars : displayedCars" 
       [car]="car"
       class="w-full"
+      (loginPopup)="handleLoginPopup()"
     ></app-card>
   </section>
+
+  
+
 
   <!-- No Results Message -->
   <div *ngIf="(isHomePage && featuredCars.length === 0) || (!isHomePage && displayedCars.length === 0)" 
