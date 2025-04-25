@@ -57,6 +57,7 @@ export class HeaderComponent implements OnInit {
     this.authService.logout();
     this.closeProfileMenu();
     this.router.navigate(['/home']);
+    window.location.reload()
   }
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

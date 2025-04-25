@@ -19,7 +19,7 @@ export class BookingPageComponent implements OnInit {
 
   selectedCar: Car | null = null
   currentUser: User | null;
-
+  
   constructor(
     private router: Router,
     private carService: CarDetailsService,
