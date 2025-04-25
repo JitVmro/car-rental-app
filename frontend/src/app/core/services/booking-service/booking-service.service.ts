@@ -11,6 +11,22 @@ export class BookingServiceService {
   private bookingsSubject: BehaviorSubject<Booking[]>;
   public bookings$: Observable<Booking[]>;
 
+  private singleBookingSubject: BehaviorSubject<Booking>;
+  public singleBooking$: Observable<Booking>;
+
+  currentBooking: Booking = {
+    id: 0,
+    user: {
+      id: '',
+      name: '',
+      email: '',
+      role: ''
+    },
+    carimg: '',
+    carname: '',
+    state: BookingState.FinishedService
+  }
+
   constructor() {
     const initialBookings = [
       {
@@ -74,20 +90,27 @@ export class BookingServiceService {
         state: BookingState.FinishedService,
       },
     ];
-    
+
     this.bookingsSubject = new BehaviorSubject<Booking[]>(initialBookings);
     this.bookings$ = this.bookingsSubject.asObservable();
+
+    this.singleBookingSubject = new BehaviorSubject<Booking>(this.currentBooking);
+    this.singleBooking$ = this.singleBookingSubject.asObservable();
   }
 
   createBooking(booking: Booking) {
     const currentBookings = this.bookingsSubject.value;
-    booking.id = currentBookings.length + 1;
-    
+
     // Create a new array with the new booking
     const updatedBookings = [...currentBookings, booking];
-    
+
     // Emit the new array
     this.bookingsSubject.next(updatedBookings);
+  }
+
+  generateBookingId():number{
+    const currentBookings = this.bookingsSubject.value;
+    return currentBookings.length + 1;
   }
 
   getBookings(user: User): Observable<Booking[]> {
@@ -98,7 +121,7 @@ export class BookingServiceService {
 
   cancelBooking(bookingId: number): void {
     const currentBookings = this.bookingsSubject.value;
-    
+
     // Create a new array without the cancelled booking
     const updatedBookings = currentBookings.map(booking => {
       if (booking.id === bookingId) {
@@ -106,14 +129,14 @@ export class BookingServiceService {
       }
       return booking;
     });
-    
+
     // Emit the new array
     this.bookingsSubject.next(updatedBookings);
   }
 
   completeBooking(bookingId: number): void {
     const currentBookings = this.bookingsSubject.value;
-    
+
     // Create a new array without the cancelled booking
     const updatedBookings = currentBookings.map(booking => {
       if (booking.id === bookingId) {
@@ -121,12 +144,27 @@ export class BookingServiceService {
       }
       return booking;
     });
-    
+
     // Emit the new array
     this.bookingsSubject.next(updatedBookings);
   }
 
   getAllBookings(): Observable<Booking[]> {
     return this.bookings$;
+  }
+
+  getBooking(id: number): Observable<Booking> {
+    const currentBookings = this.bookingsSubject.value;
+    const booking = currentBookings.find((b) => b.id === id);
+    if (booking) {
+      this.singleBookingSubject.next(booking);
+    }
+    return this.singleBooking$;
+  }
+
+  saveBooking(updatedBooking: Booking) {
+    const currentBookings = this.bookingsSubject.value;
+    const bookingIndex = currentBookings.findIndex((b) => b.id === updatedBooking.id)
+    currentBookings[bookingIndex] = updatedBooking;
   }
 }

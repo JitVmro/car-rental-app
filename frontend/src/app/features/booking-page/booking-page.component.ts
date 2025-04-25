@@ -16,36 +16,6 @@ import { Booking, BookingState } from '../../models/booking.model';
   imports: [CommonModule, FormsModule]
 })
 export class BookingPageComponent implements OnInit {
-  bookingData = {
-    personalInfo: {
-      name: 'Anastasiya Dobrota',
-      email: 'dobrota@gmail.com',
-      phone: '+38 111 111 11 11'
-    },
-    location: {
-      pickup: 'Kyiv Hyatt Hotel',
-      dropoff: 'Kyiv Hyatt Hotel'
-    },
-    dates: {
-      pickup: {
-        date: 'November 11',
-        time: '10:00'
-      },
-      dropoff: {
-        date: 'November 16',
-        time: '16:00'
-      }
-    },
-    car: {
-      name: 'Audi A6 Quattro 2023',
-      location: 'Ukraine, Kyiv',
-      image: 'car-images/car 1/Rectangle 42.svg'
-    },
-    payment: {
-      total: 900,
-      deposit: 2000
-    }
-  };
 
   selectedCar: Car | null = null
   currentUser: User | null;
@@ -64,7 +34,6 @@ export class BookingPageComponent implements OnInit {
       if (car) {
         this.selectedCar = car;
       }
-      console.log("SLECTED CAR: ", this.selectedCar)
     })
 
   }
@@ -80,11 +49,6 @@ export class BookingPageComponent implements OnInit {
     }
   }
 
-  confirmReservation() {
-    // Implement reservation logic here
-    console.log('Reservation confirmed', this.bookingData);
-  }
-
   changeLocation() {
     // Implement location change logic
   }
@@ -98,7 +62,7 @@ export class BookingPageComponent implements OnInit {
 
     if (user && this.selectedCar) {
       const bookingObj: Booking = {
-        id: 100,
+        id: this.bookingService.generateBookingId(),
         user: {
           id: user.id,
           name: user.name,
@@ -110,6 +74,7 @@ export class BookingPageComponent implements OnInit {
         state: BookingState.Reserved,
       }
       this.bookingService.createBooking(bookingObj)
+      this.router.navigate(['/bookings/new',{bId: bookingObj.id}])
     } else {
       console.log("Failed to book")
     }

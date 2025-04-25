@@ -6,6 +6,7 @@ import { Booking, BookingState } from '../../models/booking.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-bookings-section',
@@ -14,11 +15,13 @@ import { Subscription } from 'rxjs';
   styleUrl: './bookings-section.component.css'
 })
 export class BookingsSectionComponent implements OnInit, OnDestroy {
-  
+
   bookings: Booking[] = [];
   userId: User | null;
   filteredBookings: Booking[] = [];
+
   private bookingsSubscription: Subscription | null = null;
+  private latestBookingSubscription: Subscription | null = null;
 
   active: number = 0;
   showPopup: boolean = false;
@@ -27,14 +30,39 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   rating: number = 0;
   congo: boolean = false;
 
+  currentBookingID: any;
+  latestBooking!: Booking;
+
   constructor(
     public bookingService: BookingServiceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.userId = this.authService.currentUserValue;
   }
 
   ngOnInit() {
+    this.currentBookingID = this.route.snapshot.paramMap.get('bId');
+    if (this.currentBookingID) {
+      this.latestBookingSubscription = this.bookingService
+        .getBooking(parseInt(this.currentBookingID))
+        .subscribe({
+          next: (value) => {
+            this.latestBooking = value;
+          },
+          error: (error) => {
+            console.error('Error fetching booking:', error);
+          }
+        });
+    }
+
+    this.route.url.subscribe(urlSegments => {
+      if (urlSegments[1].path === "new") {
+        this.congo = true;
+      }
+    });
+
     this.userId = this.authService.currentUserValue;
     if (this.userId) {
       this.bookingsSubscription = this.bookingService.getBookings(this.userId)
@@ -81,7 +109,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.bookingid = bookingid;
   }
 
-  closeCongo(){
+  closeCongo() {
     this.congo = false;
   }
 
@@ -90,11 +118,14 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.showFeedback = true;
   }
 
-  HandleViewFeedback() {
+  HandleViewFeedback(bookingid: number) {
+    this.bookingid = bookingid;
     console.log("view feedback clicked");
   }
-  
-  HandleEditBooking() {
+
+  HandleEditBooking(bookingid: number) {
+    this.bookingid = bookingid;
+    this.router.navigate(['bookings/edit', { bId: this.bookingid }])
     console.log("edit booking clicked");
   }
 
