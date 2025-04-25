@@ -1,8 +1,8 @@
 <div class="relative">
   <!-- Congratulations PopUp! -->
-  <div *ngIf="congo" class="absolute top-0 flex justify-center items-center w-full z-10">
+  <div *ngIf="congo" class="absolute top-0 flex justify-center items-center w-full z-9">
     <section
-      class="flex py-4 px-2   self-center  items-center bg-[#E2FAE7] border border-[#149E32] rounded-sm gap-4 min-[400px]:w-[370px] h-[103px]">
+      class="flex py-4 px-2   self-center  items-center bg-[#E2FAE7] border border-[#149E32] rounded-sm gap-4 w-[300px] min-[400px]:w-[370px] h-[130px] min-[400px]:h-[103px]">
       <figure class="h-full"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <path
@@ -11,7 +11,7 @@
         </svg></figure>
       <section class="flex flex-col gap-2 h-full">
         <h4 class="font-normal text-sm leading-5 ">Congratulations!</h4>
-        <p class="font-normal text-xs leading-4 ">Audi A6 Quattro 2023 is booked for Nov 11 - Nov 16 You can change
+        <p class="font-normal text-xs leading-4 ">{{latestBooking.carname}} is booked for Nov 11 - Nov 16 You can change
           booking details until 10:30 PM 10 Nov.
           Your order: #2437 (06.11.24) </p>
       </section>
@@ -27,7 +27,7 @@
 
 
   <h1
-    class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-9 mb-4">
+    class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-4 mb-4">
     My Bookings</h1>
 
 
@@ -62,7 +62,7 @@
     class="flex flex-col justify-center items-center min-[680px]:grid min-[680px]:grid-cols-2 min-[1035px]:grid-cols-3 min-[1370px]:grid-cols-4 min-[1700px]:grid-cols-5 gap-4 mx-2 my-4 min-[800px]:ml-8">
     <app-bookings-card *ngFor="let booking of filteredBookings" [booking]="booking"
       (showFeedBackEvent)="setshowFeedback($event)" (cancelBookingEvent)="setshowPopup($event)"
-      (viewBookingEvent)="HandleViewFeedback()" (editBookingEvent)="HandleEditBooking()">
+      (viewBookingEvent)="HandleViewFeedback($event)" (editBookingEvent)="HandleEditBooking($event)">
     </app-bookings-card>
   </section>
 

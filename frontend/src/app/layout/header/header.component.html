@@ -77,11 +77,11 @@
 </nav>
 
 <section *ngIf="ham"
-  class="z-10 flex flex-col w-2/3 h-dvh  gap-2 bg-[#f0f0f0] absolute top-16 min-[426px]:top-26 left-0">
-  <a class=" text-lg cursor-pointer p-2" routerLink="/" routerLinkActive="active"
+  class="z-10 flex flex-col w-2/3 h-dvh  gap-2 bg-[#f0f0f0] absolute top-16 min-[426px]:top-21 left-0">
+  <a class=" text-lg cursor-pointer p-2" routerLink="/home" routerLinkActive="active"
     [routerLinkActiveOptions]="{ exact: true }">Home</a>
-  <a class=" text-lg cursor-pointer  p-2" routerLink="/Cars" routerLinkActive="active">Cars</a>
-  <a class=" text-lg cursor-pointer  p-2" *ngIf="loggedIn" routerLink="/Bookings" routerLinkActive="active">My
+  <a class=" text-lg cursor-pointer  p-2" routerLink="/cars" routerLinkActive="active">Cars</a>
+  <a class=" text-lg cursor-pointer  p-2" *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My
     Bookings</a>
 
   <select class="text-lg outline-0 border-0 w-1/4 p-2 ">

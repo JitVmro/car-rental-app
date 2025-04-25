@@ -17,8 +17,8 @@ export class BookingsCardComponent {
   @Input() booking!:Booking;
   @Output() showFeedBackEvent = new EventEmitter<number>();
   @Output() cancelBookingEvent = new EventEmitter<number>();
-  @Output() viewBookingEvent = new EventEmitter<void>();
-  @Output() editBookingEvent = new EventEmitter<void>();
+  @Output() viewBookingEvent = new EventEmitter<number>();
+  @Output() editBookingEvent = new EventEmitter<number>();
 
   onshowFeedBackEvent() {
     this.showFeedBackEvent.emit(this.booking.id);
@@ -29,10 +29,10 @@ export class BookingsCardComponent {
   }
 
   onViewBookingEvent() {
-    this.viewBookingEvent.emit();
+    this.viewBookingEvent.emit(this.booking.id);
   }
   onEditBookingEvent() {
-    this.editBookingEvent.emit();
+    this.editBookingEvent.emit(this.booking.id);
   }
   
 
