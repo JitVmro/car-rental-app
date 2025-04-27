@@ -22,7 +22,7 @@ export class CardComponent {
   navigateToBookingConfirmation() {
     if (this.authService.isLoggedIn()) {
       this.carService.setSelectedCar(this.car)
-      this.router.navigate(['cars/booking', { id: this.car.carId }])
+      this.router.navigate(['cars/booking', { carId: this.car.carId }])
     }
     else{
       console.log("Please Login");

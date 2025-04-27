@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./date-picker.component.css']
 })
 export class DatePickerComponent implements OnInit {
-  @Output() dateRangeSelected = new EventEmitter<{ startDate: Date, endDate: Date }>();
+  @Output() dateRangeSelected = new EventEmitter<{ startDate: Date, endDate: Date, startTime: string, endTime: string }>();
 
   months = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
@@ -25,8 +25,8 @@ export class DatePickerComponent implements OnInit {
   calendar1: Date[][] = [];
   calendar2: Date[][] = [];
 
-  pickupTime: string = '07:00 AM';
-  dropoffTime: string = '10:30 AM';
+  pickupTime: string = '';
+  dropoffTime: string = '';
 
   ngOnInit(): void {
     this.generateCalendars();
@@ -54,7 +54,7 @@ export class DatePickerComponent implements OnInit {
       days.push(new Date(date));
     }
 
-    const remainingDays = 42 - days.length;
+    const remainingDays = 35 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       const date = new Date(lastDay);
       date.setDate(date.getDate() + i);
@@ -80,11 +80,26 @@ export class DatePickerComponent implements OnInit {
       } else {
         this.selectedEndDate = date;
       }
+      if (this.pickupTime === '' || this.dropoffTime === '') {
+        console.log("Pckup or dropoff time not selected");
+      }
+      else {
+        this.handleDateTimeChanges()
+      }
+    }
+  }
+
+  handleDateTimeChanges() {
+    if (this.selectedStartDate && this.selectedEndDate && this.pickupTime !== '' && this.dropoffTime !== '') {
       this.dateRangeSelected.emit({
         startDate: this.selectedStartDate,
-        endDate: this.selectedEndDate!
+        endDate: this.selectedEndDate,
+        startTime: this.pickupTime,
+        endTime: this.dropoffTime,
       });
     }
+    console.log("Change happened: ", this.selectedStartDate, this.selectedEndDate, this.pickupTime, this.dropoffTime);
+
   }
 
   isSelected(date: Date): boolean {

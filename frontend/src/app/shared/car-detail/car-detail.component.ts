@@ -77,9 +77,9 @@ export class CarDetailComponent implements OnInit {
   ];
 
   selectedImageIndex: number = 0;
-  startDate: string = '' + Date.now();
-  endDate: string = '' + Date.now();
-  totalPrice: number = 0;
+  startDate: Date = new Date();
+  endDate: Date = new Date();
+  pricePerDay: number = 0;
   sortOrder: string = 'newest';
   carImages!: string[];
   carFeatures: CarFeature[] = []
@@ -89,6 +89,8 @@ export class CarDetailComponent implements OnInit {
   currentPaginatedFeedBackArray: Feedback[] = this.feedbacks.slice(0, 0 + this.itemsPerPage);
 
   selectedCar: Car | null = null
+  startTime!: string;
+  endTime!: string;
 
   constructor(
     private router: Router,
@@ -122,7 +124,7 @@ export class CarDetailComponent implements OnInit {
       ];
       this.carImages = this.selectedCar.images;
       this.selectedImageIndex = 0; // Reset image index when car changes
-      this.totalPrice = parseFloat(this.selectedCar.pricePerDay); // Set initial price
+      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay); // Set initial price
     }
   }
 
@@ -132,10 +134,9 @@ export class CarDetailComponent implements OnInit {
 
   calculatePrice(): void {
     if (this.startDate && this.endDate && this.selectedCar) {
-      this.totalPrice = parseFloat(this.selectedCar.pricePerDay);
+      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay);
     } else if (this.selectedCar) {
-      this.totalPrice = parseFloat(this.selectedCar.pricePerDay);
-
+      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay);
     }
   }
 
@@ -143,7 +144,24 @@ export class CarDetailComponent implements OnInit {
     if (!this.startDate || !this.endDate) return false;
     const start = new Date(this.startDate);
     const end = new Date(this.endDate);
-    return start < end && start >= new Date();
+    const pick = this.startTime
+    const drop = this.endTime
+    console.log(pick, drop)
+    if (drop > pick) {
+      if (start <= end && start.getDate() >= new Date().getDate() && start.getMonth() === new Date().getMonth()) {
+        return true;
+      }
+      else if (start <= end && start.getMonth() > new Date().getMonth()) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+
   }
 
   bookCar(): void {
@@ -154,7 +172,9 @@ export class CarDetailComponent implements OnInit {
           carId: this.selectedCar.carId,
           startDate: this.startDate,
           endDate: this.endDate,
-          totalPrice: this.totalPrice
+          startTime: this.startTime,
+          endTime: this.endTime,
+          pricePerDay: this.pricePerDay
         });
     }
   }
@@ -177,7 +197,7 @@ export class CarDetailComponent implements OnInit {
   goToConfirmationPage() {
     if (this.authService.isLoggedIn()) {
       if (this.selectedCar)
-        this.router.navigate(['/cars/booking', { id: this.selectedCar.carId }])
+        this.router.navigate(['/cars/booking', { carId: this.selectedCar.carId }])
     }
     else {
       document.getElementById('loginAlert')?.classList.remove('hidden')
@@ -236,11 +256,11 @@ export class CarDetailComponent implements OnInit {
     return (feedBackUserName.charAt(0)?.toUpperCase() ?? '')
   }
 
-  onDateRangeSelected($event: { startDate: Date; endDate: Date; }) {
-    this.startDate = $event.startDate.toString();
-    this.endDate = $event.endDate.toString();
-    console.log(this.startDate, this.endDate);
-
+  onDateRangeSelected(event: { startDate: Date; endDate: Date; startTime: string; endTime: string }) {
+    this.startDate = event.startDate;
+    this.endDate = event.endDate;
+    this.startTime = event.startTime;
+    this.endTime = event.endTime;
   }
 
   openDatePicker() {

@@ -1,4 +1,4 @@
-<div class="w-full rounded-lg shadow-md p-3 md:p-6 bg-[#fffbf3]">
+<div class="w-full md:w-[600px] rounded-lg shadow-sm p-3 md:p-6 bg-[#fffbf3]">
   <!-- Month Navigation -->
   <div class="flex md:justify-between items-center mb-6">
     <button (click)="previousMonth()" class="p-2 hover:bg-gray-100 rounded-full">
@@ -6,7 +6,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
-    <div class="flex gap-16">
+    <div class="w-full flex justify-around">
       <span class="text-lg font-medium">
         {{ months[currentMonth.getMonth()] }} {{ currentMonth.getFullYear() }}
       </span>
@@ -24,7 +24,7 @@
   <div class="flex flex-col md:flex-row gap-8">
     <!-- First Month Calendar -->
     <div class="w-full md:w-[320px]">
-      <div class="grid grid-cols-7 gap-3">
+      <div class="grid grid-cols-7 h-full space-y-[3px]">
         <!-- Weekdays -->
         <div *ngFor="let day of weekDays" class="h-8 flex items-center justify-center text-sm text-gray-500">
           {{ day }}
@@ -33,10 +33,11 @@
         <!-- Days -->
         <ng-container *ngFor="let week of calendar1">
           <div *ngFor="let date of week" (click)="selectDate(date)"
-            class="h-8 flex items-center justify-center text-sm cursor-pointer relative"
+            class="w-full h-9 flex items-center justify-center text-sm cursor-pointer relative"
             [class.text-gray-400]="date.getMonth() !== currentMonth.getMonth()"
             [class.bg-black]="isStartDate(date) || isEndDate(date)"
             [class.text-white]="isStartDate(date) || isEndDate(date)"
+            [class.rounded-full]="isStartDate(date) || isEndDate(date)"
             [class.bg-gray-200]="isSelected(date) && !isStartDate(date) && !isEndDate(date)">
             {{ date.getDate() }}
           </div>
@@ -46,7 +47,7 @@
 
     <!-- Second Month Calendar -->
     <div class="w-full md:w-[320px]">
-      <div class="grid grid-cols-7 gap-3">
+      <div class="grid grid-cols-7 h-full space-y-[3px]">
         <!-- Weekdays -->
         <div *ngFor="let day of weekDays" class="h-8 flex items-center justify-center text-sm text-gray-500">
           {{ day }}
@@ -55,10 +56,11 @@
         <!-- Days -->
         <ng-container *ngFor="let week of calendar2">
           <div *ngFor="let date of week" (click)="selectDate(date)"
-            class="h-8 flex items-center justify-center text-sm cursor-pointer relative"
+            class=" h-10 flex items-center justify-center text-sm cursor-pointer relative"
             [class.text-gray-400]="date.getMonth() !== nextMonth.getMonth()"
             [class.bg-black]="isStartDate(date) || isEndDate(date)"
             [class.text-white]="isStartDate(date) || isEndDate(date)"
+            [class.rounded-full]="isStartDate(date) || isEndDate(date)"
             [class.bg-gray-200]="isSelected(date) && !isStartDate(date) && !isEndDate(date)">
             {{ date.getDate() }}
           </div>
@@ -71,12 +73,12 @@
   <div class="mt-6 flex flex-col md:flex-row gap-1">
     <div class="flex-1">
       <label class="block text-sm text-gray-600 mb-2">Pick-up time</label>
-      <input type="time" [(ngModel)]="pickupTime" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+      <input type="time" [(ngModel)]="pickupTime" class="w-full px-4 py-2 border border-gray-300 rounded-md" (change)="handleDateTimeChanges()">
     </div>
 
     <div class="flex-1">
       <label class="block text-sm text-gray-600 mb-2">Drop-off time</label>
-      <input type="time" [(ngModel)]="dropoffTime" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+      <input type="time" [(ngModel)]="dropoffTime" class="w-full px-4 py-2 border border-gray-300 rounded-md" (change)="handleDateTimeChanges()">
     </div>
   </div>
 </div>

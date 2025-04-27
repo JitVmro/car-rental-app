@@ -24,11 +24,15 @@ export class BookingServiceService {
     },
     carimg: '',
     carname: '',
-    state: BookingState.FinishedService
+    state: BookingState.FinishedService,
+    startDate: new Date(),
+    endDate: new Date(),
+    startTime: '',
+    endTime: '',
   }
 
   constructor() {
-    const initialBookings = [
+    const initialBookings: Booking[] = [
       {
         id: 1,
         user: {
@@ -40,6 +44,10 @@ export class BookingServiceService {
         carimg: 'images/honda_city.jpg',
         carname: 'Honda City',
         state: BookingState.Reserved,
+        startDate: new Date(),
+        endDate: new Date(),
+        startTime: '',
+        endTime: '',
       },
       {
         id: 2,
@@ -52,6 +60,10 @@ export class BookingServiceService {
         carimg: 'images/hyundai_creta.jpg',
         carname: 'Hyundai Creta',
         state: BookingState.InProgress,
+        startDate: new Date(),
+        endDate: new Date(),
+        startTime: '',
+        endTime: '',
       },
       {
         id: 3,
@@ -64,6 +76,10 @@ export class BookingServiceService {
         carimg: 'images/maruti_brezza.jpg',
         carname: 'Maruti Brezza',
         state: BookingState.FinishedBooking,
+        startDate: new Date(),
+        endDate: new Date(),
+        startTime: '',
+        endTime: '',
       },
       {
         id: 4,
@@ -76,6 +92,10 @@ export class BookingServiceService {
         carimg: 'images/tata_nexon.jpg',
         carname: 'Tata Nexon',
         state: BookingState.Cancelled,
+        startDate: new Date(),
+        endDate: new Date(),
+        startTime: '',
+        endTime: '',
       },
       {
         id: 5,
@@ -88,6 +108,10 @@ export class BookingServiceService {
         carimg: 'images/mahindra_xuv300.jpg',
         carname: 'Mahindra XUV300',
         state: BookingState.FinishedService,
+        startDate: new Date(),
+        endDate: new Date(),
+        startTime: '',
+        endTime: '',
       },
     ];
 
@@ -108,7 +132,7 @@ export class BookingServiceService {
     this.bookingsSubject.next(updatedBookings);
   }
 
-  generateBookingId():number{
+  generateBookingId(): number {
     const currentBookings = this.bookingsSubject.value;
     return currentBookings.length + 1;
   }

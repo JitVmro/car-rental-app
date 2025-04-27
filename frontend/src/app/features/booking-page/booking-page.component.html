@@ -2,7 +2,9 @@
   <!-- Breadcrumb -->
   <div class="flex items-center gap-2 text-sm mb-6">
     <a href="/all-cars" class="text-gray-500">Cars</a>
-    <span class="text-gray-500">></span>
+    <span class="text-gray-500">
+      <img src="shared-icons/chevron-right-light.svg" alt=">">
+    </span>
     <span class="text-gray-900">Car booking</span>
   </div>
 
@@ -47,24 +49,44 @@
       <!-- Dates & Time Section -->
       <div>
         <h2 class="text-[24px] font-semibold mb-4">Dates & Time</h2>
-        <div class="p-4 border border-gray-200 rounded-lg">
+        <div class="p-4 border border-gray-200 rounded-lg" (click)="toggleDatePicker()">
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <div>
-                <p class="text-sm text-gray-500">Pick-up date & Time</p>
-                <p class="font-medium">November 11 | 10:00</p>
+                <p class="text-[12px] text-gray-500">Pick-up date & Time</p>
+                <p class="text-[18px] flex items-center gap-2">
+                  {{startDate | date: "MMMM dd"}}
+                  <span class="text-gray-500 text-xs">|</span>
+                  @if(startTime){
+                  {{startTime}}
+                  }
+                  @else {
+                  {{"Pickup Time"}}
+                  }
+                </p>
               </div>
               <button class="text-gray-600 hover:text-gray-800">Change</button>
             </div>
             <div class="flex justify-between items-center">
               <div>
-                <p class="text-sm text-gray-500">Drop-off date & Time</p>
-                <p class="font-medium">November 16 | 16:00</p>
+                <p class="text-[12px] text-gray-500">Drop-off date & Time</p>
+                <p class="text-[18px] flex items-center gap-2">{{endDate | date: "MMMM dd" }} <span
+                    class="text-gray-500 text-xs">|</span>
+                  @if(endTime){
+                  {{endTime}}
+                  }
+                  @else {
+                  {{"Dropoff Time"}}
+                  }
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      @if(datePickerDisplayStatus){
+      <app-date-picker (dateRangeSelected)="onDateRangeSelected($event)"></app-date-picker>
+      }
     </div>
 
     <!-- Right Column - Car Details -->
@@ -83,7 +105,9 @@
             </div>
             <p class="text-sm text-gray-500 mb-4">Deposit: $ 2000</p>
 
-            <button class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors" (click)="createBooking()">
+            <button
+              class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400"
+              (click)="createBooking()" [disabled]="!isValidBooking()">
               Confirm reservation
             </button>
           </div>
