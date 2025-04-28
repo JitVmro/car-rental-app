@@ -6,7 +6,7 @@ import { Car } from '../../models/car.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
-import { Booking, BookingState } from '../../models/booking.model';
+import { Booking, BookingState,Location } from '../../models/booking.model';
 import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
 import { CarFilterService } from '../../core/services/car-filter.service';
 
@@ -81,6 +81,8 @@ export class BookingPageComponent implements OnInit {
         endDate: this.endDate,
         startTime: this.startTime,
         endTime: this.endTime,
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       }
       this.bookingService.createBooking(bookingObj)
       this.router.navigate(['/bookings/new', { bId: bookingObj.id }])
