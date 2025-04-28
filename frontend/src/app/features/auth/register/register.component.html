@@ -5,28 +5,29 @@
 
   <div class="w-full md:w-1/2 flex items-center justify-center px-6 py-8 overflow-y-auto">
     <div class="w-full max-w-md">
-      <h1 class="text-3xl font-bold mb-1 text-center">Create an account</h1>
+      <h1 class="text-[42px] font-bold mb-1 text-center">Create an account</h1>
       <p class="text-gray-600 mb-8 text-center">Enter your details below to get started</p>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+        <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1">
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input type="text" id="name" formControlName="name"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Write your name">
-            <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
-              class="text-red-500 text-sm mt-1">
-              <div *ngIf="registerForm.get('name')?.errors?.['required']">
-                Name is required
-              </div>
-
-              <div *ngIf="registerForm.get('name')?.errors?.['whitespace']">
-                Name can't be empty 
-              </div>
-
-              <div *ngIf="registerForm.get('name')?.errors?.['pattern']">
-                Only Latin letters and spaces are allowed
+            <!-- Error message with opacity transition -->
+            <div class="h-5 mt-1">
+              <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+                class="text-red-500 text-sm">
+                <div *ngIf="registerForm.get('name')?.errors?.['required']">
+                  Name is required
+                </div>
+                <div *ngIf="registerForm.get('name')?.errors?.['whitespace']">
+                  Name can't be empty
+                </div>
+                <div *ngIf="registerForm.get('name')?.errors?.['pattern']">
+                  Only Latin letters and spaces are allowed
+                </div>
               </div>
             </div>
           </div>
@@ -36,28 +37,34 @@
             <input type="text" id="surname" formControlName="surname"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Write your surname">
-            <div *ngIf="registerForm.get('surname')?.invalid && registerForm.get('surname')?.touched"
-              class="text-red-500 text-sm mt-1">
-              <div *ngIf="registerForm.get('surname')?.errors?.['pattern']">Only Latin letters are allowed</div>
+            <!-- Error message with opacity transition -->
+            <div class="h-5 mt-1">
+              <div *ngIf="registerForm.get('surname')?.invalid && registerForm.get('surname')?.touched"
+                class="text-red-500 text-sm">
+                <div *ngIf="registerForm.get('surname')?.errors?.['pattern']">Only Latin letters are allowed</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-1">
           <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input type="email" id="email" formControlName="email"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
             placeholder="Write your email">
-          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-            class="text-red-500 text-sm mt-1">
-            <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
-            <div *ngIf="registerForm.get('email')?.errors?.['pattern']">Please enter a valid email address</div>
-            <div *ngIf="registerForm.get('email')?.errors?.['alreadyRegistered']">This email is already registered</div>
+          <!-- Error message with opacity transition -->
+          <div class="h-5 mt-1">
+            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+              class="text-red-500 text-sm">
+              <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
+              <div *ngIf="registerForm.get('email')?.errors?.['pattern']">Please enter a valid email address</div>
+              <div *ngIf="registerForm.get('email')?.errors?.['alreadyRegistered']">This email is already registered</div>
+            </div>
           </div>
         </div>
 
         <!-- Password field -->
-        <div class="mb-4">
+        <div class="">
           <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
           <div class="relative">
             <input [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password"
@@ -83,30 +90,32 @@
             </button>
           </div>
           <div class="text-xs text-gray-500 mt-1">Minimum 8 characters with at least 1 capital letter and 1 digit</div>
-          <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
-            class="text-red-500 text-sm mt-1">
-            <div *ngIf="registerForm.get('password')?.errors?.['required']">
-              Password is required
-            </div>
-            <div
-              *ngIf="!registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.errors?.['minlength']">
-              Password must be at least 8 characters
-            </div>
-            <div
-              *ngIf="!registerForm.get('password')?.errors?.['required'] && !registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.errors?.['passwordStrength']">
-              <div *ngIf="!registerForm.get('password')?.errors?.['passwordStrength'].hasUpperCase">
-                Password should contain at least one capital letter
+          <!-- Error message with opacity transition -->
+          <div class="h-5 mt-1">
+            <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+              class="text-red-500 text-sm">
+              <div *ngIf="registerForm.get('password')?.errors?.['required']">
+                Password is required
               </div>
-              <div *ngIf="!registerForm.get('password')?.errors?.['passwordStrength'].hasDigit">
-                Password should contain at least one digit
+              <div
+                *ngIf="!registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.errors?.['minlength']">
+                Password must be at least 8 characters
+              </div>
+              <div
+                *ngIf="!registerForm.get('password')?.errors?.['required'] && !registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.errors?.['passwordStrength']">
+                <div *ngIf="!registerForm.get('password')?.errors?.['passwordStrength'].hasUpperCase">
+                  Password should contain at least one capital letter
+                </div>
+                <div *ngIf="!registerForm.get('password')?.errors?.['passwordStrength'].hasDigit">
+                  Password should contain at least one digit
+                </div>
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- Confirm Password field -->
-        <div class="mb-6">
+        <div class="mb-4">
           <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
           <div class="relative">
             <input [type]="hideConfirmPassword ? 'password' : 'text'" id="confirmPassword"
@@ -132,21 +141,24 @@
               </svg>
             </button>
           </div>
-          <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
-            class="text-red-500 text-sm mt-1">
-            <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</div>
-            <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords should match</div>
+          <!-- Error message with opacity transition -->
+          <div class="h-5 mt-1">
+            <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+              class="text-red-500 text-sm">
+              <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</div>
+              <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords should match</div>
+            </div>
           </div>
         </div>
 
         <!-- Buttons -->
         <div class="flex gap-4 mb-6">
           <button type="button" (click)="onCancel()"
-            class="flex-1 border border-gray-300 bg-white text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+            class="flex-1 border border-gray-300 bg-[#FFFBF3] text-gray-700 py-2 px-4 rounded-4xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
             Cancel
           </button>
           <button type="submit" [disabled]="isSubmitting"
-            class="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50">
+            class="flex-1 bg-red-600 text-white py-2 px-4 rounded-4xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50">
             <span *ngIf="isSubmitting" class="inline-block animate-spin mr-2">&#8635;</span>
             Register
           </button>
