@@ -18,29 +18,29 @@ interface Location{
 export class MapComponent {
   locations:Location[] = [
     {
-      name: 'Kyiv Hyatt Hotel',
+      name: 'Kyiv Ukraine',
       address: '5, Ally Tarasovoyi st',
-      image: 'assets/img/map1.png'
+      image: 'assets/img/map6.png'
     },
     {
-      name: 'Kyiv Fairmont',
-      address: '2, Naberezhno-Khreshchatytska',
-      image: 'assets/img/map2.png'
+      name: 'Odesa Ukraine',
+      address: 'Serednya St',
+      image: 'assets/img/map7.png'
     },
     {
-      name: 'Kyiv Premier Palace',
-      address: '3, Tarasa Shevchenko Blvd',
-      image: 'assets/img/map3.png'
+      name: 'Lviv Ukraine',
+      address: 'Stefanya St, 5',
+      image: 'assets/img/map8.png'
     },
     {
-      name: 'Kyiv Premier Palace',
-      address: '3, Tarasa Shevchenko Blvd',
-      image: 'assets/img/map4.png'
+      name: 'Dnipro Ukraine',
+      address: 'Troitska St, 5',
+      image: 'assets/img/map9.png'
     },
     {
-      name: 'Kyiv Premier Palace',
-      address: '3, Tarasa Shevchenko Blvd',
-      image: 'assets/img/map2.png'
+      name: 'Kharkiv Ukraine',
+      address: 'Akademika Pavlova',
+      image: 'assets/img/map10.png'
     }
   ];
 
