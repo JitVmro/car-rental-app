@@ -1,4 +1,4 @@
-<article class="flex flex-col p-3 w-[320px] sm:w-[332px] bg-[#F0F0F0] rounded-lg items-start relative">
+<article class="flex flex-col p-3 w-[320px] sm:w-[332px] bg-[#F0F0F0] rounded-lg items-start relative h-[360px]">
 
     <!-- Status Indicator -->
      <section 
@@ -11,12 +11,12 @@
         <span *ngSwitchCase="'Cancelled'" class="text-[#E22D0D]">Cancelled</span>
      </section>
 
-    <img src="car-images/car 1/Rectangle 39.svg" alt="car" class="w-[300px] mb-4 rounded-s-md">
+    <img [src]=booking.carimg alt="car" class="w-[300px] mb-4 rounded-s-md object-cover h-[159px] ">
 
     <!-- Headings Section -->
     <section class="flex flex-col items-start mb-4">
         <h1 class="font-normal text-lg leading-6">{{booking.carname}}</h1>
-        <p class="font-normal text-sm leading-5">Order: #{{booking.id}} (06.11.24)</p>
+        <p class="font-normal text-sm leading-5">Order: #{{booking.id}} {{booking.startDate | date: "dd MMMM YYYY"}} - {{booking.endDate | date: "dd MMMM YYYY"}}</p>
     </section>
 
     <!-- Buttons Section -->
