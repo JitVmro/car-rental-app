@@ -165,4 +165,16 @@ export class CarBookingEditComponent implements OnInit {
   toggleDatePicker() {
     this.datePickerDisplayStatus = !this.datePickerDisplayStatus;
   }
+
+  updateBooking() {
+    this.currentBookingInfo.startDate = this.startDate;
+    this.currentBookingInfo.endDate = this.endDate;
+    this.currentBookingInfo.startTime = this.startTime;
+    this.currentBookingInfo.endTime = this.endTime;
+
+    this.bookingService.saveBooking(this.currentBookingInfo);
+    this.router.navigate(["/bookings"]);
+  }
+
+
 }
