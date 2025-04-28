@@ -8,7 +8,7 @@ import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { Booking } from '../../models/booking.model';
+import { Booking, Location } from '../../models/booking.model';
 import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
 
 @Component({
@@ -24,11 +24,15 @@ export class CarBookingEditComponent implements OnInit {
   daysCaluclated: number = 0;
   currentBookingID!: string | null;
   currentBookingInfo!: Booking;
+  showLocationPopup: boolean = false;
 
   startTime!: string;
   endTime!: string;
   startDate!: Date;
   endDate!: Date;
+  Location!: Location;
+  pickuplocation!: Location;
+  droplocation!: Location;
 
   datePickerDisplayStatus: boolean = false;
 
@@ -166,15 +170,56 @@ export class CarBookingEditComponent implements OnInit {
     this.datePickerDisplayStatus = !this.datePickerDisplayStatus;
   }
 
+  onPickupChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const index = selectElement.selectedIndex;
+    this.selectPickupLocation(index);
+  }
+
+  onDropChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const index = selectElement.selectedIndex;
+    this.selectDropLocation(index);
+  }
+
+  toggleLocationDrop(){
+    this.showLocationPopup = true;
+  }
+
+  selectPickupLocation(index: number) {
+    switch (index) {
+      case 0: this.pickuplocation = Location.Kyiv; break;
+      case 1: this.pickuplocation = Location.Lviv; break;
+      case 2: this.pickuplocation = Location.Odesa; break;
+      case 3: this.pickuplocation = Location.Kharkiv; break;
+      case 4: this.pickuplocation = Location.Dnipro; break;
+    }
+  }
+  selectDropLocation(index: number) {
+    switch (index) {
+      case 0: this.droplocation = Location.Kyiv; break;
+      case 1: this.droplocation = Location.Lviv; break;
+      case 2: this.droplocation = Location.Odesa; break;
+      case 3: this.droplocation = Location.Kharkiv; break;
+      case 4: this.droplocation = Location.Dnipro; break;
+    }
+  }
+
+
   updateBooking() {
     this.currentBookingInfo.startDate = this.startDate;
     this.currentBookingInfo.endDate = this.endDate;
     this.currentBookingInfo.startTime = this.startTime;
     this.currentBookingInfo.endTime = this.endTime;
+    this.currentBookingInfo.pickuplocation = this.pickuplocation;
+    this.currentBookingInfo.droplocation = this.droplocation;
+
 
     this.bookingService.saveBooking(this.currentBookingInfo);
     this.router.navigate(["/bookings"]);
   }
+
+
 
 
 }

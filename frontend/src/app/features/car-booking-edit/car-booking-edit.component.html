@@ -9,6 +9,10 @@
     <!-- Main Title -->
     <h1 class="text-[56px] font-bold mb-8">Booking modification</h1>
 
+
+
+
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Left Column - Form Section -->
         <div class="space-y-8">
@@ -32,7 +36,7 @@
                                 <p class="text-sm text-gray-500">Pick-up location</p>
                                 <p class="font-medium">{{selectedCar?.location}}</p>
                             </div>
-                            <button class="text-gray-600 hover:text-gray-800">Change</button>
+                            <button (click)="toggleLocationDrop()" class="text-gray-600 hover:text-gray-800">Change</button>
                         </div>
                         <div class="flex justify-between items-center">
                             <div>
@@ -41,7 +45,35 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Location Popup -->
+                    <section class="flex" *ngIf="showLocationPopup">
+                        <section class="p-4 w-[300px]">
+                            <select
+                                class="inline-blockblock w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                (change)="onPickupChange($event)">
+                                <option>Kyiv</option>
+                                <option>Lviv</option>
+                                <option>Odesa</option>
+                                <option>Dniper</option>
+                                <option>Kharkhiv</option>
+                            </select>
+                        </section>
+
+                        <section class="p-4 w-[300px]">
+                            <select
+                                class="inline-block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                (change)="onDropChange($event)">
+                                <option>Kyiv</option>
+                                <option>Lviv</option>
+                                <option>Odesa</option>
+                                <option>Dniper</option>
+                                <option>Kharkhiv</option>
+                            </select>
+                        </section>
+                    </section>
                 </div>
+
+
             </div>
 
             <!-- Dates & Time Section -->
@@ -90,8 +122,7 @@
         <!-- Right Column - Car Details -->
         <div class="mt-13">
             <div class="bg-[#F0F0F0] rounded-lg overflow-hidden p-4">
-                <img [src]="'car-images/car 1/Rectangle 42.svg'" alt="Audi A6 Quattro"
-                    class="w-full object-cover rounded-lg">
+                <img [src]="currentBookingInfo.carimg" alt="Audi A6 Quattro" class="w-full object-cover rounded-lg">
                 <div class="p-4">
                     <h3 class="text-xl font-semibold">{{currentBookingInfo.carname}}</h3>
                     <p class="text-gray-500">{{selectedCar?.location}}</p>
@@ -106,8 +137,7 @@
 
                         <button
                             class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400"
-                            [disabled]="!isValidSave()"
-                            (click)="updateBooking()">
+                            [disabled]="!isValidSave()" (click)="updateBooking()">
                             Save
                         </button>
                     </div>
