@@ -82,11 +82,13 @@
         <!-- Date Selection -->
         <section class="grid grid-cols-2 gap-4 p-4 rounded-[8px] content-center border border-black h-min relative">
           <section class="flex justify-between col-span-2 gap-4">
-            <section class="w-1/2 flex justify-around border rounded-lg py-2" (click)="openDatePicker()">
+            <section class="w-1/2 flex justify-around border border-[#dcdcdd] rounded-lg py-2"
+              (click)="openDatePicker()">
               <span>{{startDate | date: "MMMM dd" }}</span>
               <img src="shared-icons/dropdownarrow.svg" alt="">
             </section>
-            <section class="w-1/2 flex justify-around border rounded-lg py-2" (click)="openDatePicker()">
+            <section class="w-1/2 flex justify-around border border-[#dcdcdd] rounded-lg py-2"
+              (click)="openDatePicker()">
               <span>{{endDate | date: "MMMM dd"}}</span>
               <img src="shared-icons/dropdownarrow.svg" alt="">
             </section>
@@ -95,7 +97,6 @@
             </section>
           </section>
         </section>
-
 
         <!-- Book Button -->
         <button (click)="goToConfirmationPage()" [disabled]="!isValidBooking()"
