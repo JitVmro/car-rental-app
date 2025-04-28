@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Booking, BookingState } from '../../../models/booking.model';
+import { Booking, BookingState,Location } from '../../../models/booking.model';
 import { User } from '../../../models/User';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -29,6 +29,8 @@ export class BookingServiceService {
     endDate: new Date(),
     startTime: '',
     endTime: '',
+    pickuplocation: Location.Kyiv,
+    droplocation: Location.Kyiv
   }
 
   constructor() {
@@ -48,6 +50,8 @@ export class BookingServiceService {
         endDate: new Date(),
         startTime: '',
         endTime: '',
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       },
       {
         id: 2,
@@ -64,6 +68,8 @@ export class BookingServiceService {
         endDate: new Date(),
         startTime: '',
         endTime: '',
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       },
       {
         id: 3,
@@ -80,6 +86,8 @@ export class BookingServiceService {
         endDate: new Date(),
         startTime: '',
         endTime: '',
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       },
       {
         id: 4,
@@ -96,6 +104,8 @@ export class BookingServiceService {
         endDate: new Date(),
         startTime: '',
         endTime: '',
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       },
       {
         id: 5,
@@ -112,6 +122,8 @@ export class BookingServiceService {
         endDate: new Date(),
         startTime: '',
         endTime: '',
+        pickuplocation: Location.Kyiv,
+        droplocation: Location.Kyiv
       },
     ];
 

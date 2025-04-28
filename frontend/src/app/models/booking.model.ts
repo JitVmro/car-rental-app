@@ -18,4 +18,14 @@ export interface Booking {
   endDate: Date;
   startTime: string;
   endTime: string;
+  pickuplocation: Location;
+  droplocation: Location;
+}
+
+export enum Location{
+  Kyiv = 'Ukraine, Kyiv',
+  Lviv = 'Ukraine, Lviv',
+  Odesa = 'Ukraine, Odesa',
+  Kharkiv = 'Ukraine, Kharkiv',
+  Dnipro = 'Ukraine, Dnipro',
 }
