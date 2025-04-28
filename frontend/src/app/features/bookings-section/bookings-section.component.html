@@ -11,9 +11,9 @@
         </svg></figure>
       <section class="flex flex-col gap-2 h-full">
         <h4 class="font-normal text-sm leading-5 ">Congratulations!</h4>
-        <p class="font-normal text-xs leading-4 ">{{latestBooking.carname}} is booked for Nov 11 - Nov 16 You can change
-          booking details until 10:30 PM 10 Nov.
-          Your order: #2437 (06.11.24) </p>
+        <p class="font-normal text-xs leading-4 "><strong>{{latestBooking.carname}}</strong> is booked for {{latestBooking.startDate | date: "dd MMMM YYYY"}} - {{latestBooking.endDate | date: "dd MMMM YYYY"}} You can change
+          booking details until {{latestBooking.startDate | date: "dd MMMM YYYY"}}.
+          Your order: #{{latestBooking.id}} {{latestBooking.startDate | date: "dd MMMM YYYY"}} </p>
       </section>
 
       <span (click)="closeCongo()" class="h-full top-0.5 "><svg width="11" height="11" viewBox="0 0 11 11" fill="none"
