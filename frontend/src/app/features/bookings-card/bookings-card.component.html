@@ -15,7 +15,8 @@
 
     <!-- Headings Section -->
     <section class="flex flex-col items-start mb-4">
-        <h1 class="font-normal text-lg leading-6">{{booking.carname}}</h1>
+        <h1 class="font-normal text-lg leading-6">{{booking.carname}} </h1>
+        
         <p class="font-normal text-sm leading-5">Order: #{{booking.id}} {{booking.startDate | date: "dd MMMM YYYY"}} - {{booking.endDate | date: "dd MMMM YYYY"}}</p>
     </section>
 
@@ -36,11 +37,11 @@
 
         <button *ngIf="booking.state === 'FinishedService'"
             (click)="onshowFeedBackEvent()"
-            class="cursor-pointer px-[52.5px] py-2 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full  rounded-4xl">LeaveFeedBack</button>
+            class="cursor-pointer px-[52.5px] py-2 bg-[rgb(204,29,29)] text-white hover:bg-[rgb(244,29,29)] w-full  rounded-4xl">Leave Feedback</button>
 
         <button *ngIf="booking.state === 'FinishedBooking'"
             (click)="onViewBookingEvent()"
-            class="cursor-pointer px-[52.5px] py-2 border-1 w-full border-black hover:text-white hover:bg-black rounded-4xl">ViewFeedBack</button>
+            class="cursor-pointer px-[52.5px] py-2 border-1 w-full border-black hover:text-white hover:bg-black rounded-4xl">View Feedback</button>
     </section>
 
 

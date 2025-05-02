@@ -25,6 +25,10 @@ export class BookingPageComponent implements OnInit {
   endDate!: Date;
   startTime!: string;
   endTime!: string;
+  Location!: Location;
+  pickuplocation!: Location;
+  droplocation!: Location;
+  showLocationPopup: boolean = false;
 
   datePickerDisplayStatus: boolean = false;
   currentCarID: string | null = null;
@@ -81,8 +85,9 @@ export class BookingPageComponent implements OnInit {
         endDate: this.endDate,
         startTime: this.startTime,
         endTime: this.endTime,
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
+        pickuplocation: this.pickuplocation,
+        droplocation: this.droplocation,
+
       }
       this.bookingService.createBooking(bookingObj)
       this.router.navigate(['/bookings/new', { bId: bookingObj.id }])
@@ -166,5 +171,40 @@ export class BookingPageComponent implements OnInit {
     const start = this.startDate.getFullYear() + this.startDate.getMonth() + this.startDate.getDate();
     const end = this.endDate.getFullYear() + this.endDate.getMonth() + this.endDate.getDate();
     return end - start;
+  }
+
+  onPickupChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const index = selectElement.selectedIndex;
+    this.selectPickupLocation(index);
+  }
+
+  onDropChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const index = selectElement.selectedIndex;
+    this.selectDropLocation(index);
+  }
+
+  toggleLocationDrop(){
+    this.showLocationPopup = true;
+  }
+
+  selectPickupLocation(index: number) {
+    switch (index) {
+      case 0: this.pickuplocation = Location.Kyiv; break;
+      case 1: this.pickuplocation = Location.Lviv; break;
+      case 2: this.pickuplocation = Location.Odesa; break;
+      case 3: this.pickuplocation = Location.Kharkiv; break;
+      case 4: this.pickuplocation = Location.Dnipro; break;
+    }
+  }
+  selectDropLocation(index: number) {
+    switch (index) {
+      case 0: this.droplocation = Location.Kyiv; break;
+      case 1: this.droplocation = Location.Lviv; break;
+      case 2: this.droplocation = Location.Odesa; break;
+      case 3: this.droplocation = Location.Kharkiv; break;
+      case 4: this.droplocation = Location.Dnipro; break;
+    }
   }
 }
