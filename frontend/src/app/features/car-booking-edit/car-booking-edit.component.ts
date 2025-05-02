@@ -9,12 +9,12 @@ import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Booking } from '../../models/booking.model';
-import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
+// import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
 
 @Component({
   standalone: true,
   selector: 'app-car-booking-edit',
-  imports: [CommonModule, FormsModule, DatePickerComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './car-booking-edit.component.html',
   styleUrl: './car-booking-edit.component.css'
 })

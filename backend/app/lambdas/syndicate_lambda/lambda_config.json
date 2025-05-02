@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "name": "syndicate_lambda",
+  "func_name": "lambdas/syndicate_lambda/index.handler",
+  "resource_type": "lambda",
+  "iam_role_name": "syndicate_lambda-role",
+  "runtime": "nodejs20.x",
+  "memory": 128,
+  "timeout": 100,
+  "lambda_path": "lambdas\\syndicate_lambda",
+  "dependencies": [],
+  "event_sources": [],
+  "env_variables": {
+    "MONGO_URI":"mongodb+srv://swapnajit:qoverflow@cluster0.cu405ai.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+    "JWT_SECRET":"jwt_secret_8f7a9e2c5b3d1f6e4a7d0c9b2e5f8a1d3c6b9e2f5a8d1c4b7e0f3a6c9d2b5e8"
+  },
+  "publish_version": true,
+  "alias": "${lambdas_alias_name}",
+  "url_config": {},
+  "ephemeral_storage": 512,
+  "tags": {}
+}

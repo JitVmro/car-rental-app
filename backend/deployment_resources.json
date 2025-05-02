@@ -1,0 +1,360 @@
+{
+  "lambda-basic-execution": {
+    "policy_content": {
+      "Statement": [
+        {
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:PutItem",
+            "dynamodb:Batch*",
+            "dynamodb:DeleteItem",
+            "ssm:PutParameter",
+            "ssm:GetParameter",
+            "kms:Decrypt"
+          ],
+          "Effect": "Allow",
+          "Resource": "*"
+        }
+      ],
+      "Version": "2012-10-17"
+    },
+    "resource_type": "iam_policy",
+    "tags": {}
+  },
+  "PracticeApi": {
+    "resource_type": "api_gateway",
+    "deploy_stage": "dev",
+    "dependencies": [],
+    "resources": {
+      "/auth/sign-in": {
+        "enable_cors": true,
+        "POST": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/auth/sign-up": {
+        "enable_cors": true,
+        "POST": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/cars": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/cars/{carId}": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/cars/{carId}/booked-days": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/cars/{carId}/client-review": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/cars/popular": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/bookings": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        },
+        "POST": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/bookings/{userId}": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/feedbacks": {
+        "enable_cors": true,
+        "POST": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/feedbacks/recent": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/home/about-us": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/home/faq": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/home/locations": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/reports": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/reports/{extension}": {
+        "enable_cors": true,
+        "POST": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/users/{id}/change-password": {
+        "enable_cors": true,
+        "PUT": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/users/{id}/personal-info": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        },
+        "PUT": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/users/agents": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      },
+      "/users/clients": {
+        "enable_cors": true,
+        "GET": {
+          "enable_proxy": true,
+          "authorization_type": "NONE",
+          "integration_type": "lambda",
+          "lambda_name": "syndicate_lambda",
+          "api_key_required": false,
+          "method_request_parameters": {},
+          "integration_request_body_template": {},
+          "responses": [],
+          "integration_responses": [],
+          "default_error_pattern": true
+        }
+      }
+    },
+    "tags": {}
+  }
+}
