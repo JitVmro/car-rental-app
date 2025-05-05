@@ -1,13 +1,14 @@
 <h3 class="mt-9 mb-4 text-[2rem] font-semibold text-[#000] mx-2 md:mx-4 my-4">Our
     Locations</h3>
+    
 <section class="flex flex-col md:mx-1 lg:mx-8 lg:flex-row items-center lg:items-start max-sm:h-screen">
     <section id="Menu" class="flex flex-col lg:w-1/4 w-full lg:mr-2">
         <article *ngFor="let locn of locations;let i = index" (click)="selectLocation(i)" [ngClass]="{
             'bg-black text-white' : i === selectedIndex,
             'hover:bg-gray-200': i!== selectedIndex }" class="flex flex-col justify-between items-start md:gap-2 md:px-4 px-2 md:py-3 py-1 border-b border-b-[#DCDCDD] lg:rounded-sm cursor-pointer transition-all 2s ease-in-out">
-            <h1 class="text-[12px] md:text-md lg:text-lg l:text-2xl font-medium leading-8">{{locn.name}}</h1>
-            <p class="text-[#666] font-normal text-[8px] md:text-sm lg:text-md xl:text-lg leading-6" [ngClass]="{'text-white':i===selectedIndex}">{{locn.address}}</p>
+            <h1 class="text-[12px] md:text-md lg:text-lg l:text-2xl font-medium leading-8">{{locn.locationName}}</h1>
+            <p class="text-[#666] font-normal text-[8px] md:text-sm lg:text-md xl:text-lg leading-6" [ngClass]="{'text-white':i===selectedIndex}">{{locn.locationAddress}}</p>
         </article>
     </section>
-    <img [src]="selectedLocation.image" [alt]="selectedLocation.name" class="lg:w-3/4 w-full object-cover h-[576px]">
+    <img [src]="selectedLocation.locationImageUrl" [alt]="selectedLocation.locationName" class="lg:w-3/4 w-full object-cover h-[576px]">
 </section>

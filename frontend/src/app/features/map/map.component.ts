@@ -1,47 +1,78 @@
 import { NgClass, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
+import { HttpClientModule,HttpClient } from '@angular/common/http';
 
 interface Location{
-  name:string;
-  address:string;
-  image:string;
+  locationId:string;
+  locationName:string;
+  locationAddress:string;
+  locationImageUrl:string;
 }
 
 @Component({
   selector: 'app-map',
-  imports: [NgFor,NgClass],
+  imports: [NgFor,NgClass,HttpClientModule ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.css',
 })
 
 
 export class MapComponent {
+
+  readonly mapsUrl='https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/home/locations';
+  constructor(private http: HttpClient) {}
+
+  apiData: any = null;
+
+  getLocations() {
+    this.http.get(this.mapsUrl).subscribe({
+      next: (data) => {
+        this.apiData = data;
+        this.locations=this.apiData.content // ✅ Now this logs the actual data from the API
+        console.log(this.locations);
+      },
+      error: (error) => {
+        console.error('Error fetching data:', error);
+      }
+    });
+  }
+  
+  ngOnInit() {
+    this.getLocations();
+    
+  }
+
   locations:Location[] = [
-    {
-      name: 'Kyiv Ukraine',
-      address: '5, Ally Tarasovoyi st',
-      image: 'assets/img/map6.png'
-    },
-    {
-      name: 'Odesa Ukraine',
-      address: 'Serednya St',
-      image: 'assets/img/map7.png'
-    },
-    {
-      name: 'Lviv Ukraine',
-      address: 'Stefanya St, 5',
-      image: 'assets/img/map8.png'
-    },
-    {
-      name: 'Dnipro Ukraine',
-      address: 'Troitska St, 5',
-      image: 'assets/img/map9.png'
-    },
-    {
-      name: 'Kharkiv Ukraine',
-      address: 'Akademika Pavlova',
-      image: 'assets/img/map10.png'
-    }
+    // {
+    //   loactionName: 'Kyiv Ukraine',
+    //   locationAddress: '5, Ally Tarasovoyi st',
+    //   locationlmageUrl: 'assets/img/map6.png',
+    //   locationId: '1'
+    // },
+    // {
+    //   loactionName: 'Odesa Ukraine',
+    //   locationAddress: 'Serednya St',
+    //   locationlmageUrl: 'assets/img/map7.png',
+    //   locationId: '2'
+    // },
+    // {
+    //   loactionName: 'Lviv Ukraine',
+    //   locationAddress: 'Stefanya St, 5',
+    //   locationlmageUrl: 'assets/img/map8.png',
+    //   locationId: '3'
+    // },
+    // {
+    //   loactionName: 'Dnipro Ukraine',
+    //   locationAddress: 'Troitska St, 5',
+    //   locationlmageUrl: 'assets/img/map9.png',
+    //   locationId: '4'
+    // },
+    // {
+    //   loactionName: 'Kharkiv Ukraine',
+    //   locationAddress: 'Akademika Pavlova',
+    //   locationlmageUrl: 'assets/img/map10.png',
+    //   locationId: '5'
+    // }
   ];
 
   selectedIndex = 0;
@@ -55,6 +86,6 @@ export class MapComponent {
   }
 
   get imgUrl():string {
-    return this.selectedLocation.image;
+    return this.selectedLocation.locationImageUrl;
 }
 }

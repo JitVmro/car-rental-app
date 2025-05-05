@@ -5,12 +5,17 @@ import { BookingServiceService } from '../../core/services/booking-service/booki
 import { Booking, BookingState } from '../../models/booking.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Feedback } from '../../models/feedback';
+import { bookingFeedback } from '../../models/bookingFeedback';
+import { HttpClient,HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-bookings-section',
-  imports: [CommonModule, BookingsCardComponent],
+  imports: [CommonModule, BookingsCardComponent, FormsModule,HttpClientModule],
   templateUrl: './bookings-section.component.html',
   styleUrl: './bookings-section.component.css'
 })
@@ -27,17 +32,28 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   showPopup: boolean = false;
   showFeedback: boolean = false;
   bookingid: number = -1;
+  bookingName:string = '';
   rating: number = 0;
   congo: boolean = false;
+  reviewText: string = '';
+
+  currentFeedback:bookingFeedback = {
+    bookingId: '',
+    clientId: '',
+    carId: '',
+    feedbackText: '',
+    rating: 0,}
 
   currentBookingID: any;
   latestBooking!: Booking;
+  createFeedbackUrl = 'https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/feedbacks';
 
   constructor(
     public bookingService: BookingServiceService,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) {
     this.userId = this.authService.currentUserValue;
   }
@@ -116,6 +132,8 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   setshowFeedback(bookingid: number) {
     this.bookingid = bookingid;
     this.showFeedback = true;
+    this.bookingService.getBookingCarName(bookingid).subscribe(carname => this.bookingName = carname);
+    console.log(this.bookingName);
   }
 
   HandleViewFeedback(bookingid: number) {
@@ -138,7 +156,16 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   HandleFeedbackSubmit() {
     this.showFeedback = false;
     this.bookingService.completeBooking(this.bookingid);
-    console.log("feedback submitted");
+    this.currentFeedback.bookingId = this.bookingid.toString();
+    this.currentFeedback.clientId = this.userId?.id.toString() ?? '';
+    this.currentFeedback.carId = this.bookingName;
+    this.currentFeedback.feedbackText = this.reviewText;
+    this.currentFeedback.rating = this.rating;
+    console.log(this.currentFeedback);
+
+    this.http.post(this.createFeedbackUrl, this.currentFeedback).subscribe(response => {console.log(response);});
+
+
   }
 
   setActive(index: number) {
@@ -151,6 +178,9 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   }
 
   setRating(star: number) {
+    console.log(star);
     this.rating = star;
   }
+
+
 }

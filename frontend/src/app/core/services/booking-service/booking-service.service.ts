@@ -203,4 +203,17 @@ export class BookingServiceService {
     const bookingIndex = currentBookings.findIndex((b) => b.id === updatedBooking.id)
     currentBookings[bookingIndex] = updatedBooking;
   }
+
+  getBookingCarName(bookingId: number): Observable<string> {
+    return this.bookings$.pipe(
+      map(bookings => {
+        const booking = bookings.find(b => b.id === bookingId);
+        return booking?.carname ?? 'Unknown Booking';
+      })
+    );
+  }
+  
+  
 }
+
+
