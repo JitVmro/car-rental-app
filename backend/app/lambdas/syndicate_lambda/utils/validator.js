@@ -40,7 +40,7 @@ const schemas = {
   // Auth schemas
   signUp: Joi.object({
     firstName: Joi.string().required().min(2).max(50),
-    lastName: Joi.string().required().min(2).max(50),
+    lastName: Joi.string().required().min(1).max(50),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(8).max(100),
     phone: Joi.string().pattern(/^\+?[0-9]{10,15}$/).optional(),

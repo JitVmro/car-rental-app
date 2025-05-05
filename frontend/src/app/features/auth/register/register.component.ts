@@ -52,13 +52,10 @@ export class RegisterComponent implements OnInit {
       { validators: this.passwordMatchValidator }
     );
   }
-  ngOnInit() {
-    // Trigger validation when either password field changes
-    this.registerForm.get('password')?.valueChanges.subscribe(() => {
-      this.registerForm.get('confirmPassword')?.updateValueAndValidity();
-    });
 
-    this.registerForm.get('confirmPassword')?.valueChanges.subscribe(() => {
+  ngOnInit() {
+    // Only need to revalidate confirmPassword when password changes
+    this.registerForm.get('password')?.valueChanges.subscribe(() => {
       this.registerForm.get('confirmPassword')?.updateValueAndValidity();
     });
   }
@@ -71,8 +68,8 @@ export class RegisterComponent implements OnInit {
     if (!hasUpperCase || !hasDigit) {
       return {
         passwordStrength: {
-          hasUpperCase: hasUpperCase,
-          hasDigit: hasDigit,
+          hasUpperCase,
+          hasDigit,
         },
       };
     }
@@ -94,34 +91,14 @@ export class RegisterComponent implements OnInit {
 
     return null;
   }
+
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
 
-    // Get the confirmPassword control
-    const confirmControl = control.get('confirmPassword');
-
-    if (password && confirmPassword && password !== confirmPassword) {
-      // Set the error if passwords don't match
-      confirmControl?.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    } else {
-      // Clear the passwordMismatch error if passwords match
-      // but preserve any other errors the confirmPassword field might have
-      if (confirmControl?.errors) {
-        const errors = { ...confirmControl.errors };
-        delete errors['passwordMismatch'];
-
-        // If there are other errors, set them back
-        if (Object.keys(errors).length > 0) {
-          confirmControl.setErrors(errors);
-        } else {
-          // If no other errors, clear errors completely
-          confirmControl.setErrors(null);
-        }
-      }
-      return null;
-    }
+    return password && confirmPassword && password !== confirmPassword
+      ? { passwordMismatch: true }
+      : null;
   }
 
   onSubmit(): void {
@@ -151,10 +128,12 @@ export class RegisterComponent implements OnInit {
         });
       },
       error: (error) => {
-        if (error.message === 'Email already registered') {
-          this.registerForm
-            .get('email')
-            ?.setErrors({ alreadyRegistered: true });
+        console.log(error);
+        if (
+          error?.status === 409 &&
+          error?.error?.message === 'User with this email already exists'
+        ) {
+          this.registerForm.get('email')?.setErrors({ alreadyRegistered: true });
         }
         this.isSubmitting = false;
       },
@@ -175,6 +154,7 @@ export class RegisterComponent implements OnInit {
       this.hideConfirmPassword = !this.hideConfirmPassword;
     }
   }
+
   navigateToLogin(): void {
     this.router.navigate(['/login']);
   }
