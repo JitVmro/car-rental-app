@@ -9,6 +9,7 @@ import { CarDetailComponent } from "../../shared/car-detail/car-detail.component
 import { MapComponent } from "../map/map.component";
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { CommonModule } from '@angular/common';
 
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, MapComponent,CommonModule]
+  imports: [CarFilterComponent, CardsComponent, AboutUsComponent, ReviewSliderComponent, FaqComponent, MapComponent,CommonModule,HttpClientModule]
 })
 export class HomeComponent {
   constructor(private router:Router) {  

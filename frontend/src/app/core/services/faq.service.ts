@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { FAQ } from '../../models/faq.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { FAQ, FaqApiResponse } from '../../models/faq.model';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FaqService {
-  private faqs: FAQ[] = [
+  private apiUrl = 'https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/home/faq';
+  
+  // Default FAQs as fallback
+  private defaultFaqs: FAQ[] = [
     {
       question: 'What documents do I need to rent a car?',
       answer: 'To rent a car, you will need a valid driver\'s license, a credit card in your name, and a government-issued photo ID (such as a passport or national ID). International renters may also need to present an International Driving Permit (IDP) in addition to their home country driver\'s license.',
@@ -34,12 +39,60 @@ export class FaqService {
     }
   ];
 
-  private faqsSubject = new BehaviorSubject<FAQ[]>(this.faqs);
+  private faqs: FAQ[] = [];
+  private faqsSubject = new BehaviorSubject<FAQ[]>([]);
+  private isLoadingSubject = new BehaviorSubject<boolean>(true);
+  private errorSubject = new BehaviorSubject<string | null>(null);
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getFaqs(): Observable<FAQ[]> {
+    // If we haven't loaded FAQs yet, fetch them
+    if (this.faqs.length === 0) {
+      this.fetchFaqs();
+    }
     return this.faqsSubject.asObservable();
+  }
+
+  getIsLoading(): Observable<boolean> {
+    return this.isLoadingSubject.asObservable();
+  }
+
+  getError(): Observable<string | null> {
+    return this.errorSubject.asObservable();
+  }
+
+  fetchFaqs(): void {
+    this.isLoadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    this.http.get<FaqApiResponse>(this.apiUrl)
+      .pipe(
+        map(response => {
+          // Transform API response to our FAQ model with isOpen property
+          if (response && response.faqs && response.faqs.length > 0) {
+            return response.faqs.map((faq, index) => ({
+              ...faq,
+              isOpen: index === 0 // Open the first FAQ by default
+            }));
+          } else {
+            // If API returns empty data, use default FAQs
+            return this.defaultFaqs;
+          }
+        }),
+        catchError(error => {
+          console.error('Error fetching FAQs:', error);
+          this.errorSubject.next('Failed to load FAQs. Using default questions instead.');
+          return of(this.defaultFaqs);
+        })
+      )
+      .subscribe(
+        faqs => {
+          this.faqs = faqs;
+          this.faqsSubject.next(this.faqs);
+          this.isLoadingSubject.next(false);
+        }
+      );
   }
 
   toggleFaq(index: number): void {
@@ -50,5 +103,10 @@ export class FaqService {
       return faq;
     });
     this.faqsSubject.next(this.faqs);
+  }
+
+  // Method to refresh FAQs from API (useful for testing)
+  refreshFaqs(): void {
+    this.fetchFaqs();
   }
 }
