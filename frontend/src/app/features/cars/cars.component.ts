@@ -9,15 +9,16 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cars',
-  imports: [CarFilterComponent, CardsComponent, CarDetailComponent,CommonModule],
+  imports: [CarFilterComponent, CardsComponent, CarDetailComponent, CommonModule],
   templateUrl: './cars.component.html',
   styleUrl: './cars.component.css'
 })
 export class CarsComponent {
-  constructor(private router:Router) {  
+  constructor(private router: Router) {
   }
 
   loginPopup: boolean = false;
+  
   handleLoginPopup() {
     this.loginPopup = true;
   }
