@@ -58,7 +58,8 @@
               class="text-red-500 text-sm">
               <div *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</div>
               <div *ngIf="registerForm.get('email')?.errors?.['pattern']">Please enter a valid email address</div>
-              <div *ngIf="registerForm.get('email')?.errors?.['alreadyRegistered']">This email is already registered</div>
+              <div *ngIf="registerForm.get('email')?.errors?.['alreadyRegistered']">This email is already registered
+              </div>
             </div>
           </div>
         </div>
@@ -143,11 +144,15 @@
           </div>
           <!-- Error message with opacity transition -->
           <div class="h-5 mt-1">
-            <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
-              class="text-red-500 text-sm">
-              <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</div>
-              <div *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords should match</div>
+            <div class="text-red-500 text-sm" *ngIf="registerForm.get('confirmPassword')?.touched">
+              <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">
+                Please confirm your password
+              </div>
+              <div *ngIf="registerForm.hasError('passwordMismatch')">
+                Passwords should match
+              </div>
             </div>
+
           </div>
         </div>
 

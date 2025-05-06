@@ -1,47 +1,34 @@
 <h3 class="mt-9 mb-4 text-[2rem] font-semibold text-[#000] mx-2 md:mx-4 my-4">About Us</h3>
 <section class="flex flex-col md:mx-1 lg:mx-8 lg:flex-row items-start bg-[#fdfbf5] py-8 md:py-12">
-  <!-- Left Column: Full Background Image (No Text) -->
-  <section id="AboutUsImage" class="w-full lg:w-2/5 mb-6 lg:mb-0 px-4 md:px-6 lg:px-0">
-    <div class="h-[250px] sm:h-[300px] md:h-[350px] lg:h-full lg:min-h-[500px] bg-cover bg-center rounded-2xl " 
-         style="background-image: url('/assets/images/car-rental-rafiki.png');">
-    </div>
-  </section>
-  <!-- Right Column: Stats Grid -->
-  <div class="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-y-8 md:gap-y-12 gap-x-6 md:gap-x-10 px-4 md:px-6 lg:px-8">
-    <!-- Years -->
-    <div class="flex flex-col">
-      <h3 class="text-xl md:text-2xl font-normal text-black mb-1 md:mb-2">years</h3>
-      <p class="text-4xl md:text-5xl font-light mb-2 md:mb-3">15</p>
-      <p class="text-gray-700 text-xs md:text-sm leading-relaxed">
-        in car rentals highlights a steadfast commitment to excellence, marked by a track record of trust and satisfaction among thousands of clients worldwide
-      </p>
-    </div>
-
-    <!-- Locations -->
-    <div class="flex flex-col">
-      <h3 class="text-xl md:text-2xl font-normal text-black mb-1 md:mb-2">locations</h3>
-      <p class="text-4xl md:text-5xl font-light mb-2 md:mb-3">6</p>
-      <p class="text-gray-700 text-xs md:text-sm leading-relaxed">
-        we make car rentals accessible and convenient for customers no matter where their travels take them, ensuring quality service and easy access
-      </p>
-    </div>
-
-    <!-- Car Brands -->
-    <div class="flex flex-col">
-      <h3 class="text-xl md:text-2xl font-normal text-black mb-1 md:mb-2">car brands</h3>
-      <p class="text-4xl md:text-5xl font-light mb-2 md:mb-3">25</p>
-      <p class="text-gray-700 text-xs md:text-sm leading-relaxed">
-        we cater to every kind of traveler, from business professionals to families and adventure seekers, ensuring the perfect vehicle is always available
-      </p>
-    </div>
-
-    <!-- Cars -->
-    <div class="flex flex-col">
-      <h3 class="text-xl md:text-2xl font-normal text-black mb-1 md:mb-2">cars</h3>
-      <p class="text-4xl md:text-5xl font-light mb-2 md:mb-3">100+</p>
-      <p class="text-gray-700 text-xs md:text-sm leading-relaxed">
-        we cater to every kind of traveler, from business professionals to families and adventure seekers, ensuring the perfect vehicle is always available
-      </p>
-    </div>
+  <!-- Loading state -->
+  <div *ngIf="loading" class="w-full text-center py-12">
+    <p>Loading about us information...</p>
   </div>
+  
+  <!-- Error state -->
+  <div *ngIf="error" class="w-full text-center py-12 text-red-600">
+    <p>{{ error }}</p>
+  </div>
+  
+  <!-- Content when loaded -->
+  <ng-container *ngIf="!loading && !error">
+    <!-- Left Column: Full Background Image (No Text) -->
+    <section id="AboutUsImage" class="w-full lg:w-2/5 mb-6 lg:mb-0 px-4 md:px-6 lg:px-0">
+      <div class="h-[250px] sm:h-[300px] md:h-[350px] lg:h-full lg:min-h-[500px] bg-cover bg-center rounded-2xl" 
+           [style.background-image]="'url(' + imageUrl + ')'">
+      </div>
+    </section>
+    
+    <!-- Right Column: Stats Grid -->
+    <div class="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-y-8 md:gap-y-12 gap-x-6 md:gap-x-10 px-4 md:px-6 lg:px-8">
+      <!-- Dynamic Stats -->
+      <div class="flex flex-col" *ngFor="let stat of stats">
+        <h3 class="text-xl md:text-2xl font-normal text-black mb-1 md:mb-2">{{ stat.title }}</h3>
+        <p class="text-4xl md:text-5xl font-light mb-2 md:mb-3">{{ stat.numericValue }}</p>
+        <p class="text-gray-700 text-xs md:text-sm leading-relaxed">
+          {{ stat.description }}
+        </p>
+      </div>
+    </div>
+  </ng-container>
 </section>

@@ -12,10 +12,20 @@ import { FAQ } from '../../models/faq.model';
 })
 export class FaqComponent implements OnInit {
   faqs: FAQ[] = [];
+  isLoading: boolean = true;
+  error: string | null = null;
   
   constructor(private faqService: FaqService) {}
   
   ngOnInit(): void {
+    this.faqService.getIsLoading().subscribe(loading => {
+      this.isLoading = loading;
+    });
+    
+    this.faqService.getError().subscribe(error => {
+      this.error = error;
+    });
+    
     this.faqService.getFaqs().subscribe(faqs => {
       this.faqs = faqs;
     });
@@ -23,5 +33,9 @@ export class FaqComponent implements OnInit {
   
   toggleFaq(index: number): void {
     this.faqService.toggleFaq(index);
+  }
+  
+  refreshFaqs(): void {
+    this.faqService.refreshFaqs();
   }
 }

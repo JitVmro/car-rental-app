@@ -40,7 +40,7 @@ const schemas = {
   // Auth schemas
   signUp: Joi.object({
     firstName: Joi.string().required().min(2).max(50),
-    lastName: Joi.string().required().min(2).max(50),
+    lastName: Joi.string().required().min(1).max(50),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(8).max(100),
     phone: Joi.string().pattern(/^\+?[0-9]{10,15}$/).optional(),
@@ -56,12 +56,14 @@ const schemas = {
 
   // User schemas
   updateUser: Joi.object({
-    firstName: Joi.string().min(2).max(50).optional(),
-    lastName: Joi.string().min(2).max(50).optional(),
-    phone: Joi.string().pattern(/^\+?[0-9]{10,15}$/).optional(),
-    country: Joi.string().optional(),
-    city: Joi.string().optional(),
-    password: Joi.string().min(8).max(100).optional()
+    firstName: Joi.string().min(2).max(50).optional().allow(''),
+    lastName: Joi.string().min(2).max(50).optional().allow(''),
+    phone: Joi.string().pattern(/^\+?[0-9]{10,15}$/).allow('').optional(),
+    country: Joi.string().allow('').optional(),
+    city: Joi.string().allow('').optional(),
+    street: Joi.string().allow('').optional(),
+    postalCode: Joi.string().allow('').optional(),
+    imageUrl: Joi.string().uri().allow('').optional()
   }),
 
   // Car schemas
@@ -270,9 +272,6 @@ const schemas = {
         'string.min': 'Password must be at least 8 characters long',
         'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       }),
-    confirmPassword: Joi.string().valid(Joi.ref('newPassword')).required().messages({
-      'any.only': 'Passwords do not match'
-    }),
   })
 };
 

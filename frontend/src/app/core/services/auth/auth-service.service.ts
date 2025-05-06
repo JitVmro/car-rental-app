@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map, catchError, tap } from 'rxjs/operators';
 import { User } from '../../../models/User';
-
-
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../environment/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,39 +11,51 @@ import { User } from '../../../models/User';
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  
+  // API base URL - replace with your actual API URL
+  private apiUrl = environment.apiUrl;
+  // Token storage key
+  private tokenKey = 'auth_token';
 
-  private users: User[] = [
-    { id: '1', name: 'Demo', email: 'dobrota@gmail.com',role:'client' },
-  ];
+  constructor(private http: HttpClient) {
+    // Load user from localStorage on service initialization
+    this.loadStoredUser();
+  }
 
-  private userPasswords: Record<string, string> = {
-    'dobrota@gmail.com': 'Password123',
-  };
-
-  constructor() {
+  private loadStoredUser(): void {
     const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
+    const storedToken = localStorage.getItem(this.tokenKey);
+    
+    if (storedUser && storedToken) {
       this.currentUserSubject.next(JSON.parse(storedUser));
     }
   }
 
   login(credentials: { email: string; password: string }): Observable<User> {
-    const user = this.users.find((u) => u.email === credentials.email);
-
-    if (
-      user &&
-      this.userPasswords[credentials.email] === credentials.password
-    ) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      this.currentUserSubject.next(user);
-      console.log(this.users);
-
-      return of(user).pipe(delay(800));
-    }
-
-    return throwError(
-      () => new Error("This password isn't correct. Check it and try again.")
-    );
+    return this.http.post<any>(`${this.apiUrl}/auth/sign-in`, credentials)
+      .pipe(
+        map(response => {
+          console.log(response);
+          // Extract user data and token from response
+          const user: User = {
+            id: response.userId,
+            name: response.username||'',
+            email: response.email,
+            image:response.userImageUrl,
+            role: response.role.toLowerCase() // Convert role to lowercase for consistency
+          };
+          
+          // Store token and user in localStorage
+          localStorage.setItem(this.tokenKey, response.idToken);
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          
+          // Update the current user subject
+          this.currentUserSubject.next(user);
+          
+          return user;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   register(userData: {
@@ -52,30 +64,44 @@ export class AuthService {
     email: string;
     password: string;
   }): Observable<User> {
-    if (this.users.some((u) => u.email === userData.email)) {
-      return throwError(() => new Error('Email already registered'));
-    }
-
-    const newUser: User = {
-      id: (this.users.length + 1).toString(),
-      name: userData.name,
-      surname: userData.surname,
+    // Map frontend user data to API expected format
+    const apiUserData = {
+      firstName: userData.name,
+      lastName: userData.surname || '',
       email: userData.email,
-      role: 'client',
+      password: userData.password
     };
 
-    this.users.push(newUser);
-    this.userPasswords[userData.email] = userData.password;
-
-    console.log(this.users);
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    this.currentUserSubject.next(newUser);
-
-    return of(newUser).pipe(delay(800));
+    return this.http.post<any>(`${this.apiUrl}/auth/sign-up`, apiUserData)
+      .pipe(
+        map(response => {
+          console.log(response);
+          const user: User = {
+            id: response.userId,
+            name: userData.name,
+            surname: userData.surname,
+            email: userData.email,
+            role: 'client', // Default role for new users
+          };
+          
+          // If the API returns a token on registration
+          if (response.token) {
+            localStorage.setItem(this.tokenKey, response.token);
+          }
+          
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          
+          return user;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   logout(): void {
+    // Remove user and token from localStorage
     localStorage.removeItem('currentUser');
+    localStorage.removeItem(this.tokenKey);
     this.currentUserSubject.next(null);
   }
 
@@ -84,6 +110,32 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUserValue;
+    return !!this.currentUserValue && !!localStorage.getItem(this.tokenKey);
+  }
+
+  // Get the authentication token
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  // Handle API errors
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An unknown error occurred';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side error
+      if (error.status === 401) {
+        errorMessage = "This password isn't correct. Check it and try again.";
+      } else if (error.error && error.error.message) {
+        errorMessage = error.error.message;
+      } else {
+        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      }
+    }
+    
+    return throwError(() => new Error(errorMessage));
   }
 }
