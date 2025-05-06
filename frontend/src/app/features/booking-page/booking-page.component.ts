@@ -42,7 +42,9 @@ export class BookingPageComponent implements OnInit {
     private bookingService: BookingServiceService,
     private http: HttpClient
   ) {
-    this.currentUser = this.authService.currentUserValue
+    this.currentUser = this.authService.currentUserValue;
+    this.pickuplocation = Location.Kyiv;
+    this.droplocation = Location.Kyiv;
   }
 
   ngOnInit(): void {
@@ -75,7 +77,7 @@ export class BookingPageComponent implements OnInit {
 
     if (user && this.selectedCar) {
       const bookingObj: Booking = {
-        id: this.bookingService.generateBookingId(),
+        id: ""+this.bookingService.generateBookingId(),
         user: {
           id: user.id,
           name: user.name,
@@ -123,7 +125,7 @@ export class BookingPageComponent implements OnInit {
         dropOffLocationId: this.droplocation,
 
       }
-      //console.log(bookingObj);
+      console.log(bookingObj);
 
       this.http.post('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings',bookingObj,{ headers: this.headers }).subscribe({
         next: (response:any) => {

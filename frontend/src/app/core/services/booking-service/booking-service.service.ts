@@ -15,7 +15,7 @@ export class BookingServiceService {
   public singleBooking$: Observable<Booking>;
 
   currentBooking: Booking = {
-    id: 0,
+    id: "6818854fe6df73d3ed28231e",
     user: {
       id: '',
       name: '',
@@ -36,7 +36,7 @@ export class BookingServiceService {
   constructor() {
     const initialBookings: Booking[] = [
       {
-        id: 1,
+        id: "6818854fe6df73d3ed28231e",
         user: {
           id: '2',
           name: 'Ravi Sharma',
@@ -54,7 +54,7 @@ export class BookingServiceService {
         droplocation: Location.Kyiv
       },
       {
-        id: 2,
+        id: "6818854fe6df73d3ed28231e",
         user: {
           id: '2',
           name: 'Anjali Mehta',
@@ -72,7 +72,7 @@ export class BookingServiceService {
         droplocation: Location.Kyiv
       },
       {
-        id: 3,
+        id: "6818854fe6df73d3ed28231e",
         user: {
           id: '2',
           name: 'Aman Verma',
@@ -90,7 +90,7 @@ export class BookingServiceService {
         droplocation: Location.Kyiv
       },
       {
-        id: 4,
+        id: "6818854fe6df73d3ed28231e",
         user: {
           id: '2',
           name: 'Neha Sinha',
@@ -108,7 +108,7 @@ export class BookingServiceService {
         droplocation: Location.Kyiv
       },
       {
-        id: 5,
+        id: "6818854fe6df73d3ed28231e",
         user: {
           id: '2',
           name: 'Karan Patel',
@@ -155,7 +155,7 @@ export class BookingServiceService {
     );
   }
 
-  cancelBooking(bookingId: number): void {
+  cancelBooking(bookingId: string): void {
     const currentBookings = this.bookingsSubject.value;
 
     // Create a new array without the cancelled booking
@@ -170,7 +170,7 @@ export class BookingServiceService {
     this.bookingsSubject.next(updatedBookings);
   }
 
-  completeBooking(bookingId: number): void {
+  completeBooking(bookingId: string): void {
     const currentBookings = this.bookingsSubject.value;
 
     // Create a new array without the cancelled booking
@@ -189,7 +189,7 @@ export class BookingServiceService {
     return this.bookings$;
   }
 
-  getBooking(id: number): Observable<Booking> {
+  getBooking(id: string): Observable<Booking> {
     const currentBookings = this.bookingsSubject.value;
     const booking = currentBookings.find((b) => b.id === id);
     if (booking) {
@@ -204,7 +204,7 @@ export class BookingServiceService {
     currentBookings[bookingIndex] = updatedBooking;
   }
 
-  getBookingCarName(bookingId: number): Observable<string> {
+  getBookingCarName(bookingId: string): Observable<string> {
     return this.bookings$.pipe(
       map(bookings => {
         const booking = bookings.find(b => b.id === bookingId);

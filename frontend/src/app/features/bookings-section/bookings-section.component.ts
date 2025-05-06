@@ -31,7 +31,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   active: number = 0;
   showPopup: boolean = false;
   showFeedback: boolean = false;
-  bookingid: number = -1;
+  bookingid: string = "";
   bookingName:string = '';
   rating: number = 0;
   congo: boolean = false;
@@ -63,7 +63,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.currentBookingID = this.route.snapshot.paramMap.get('bId');
     if (this.currentBookingID) {
       this.latestBookingSubscription = this.bookingService
-        .getBooking(parseInt(this.currentBookingID))
+        .getBooking((this.currentBookingID))
         .subscribe({
           next: (value) => {
             this.latestBooking = value;
@@ -121,7 +121,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  setshowPopup(bookingid: number) {
+  setshowPopup(bookingid: string) {
     this.showPopup = true;
     this.bookingid = bookingid;
   }
@@ -130,19 +130,19 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.congo = false;
   }
 
-  setshowFeedback(bookingid: number) {
+  setshowFeedback(bookingid: string) {
     this.bookingid = bookingid;
     this.showFeedback = true;
     this.bookingService.getBookingCarName(bookingid).subscribe(carname => this.bookingName = carname);
     console.log(this.bookingName);
   }
 
-  HandleViewFeedback(bookingid: number) {
+  HandleViewFeedback(bookingid: string) {
     this.bookingid = bookingid;
     console.log("view feedback clicked");
   }
 
-  HandleEditBooking(bookingid: number) {
+  HandleEditBooking(bookingid: string) {
     this.bookingid = bookingid;
     this.router.navigate(['bookings/edit', { bId: this.bookingid }])
     console.log("edit booking clicked");

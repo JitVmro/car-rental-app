@@ -15,10 +15,10 @@ export class BookingsCardComponent {
   state:BookingState = BookingState.FinishedService;
   
   @Input() booking!:Booking;
-  @Output() showFeedBackEvent = new EventEmitter<number>();
-  @Output() cancelBookingEvent = new EventEmitter<number>();
-  @Output() viewBookingEvent = new EventEmitter<number>();
-  @Output() editBookingEvent = new EventEmitter<number>();
+  @Output() showFeedBackEvent = new EventEmitter<string>();
+  @Output() cancelBookingEvent = new EventEmitter<string>();
+  @Output() viewBookingEvent = new EventEmitter<string>();
+  @Output() editBookingEvent = new EventEmitter<string>();
 
   onshowFeedBackEvent() {
     this.showFeedBackEvent.emit(this.booking.id);

@@ -9,7 +9,7 @@ export enum BookingState {
 }
 
 export interface Booking {
-  id: number;
+  id: string;
   user: User;
   carimg: string;
   carname: string;
