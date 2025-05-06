@@ -1,93 +1,27 @@
 <div>
     <h2 class="text-2xl font-bold mb-4">Personal info</h2>
 
-    <!-- User Photo and Email Section -->
-    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <!-- Show profile image if available -->
-                <ng-container *ngIf="imageUrl; else showInitial">
-                    <img [src]="imageUrl" alt="User photo" class="w-16 h-16 rounded-full mr-4 object-cover" />
-                </ng-container>
-
-                <!-- Show initial if no image -->
-                <ng-template #showInitial>
-                    <div class="w-16 h-16 rounded-full mr-4 flex items-center justify-center text-white font-bold text-xl"
-                        [style.backgroundColor]="randomColor">
-                        {{ userInitial }}
-                    </div>
-                </ng-template>
-
-                <div>
-                    <h3 class="font-medium">{{userForm.get('firstName')?.value}} {{userForm.get('lastName')?.value}}
-                    </h3>
-                    <p class="text-gray-500 text-sm">{{userEmail}}</p>
-                </div>
-            </div>
-            <button class="text-sm text-gray-700 hover:text-red-500" (click)="fileInput.click()">Change</button>
-            <input type="file" accept="image/*" #fileInput class="hidden" (change)="onFileSelected($event)" />
-        </div>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="bg-white rounded-lg p-6 mb-6 border border-gray-200 flex justify-center">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-red-500"></div>
     </div>
 
-    <!-- Personal Info Form -->
-    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
-        <h3 class="text-xl font-medium mb-4">Personal info</h3>
-
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">Name</label>
-                    <input type="text" formControlName="firstName"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">Surname</label>
-                    <input type="text" formControlName="lastName"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm text-gray-700 mb-1">Phone</label>
-                <input type="tel" formControlName="phone"
-                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-            </div>
-
-            <h3 class="text-xl font-medium mt-6 mb-4">Address</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">Country</label>
-                    <input type="text" formControlName="country"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">City</label>
-                    <input type="text" formControlName="city"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">Postal code</label>
-                    <input type="text" formControlName="postalCode"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-700 mb-1">Street</label>
-                    <input type="text" formControlName="street"
-                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </div>
-            </div>
-
-            <div class="flex justify-end mt-6">
-                <button type="submit" [disabled]="userForm.invalid || userForm.pristine"
-                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
-                    Save changes
-                </button>
-            </div>
-        </form>
+    <!-- Error Message -->
+    <div *ngIf="showErrorMessage"
+        class="bg-red-100 border border-red-200 text-red-700 p-4 rounded-lg flex items-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd" />
+        </svg>
+        <span>{{ errorMessage }}</span>
+        <button (click)="dismissError()" class="ml-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+            </svg>
+        </button>
     </div>
 
     <!-- Success Message -->
@@ -107,4 +41,130 @@
             </svg>
         </button>
     </div>
+
+    <ng-container *ngIf="!isLoading">
+        <!-- User Photo and Email Section -->
+        <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <!-- Show profile image if available -->
+                    <ng-container *ngIf="imageUrl; else showInitial">
+                        <div class="relative w-16 h-16">
+                            <img [src]="imageUrl" alt="User photo" class="w-16 h-16 rounded-full mr-4 object-cover" />
+                            <div *ngIf="imageUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Show initial if no image -->
+                    <ng-template #showInitial>
+                        <div class="relative w-16 h-16">
+                            <div class="w-16 h-16 rounded-full mr-4 flex items-center justify-center text-white font-bold text-xl"
+                                [style.backgroundColor]="randomColor">
+                                {{ userInitial }}
+                            </div>
+                            <div *ngIf="imageUploading" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <div class="ml-4">
+                        <h3 class="font-medium">{{userForm.get('firstName')?.value}} {{userForm.get('lastName')?.value}}
+                        </h3>
+                        <p class="text-gray-500 text-sm">{{userEmail}}</p>
+                    </div>
+                </div>
+                <button class="text-sm text-gray-700 hover:text-red-500" 
+                        [disabled]="imageUploading"
+                        [class.opacity-50]="imageUploading"
+                        [class.cursor-not-allowed]="imageUploading"
+                        (click)="fileInput.click()">
+                    Change
+                </button>
+                <input type="file" accept="image/*" #fileInput class="hidden" (change)="onFileSelected($event)" />
+            </div>
+        </div>
+
+        <!-- Personal Info Form -->
+        <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+            <h3 class="text-xl font-medium mb-4">Personal info</h3>
+
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Name <span class="text-red-500">*</span></label>
+                        <input type="text" formControlName="firstName"
+                            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                            [class.border-red-500]="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+                            [class.border-gray-300]="!userForm.get('firstName')?.invalid || !userForm.get('firstName')?.touched" />
+                        <p *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                            Name is required
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Surname <span class="text-red-500">*</span></label>
+                        <input type="text" formControlName="lastName"
+                            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                            [class.border-red-500]="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+                            [class.border-gray-300]="!userForm.get('lastName')?.invalid || !userForm.get('lastName')?.touched" />
+                        <p *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                            Surname is required
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Phone</label>
+                    <input type="tel" formControlName="phone"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+
+                <h3 class="text-xl font-medium mt-6 mb-4">Address</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Country</label>
+                        <input type="text" formControlName="country"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">City</label>
+                        <input type="text" formControlName="city"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Postal code</label>
+                        <input type="text" formControlName="postalCode"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-700 mb-1">Street</label>
+                        <input type="text" formControlName="street"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" 
+                            [disabled]="userForm.invalid || userForm.pristine || formSubmitting"
+                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center">
+                        <span *ngIf="formSubmitting" class="mr-2">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                        Save changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </ng-container>
 </div>
