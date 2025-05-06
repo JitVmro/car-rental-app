@@ -103,14 +103,14 @@ const getCars = async (event) => {
       statusCode: 200,
       body: {
         cars: cars.map((car) => ({
-          carId: car.carId,
+          carId: car._id,
           carRating: car.carRating,
           imageURL: car.images && car.images[0] ? car.images[0] : null,
           location: car.location,
           model: car.model,
           pricePerDay: car.pricePerDay,
           serviceRating: car.serviceRating,
-          status: car.status ? car.status.toUpperCase() : 'UNKNOWN',
+          status: car.status,
         })),
         currentPage: page,
         totalElements: totalCount,
@@ -154,7 +154,7 @@ const getPopularCars = async (event) => {
 
     // Get popular cars based on booking count without populate
     const popularCars = await Car.find({ available: true })
-      .sort({ bookingCount: -1, averageRating: -1 })
+      .sort({ carRating: -1 })
       .limit(10);
 
     // Get all locations to manually join with cars
@@ -183,22 +183,17 @@ const getPopularCars = async (event) => {
       body: popularCars.map(car => {
         const locationId = car.locationId ? car.locationId.toString() : null;
         const location = locationId && locationsMap[locationId] ? locationsMap[locationId] : null;
-
         return {
           carId: car._id,
-          brand: car.brand,
           model: car.model,
-          year: car.year,
           pricePerDay: car.pricePerDay,
           location: location ? {
             locationId: location.locationId,
             city: location.city,
             country: location.country
           } : null,
-          imageUrl: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
-          averageRating: car.averageRating,
-          reviewCount: car.reviewCount,
-          bookingCount: car.bookingCount
+          images: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
+          carRating: car.carRating
         };
       })
     };
@@ -235,7 +230,7 @@ const getCarById = async (event) => {
     console.log('Database connected successfully');
 
     // Find the car by its unique carId
-    const car = await Car.findOne({ carId });
+    const car = await Car.findById(carId);
 
     if (!car) {
       return {
@@ -277,7 +272,7 @@ const getCarById = async (event) => {
     return {
       statusCode: 200,
       body: {
-        carId: car.carId,
+        carId: car._id,
         carRating: car.carRating || null,
         climateControlOption: car.climateControlOption,
         engineCapacity: car.engineCapacity,
@@ -290,7 +285,7 @@ const getCarById = async (event) => {
         passengerCapacity: car.passengerCapacity || null,
         pricePerDay: car.pricePerDay,
         serviceRating: car.serviceRating || null,
-        status: car.status || 'Unknown',
+        status: car.status,
         createdAt: car.createdAt,
         updatedAt: car.updatedAt,
       },

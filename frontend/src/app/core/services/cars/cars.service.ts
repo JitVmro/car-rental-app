@@ -1,24 +1,18 @@
-import { Injectable, OnInit } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Car } from '../../../models/car.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarsService {
+  private baseURL = 'https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev';
+  constructor(
+    private http: HttpClient
+  ) { }
 
-  allCars: any = [];
-  apiData: any;
-
-  constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-    this.http.get('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/cars').subscribe({
-      next: (data) => {
-        this.apiData = data;
-        this.allCars = this.apiData.content;
-        console.log(this.allCars);
-      }
-    })
+  getCars(): Observable<any> {
+    return this.http.get(this.baseURL + "/cars")
   }
 }

@@ -10,7 +10,7 @@ export interface Car {
   seats: string;
   fuelConsumption: string;
   pricePerDay: string;
-  imageUrl: string;
+  imageURL: string;
   location: string;
   available: boolean;
   carRating: string;

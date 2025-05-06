@@ -1,12 +1,12 @@
 <article class="w-full flex flex-col bg-[#F0F0F0] relative justify-between items-center rounded-xl p-4 mb-3">
-  <img [src]="car.imageUrl" alt="img1" class="h-[200px] w-full object-cover rounded-xl mb-2">
+  <img [src]="car.imageURL" alt="img1" class="h-[200px] w-full object-cover rounded-xl mb-2">
   <span
     class="bg-white w-[75px] h-[30px] p-2 rounded-[8px] flex items-center justify-center absolute font-normal text-[14px] left-4 top-4 ml-2 mt-2">Available</span>
 
   <section class="flex flex-col w-full mb-2">
     <section class="flex justify-between p-2 w-full">
       <section class="flex flex-col justify-between mb-2">
-        <span class="font-normal text-lg truncate w-[15ch]">{{car.brand}} {{car.model}}</span>
+        <span class="font-normal text-lg truncate w-[15ch]">{{car.model}}</span>
         <span class="font-normal text-gray-500 text-md">{{car.location}}</span>
       </section>
       <div class="flex items-center">

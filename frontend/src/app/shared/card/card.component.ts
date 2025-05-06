@@ -24,7 +24,7 @@ export class CardComponent {
       this.carService.setSelectedCar(this.car)
       this.router.navigate(['cars/booking', { carId: this.car.carId }])
     }
-    else{
+    else {
       console.log("Please Login");
       this.loginPopup.emit();
     }
