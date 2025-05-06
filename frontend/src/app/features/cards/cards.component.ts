@@ -6,6 +6,7 @@ import { Car } from '../../models/car.model';
 import { CarFilterService } from '../../core/services/car-filter.service';
 import { Subscription } from 'rxjs';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
+import { CarsService } from '../../core/services/cars/cars.service';
 
 @Component({
   selector: 'app-cards',
@@ -17,7 +18,7 @@ import { CarDetailsService } from '../../core/services/car-details/car-details.s
 export class CardsComponent implements OnInit, OnDestroy {
   // Reference to the cars container element
   @ViewChild('carsContainer') carsContainer!: ElementRef;
-  
+
   // Input to determine if this is the home page or cars page
   @Input() isHomePage: boolean = true;
   @Output() loginPopup: EventEmitter<void> = new EventEmitter<void>();
@@ -25,7 +26,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   handleLoginPopup() {
     this.loginPopup.emit();
   }
-  
+
   // All cars in the system
   allCars: Car[] = [];
 
@@ -48,23 +49,17 @@ export class CardsComponent implements OnInit, OnDestroy {
   constructor(
     private carFilterService: CarFilterService,
     private carService: CarDetailsService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private carsService: CarsService
+  ) {
+
+    console.log(this.allCars);
+
+  }
 
   ngOnInit(): void {
-    // Subscribe to filtered cars from the service
-    this.subscription = this.carFilterService.filteredCars$.subscribe(filteredCars => {
-      this.allCars = filteredCars;
-      
-      // Update featured cars (first 4)
-      this.featuredCars = this.allCars.slice(0, 4);
-
-      if (this.showAllCars || !this.isHomePage) {
-        this.calculateTotalPages();
-        this.updateDisplayedCars();
-        this.updatePaginationArray();
-      }
-    });
+    // Call cars loader
+    this.loadCars()
 
     // Initialize pagination
     this.calculateTotalPages();
@@ -77,6 +72,23 @@ export class CardsComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  // Load all cars from cars services
+  loadCars() {
+    this.carsService.getCars().subscribe(((cars) => {
+      this.allCars = cars.cars;
+      console.log(this.allCars)
+
+      this.featuredCars = this.allCars.slice(0, 4);
+      console.log(this.featuredCars)
+
+      if (this.showAllCars || !this.isHomePage) {
+        this.calculateTotalPages();
+        this.updateDisplayedCars();
+        this.updatePaginationArray();
+      }
+    }))
   }
 
   // Selecting single car card for detail popup
@@ -109,7 +121,7 @@ export class CardsComponent implements OnInit, OnDestroy {
       // For more than 4 pages, show a window of 4 pages
       let startPage = Math.max(1, Math.min(this.currentPage - 1, this.totalPages - 3));
       let endPage = Math.min(startPage + 3, this.totalPages);
-      
+
       for (let i = startPage; i <= endPage; i++) {
         this.paginationArray.push(i);
       }
@@ -123,8 +135,8 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // Check if we're on the last set of pages
   isLastPageSet(): boolean {
-    return this.paginationArray.length > 0 && 
-           this.paginationArray[this.paginationArray.length - 1] === this.totalPages;
+    return this.paginationArray.length > 0 &&
+      this.paginationArray[this.paginationArray.length - 1] === this.totalPages;
   }
 
   // Handle page number click
@@ -132,17 +144,17 @@ export class CardsComponent implements OnInit, OnDestroy {
     if (event) {
       event.preventDefault();
     }
-    
+
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.updateDisplayedCars();
       this.updatePaginationArray();
-      
+
       // Scroll to the cars container after a short delay to ensure DOM update
       setTimeout(() => {
         if (this.carsContainer) {
-          this.carsContainer.nativeElement.scrollIntoView({ 
-            behavior: 'smooth', 
+          this.carsContainer.nativeElement.scrollIntoView({
+            behavior: 'smooth',
             block: 'start'
           });
         }
