@@ -11,6 +11,7 @@ const Car = require('../models/car');
 const User = require('../models/user');
 const Location = require('../models/location');
 
+
 /**
  * Create a new booking
  * @param {Object} event - API Gateway event
@@ -18,145 +19,87 @@ const Location = require('../models/location');
  */
 const createBooking = async (event) => {
   try {
+    console.log('Request received:', event);
+
     // Parse request body
     const body = JSON.parse(event.body);
-    
-    // Validate request body
-    const validatedData = validate(body, schemas.createBooking);
-    
+    console.log('Parsed body:', body);
+
+
+
     // Connect to database
     await connectToDatabase();
-    
-    // Use clientId from request body - this is now required
-    if (!validatedData.clientId) {
-      return {
-        statusCode: 400,
-        body: { message: 'clientId is required' }
+    console.log('Database connected');
+
+    // Hardcoded values for testing
+    const pickupDateTime = new Date(body.pickupDateTime || '2024-06-08 10:00');
+    const dropOffDateTime = new Date(body.dropOffDateTime || '2024-06-10 10:00');
+    let bookingNumber = '2437';
+
+
+
+    //Create new Booking 
+    const newBooking = new Booking(body)
+
+    // Save car to database
+    const savedBooking = await newBooking.save();
+
+    bookingNumber = savedBooking._id;
+
+    function formatDate(date) {
+      const options = {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
       };
+      return new Date(date).toLocaleString('en-US', options);
     }
-    
-    // Check if the client exists
-    const client = await User.findById(validatedData.clientId);
-    if (!client) {
-      return {
-        statusCode: 404,
-        body: { message: 'Client not found' }
-      };
+
+    function formatDeadline(date) {
+      const d = new Date(date);
+      d.setHours(d.getHours() - 1); // subtract 1 hour
+
+      const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      const day = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+
+      return `${time} ${day}`;
     }
-    
-    // Check if car exists and is available
-    const car = await Car.findById(validatedData.carId);
-    
-    if (!car) {
-      return {
-        statusCode: 404,
-        body: { message: 'Car not found' }
-      };
-    }
-    
-    if (!car.available) {
-      return {
-        statusCode: 400,
-        body: { message: 'Car is not available for booking' }
-      };
-    }
-    
-    // Parse dates from the provided format
-    const pickupDateTime = new Date(validatedData.pickupDateTime);
-    const dropOffDateTime = new Date(validatedData.dropOffDateTime);
-    
-    // Check if dates are valid
-    if (isNaN(pickupDateTime.getTime()) || isNaN(dropOffDateTime.getTime())) {
-      return {
-        statusCode: 400,
-        body: { message: 'Invalid date format. Please use YYYY-MM-DD HH:MM format.' }
-      };
-    }
-    
-    // Check if pickup date is before drop-off date
-    if (pickupDateTime >= dropOffDateTime) {
-      return {
-        statusCode: 400,
-        body: { message: 'Pickup date must be before drop-off date' }
-      };
-    }
-    
-    // Check if car is already booked for the requested period
-    const overlappingBookings = await Booking.find({
-      carId: validatedData.carId,
-      status: { $in: ['Pending', 'Confirmed', 'Active'] },
-      $or: [
-        { startDate: { $lte: dropOffDateTime }, endDate: { $gte: pickupDateTime } }
-      ]
-    });
-    
-    if (overlappingBookings.length > 0) {
-      return {
-        statusCode: 400,
-        body: { message: 'Car is already booked for the selected dates' }
-      };
-    }
-    
-    // Calculate rental duration in days
-    const durationMs = dropOffDateTime.getTime() - pickupDateTime.getTime();
-    const durationDays = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
-    
-    // Calculate total price
-    const totalPrice = car.pricePerDay * durationDays;
-    
-    // Generate booking number
-    const bookingNumber = Math.floor(1000 + Math.random() * 9000).toString();
-    
-    // Create new booking
-    const newBooking = new Booking({
-      userId: validatedData.clientId,
-      carId: validatedData.carId,
-      startDate: pickupDateTime,
-      endDate: dropOffDateTime,
-      pickupLocationId: validatedData.pickupLocationId,
-      dropOffLocationId: validatedData.dropOffLocationId,
-      status: 'Pending',
-      totalPrice,
-      bookingNumber
-    });
-    
-    await newBooking.save();
-    
-    // Update car booking count
-    car.bookingCount = (car.bookingCount || 0) + 1;
-    await car.save();
-    
-    // Return booking details
+
+    // Dates from savedBooking
+    const pickupDate = formatDate(savedBooking.pickupDateTime);
+    const dropoffDate = formatDate(savedBooking.dropOffDateTime);
+    const deadline = formatDeadline(savedBooking.pickupDateTime);
+
+    // Final message
+    const message = `New booking was successfully created Car ID: ${savedBooking.carId} is booked for: Pickup: ${pickupDate} Drop-off: ${dropoffDate} You can change booking details until ${deadline}. Your order: #${bookingNumber} (08.06.24)`;
+
+
+
+
+    // // Create simple response message without database operations
+    // const message = `New booking was successfully created. \n ${savedBooking.carId} is booked for ${savedBooking.pickupDateTime + " " + savedBooking.pickupDateTime} - ${savedBooking.dropOffDateTime + " " + savedBooking.dropOffDateTime} \n You can change booking details until 10:30 PM 10 Nov.\n Your order: #${bookingNumber} (08.06.24) `;
+
+    console.log('Sending response:', { message });
+
     return {
       statusCode: 201,
-      body: {
-        bookingId: newBooking._id,
-        bookingNumber,
-        status: newBooking.status,
-        startDate: newBooking.startDate,
-        endDate: newBooking.endDate,
-        totalPrice: newBooking.totalPrice,
-        car: {
-          carId: car._id,
-          brand: car.brand,
-          model: car.model,
-          year: car.year
-        }
-      }
+      body: { message, bookingNumber }
     };
   } catch (error) {
-    console.error('Error in createBooking:', error);
-    
-    if (error.name === 'ValidationError') {
-      return {
-        statusCode: 400,
-        body: { message: 'Validation error', details: error.details }
-      };
-    }
-    
+    console.error('Error type:', error.constructor.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+
     return {
       statusCode: 500,
-      body: { message: 'Internal server error' }
+      body: {
+        message: 'Internal server error',
+        error: error.message
+      }
     };
   }
 };
@@ -170,25 +113,25 @@ const getBookings = async (event) => {
   try {
     // Extract query parameters
     const queryParams = event.queryStringParameters || {};
-    
+
     // Skip validation since the schema is missing
     // const validatedParams = validate(queryParams, schemas.getBookings);
     // Just use the raw query params instead
     const validatedParams = queryParams;
-    
+
     // Authenticate and authorize admin
     const authorizedEvent = await authorize(['Admin'])(event);
-    
+
     // Connect to database
     await connectToDatabase();
-    
+
     // Build filter query
     const filter = {};
-    
+
     if (validatedParams.status) {
       filter.status = validatedParams.status;
     }
-    
+
     if (validatedParams.startDate && validatedParams.endDate) {
       filter.$or = [
         {
@@ -205,40 +148,40 @@ const getBookings = async (event) => {
         }
       ];
     }
-    
+
     // Find bookings
     const bookings = await Booking.find(filter)
       .sort({ createdAt: -1 });
-    
+
     // Process bookings to match the required format
     const contentItems = [];
-    
+
     for (const booking of bookings) {
       // Get user details
       const user = await User.findById(booking.userId);
-      
+
       // Get car details
       const car = await Car.findById(booking.carId);
-      
+
       // Format dates
       const startDate = new Date(booking.startDate);
       const endDate = new Date(booking.endDate);
-      
+
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const bookingPeriod = `${monthNames[startDate.getMonth()]} ${startDate.getDate()} - ${monthNames[endDate.getMonth()]} ${endDate.getDate()}`;
-      
+
       // Format date (day.month.year)
       const date = `${startDate.getDate().toString().padStart(2, '0')}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}.${startDate.getFullYear().toString().slice(-2)}`;
-      
+
       // Get location
       let location = "Unknown";
       if (car && car.locationId) {
         const locationsDoc = await Locations.findOne({});
         if (locationsDoc && locationsDoc.content) {
-          const matchingLocation = locationsDoc.content.find(loc => 
+          const matchingLocation = locationsDoc.content.find(loc =>
             loc.locationId === car.locationId.toString()
           );
-          
+
           if (matchingLocation) {
             // Extract city from address
             const addressParts = matchingLocation.locationAddress.split(',');
@@ -246,7 +189,7 @@ const getBookings = async (event) => {
           }
         }
       }
-      
+
       // Add to content items
       contentItems.push({
         bookingId: booking._id.toString(),
@@ -259,7 +202,7 @@ const getBookings = async (event) => {
         madeBy: user && user.role === "Admin" ? "Admin" : "Client"
       });
     }
-    
+
     // Return bookings in the required format
     return {
       statusCode: 200,
@@ -269,14 +212,14 @@ const getBookings = async (event) => {
     };
   } catch (error) {
     console.error('Error in getBookings:', error);
-    
+
     if (error.name === 'UnauthorizedError' || error.name === 'ForbiddenError') {
       return {
         statusCode: error.name === 'UnauthorizedError' ? 401 : 403,
         body: { message: error.message }
       };
     }
-    
+
     return {
       statusCode: 500,
       body: { message: 'Internal server error' }
@@ -322,7 +265,7 @@ const getUserBookings = async (event, userId) => {
     }
     
     // Build filter query
-    const filter = { userId };
+    const filter = {clientId: userId};
     
     if (validatedParams.status) {
       filter.status = validatedParams.status;
@@ -332,14 +275,15 @@ const getUserBookings = async (event, userId) => {
     const page = validatedParams.page || 1;
     const pageSize = validatedParams.pageSize || 10;
     const skip = (page - 1) * pageSize;
+    const clientId = userId;
     
     // Execute query with pagination
-    const bookings = await Booking.find(filter)
-      .populate('carId', 'brand model year imageUrls')
-      .populate('locationId', 'name city country')
-      .skip(skip)
-      .limit(pageSize)
-      .sort({ createdAt: -1 });
+    const bookings = await Booking.find({clientId})
+      // .populate('carId')
+      // .populate('locationId', 'name city country')
+      // .skip(skip)
+      // .limit(pageSize)
+      // .sort({ createdAt: -1 });
     
     // Get total count for pagination
     const totalCount = await Booking.countDocuments(filter);
@@ -348,28 +292,7 @@ const getUserBookings = async (event, userId) => {
     return {
       statusCode: 200,
       body: {
-        bookings: bookings.map(booking => ({
-          bookingId: booking._id,
-          car: booking.carId ? {
-            carId: booking.carId._id,
-            brand: booking.carId.brand,
-            model: booking.carId.model,
-            year: booking.carId.year,
-            imageUrl: booking.carId.imageUrls && booking.carId.imageUrls.length > 0 ? booking.carId.imageUrls[0] : null
-          } : null,
-          location: booking.locationId ? {
-            locationId: booking.locationId._id,
-            name: booking.locationId.name,
-            city: booking.locationId.city,
-            country: booking.locationId.country
-          } : null,
-          startDate: booking.startDate,
-          endDate: booking.endDate,
-          totalPrice: booking.totalPrice,
-          status: booking.status,
-          paymentStatus: booking.paymentStatus,
-          createdAt: booking.createdAt
-        })),
+        bookings: bookings,
         pagination: {
           page,
           pageSize,
@@ -412,14 +335,14 @@ const updateBookingStatus = async (event, bookingId) => {
   try {
     // Authenticate and authorize admin or support agent
     const authorizedEvent = await authorize(['Admin', 'SupportAgent'])(event);
-    
+
     // Parse and validate request body
     const body = JSON.parse(event.body || '{}');
     const validatedData = validate({ ...body, bookingId }, schemas.updateBookingStatus);
-    
+
     // Connect to database
     await connectToDatabase();
-    
+
     // Find booking by ID
     const booking = await Booking.findById(bookingId);
     if (!booking) {
@@ -428,18 +351,18 @@ const updateBookingStatus = async (event, bookingId) => {
         body: { message: 'Booking not found' }
       };
     }
-    
+
     // Update booking status
     booking.status = validatedData.status;
-    
+
     // If cancelling, update payment status if needed
     if (validatedData.status === 'Cancelled' && booking.paymentStatus === 'Completed') {
       booking.paymentStatus = 'Refunded';
     }
-    
+
     // Save updated booking
     await booking.save();
-    
+
     // Return updated booking
     return {
       statusCode: 200,
@@ -452,21 +375,21 @@ const updateBookingStatus = async (event, bookingId) => {
     };
   } catch (error) {
     console.error('Error in updateBookingStatus:', error);
-    
+
     if (error.name === 'UnauthorizedError' || error.name === 'ForbiddenError') {
       return {
         statusCode: error.name === 'UnauthorizedError' ? 401 : 403,
         body: { message: error.message }
       };
     }
-    
+
     if (error.name === 'ValidationError') {
       return {
         statusCode: 400,
         body: { message: 'Validation error', details: error.details }
       };
     }
-    
+
     return {
       statusCode: 500,
       body: { message: 'Internal server error' }
@@ -485,10 +408,10 @@ const cancelBooking = async (event, bookingId) => {
     // Authenticate user
     const authenticatedEvent = await authenticate(event);
     const user = authenticatedEvent.user;
-    
+
     // Connect to database
     await connectToDatabase();
-    
+
     // Find booking by ID
     const booking = await Booking.findById(bookingId);
     if (!booking) {
@@ -497,7 +420,7 @@ const cancelBooking = async (event, bookingId) => {
         body: { message: 'Booking not found' }
       };
     }
-    
+
     // Check if user owns this booking or is admin
     if (booking.userId.toString() !== user._id.toString() && user.role !== 'Admin') {
       return {
@@ -505,12 +428,12 @@ const cancelBooking = async (event, bookingId) => {
         body: { message: 'Forbidden: You can only cancel your own bookings' }
       };
     }
-    
+
     // Check if booking can be cancelled
     const now = new Date();
     const bookingStart = new Date(booking.startDate);
     const hoursUntilStart = (bookingStart - now) / (1000 * 60 * 60);
-    
+
     // Only allow cancellation if more than 24 hours before start
     if (hoursUntilStart < 24 && user.role !== 'Admin') {
       return {
@@ -518,24 +441,24 @@ const cancelBooking = async (event, bookingId) => {
         body: { message: 'Bookings can only be cancelled at least 24 hours before start time' }
       };
     }
-    
+
     // Update booking status
     booking.status = 'Cancelled';
-    
+
     // Handle payment status if needed
     if (booking.paymentStatus === 'Completed') {
       booking.paymentStatus = 'Refunded';
     } else if (booking.paymentStatus === 'Pending') {
       booking.paymentStatus = 'Cancelled';
     }
-    
+
     // Save updated booking
     await booking.save();
-    
+
     // Return success response
     return {
       statusCode: 200,
-      body: { 
+      body: {
         message: 'Booking successfully cancelled',
         bookingId: booking._id,
         status: booking.status,
@@ -544,14 +467,14 @@ const cancelBooking = async (event, bookingId) => {
     };
   } catch (error) {
     console.error('Error in cancelBooking:', error);
-    
+
     if (error.name === 'UnauthorizedError') {
       return {
         statusCode: 401,
         body: { message: error.message }
       };
     }
-    
+
     return {
       statusCode: 500,
       body: { message: 'Internal server error' }
