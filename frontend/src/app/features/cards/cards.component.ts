@@ -35,7 +35,7 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // Pagination properties
   currentPage: number = 1;
-  itemsPerPage: number = 12; // Set to 12 cars per page
+  itemsPerPage: number = 8; // Set to 12 cars per page
   totalPages: number = 1;
   displayedCars: Car[] = [];
   paginationArray: number[] = [];
@@ -59,7 +59,12 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Call cars loader
-    this.loadCars()
+    if(this.isHomePage){
+      this.loadPopularCars()
+    }
+    else{
+      this.loadCars()
+    }
 
     // Initialize pagination
     this.calculateTotalPages();
@@ -80,14 +85,19 @@ export class CardsComponent implements OnInit, OnDestroy {
       this.allCars = cars.cars;
       console.log(this.allCars)
 
-      this.featuredCars = this.allCars.slice(0, 4);
-      console.log(this.featuredCars)
-
       if (this.showAllCars || !this.isHomePage) {
         this.calculateTotalPages();
         this.updateDisplayedCars();
         this.updatePaginationArray();
       }
+    }))
+  }
+
+  loadPopularCars(){
+    this.carsService.getPopularCars().subscribe(((cars) => {
+      this.featuredCars = cars
+      console.log(this.featuredCars)
+      this.updateDisplayedCars();
     }))
   }
 
