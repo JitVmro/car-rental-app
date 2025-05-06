@@ -97,6 +97,7 @@ carSchema.index({ model: 1 });
 carSchema.index({ location: 1 });
 carSchema.index({ pricePerDay: 1 });
 carSchema.index({ status: 1 });
+carSchema.index({ carRating: 1 });
 
 // Create and export the Car model
 const Car = mongoose.model('Car', carSchema);

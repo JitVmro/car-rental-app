@@ -84,7 +84,7 @@ export class BookingPageComponent implements OnInit {
           email: user.email,
           role: user.role,
         },
-        carimg: this.selectedCar?.imageUrl,
+        carimg: this.selectedCar?.imageURL,
         carname: this.selectedCar.brand + this.selectedCar.model,
         state: BookingState.Reserved,
         startDate: this.startDate,
