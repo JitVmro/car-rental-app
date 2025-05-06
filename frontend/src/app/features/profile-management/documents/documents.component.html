@@ -1,0 +1,170 @@
+<div>
+    <h2 class="text-2xl font-bold mb-4">Documents</h2>
+    
+    <!-- Success Message -->
+    <div *ngIf="showSuccessMessage" class="bg-green-100 border border-green-200 text-green-700 p-4 rounded-lg flex items-center mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+      <span>Congratulations! The documents have been successfully updated.</span>
+      <button (click)="showSuccessMessage = false" class="ml-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Passport Section -->
+    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+      <h3 class="text-xl font-medium mb-4">Passport details</h3>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-700 mb-2">Front side</p>
+        
+        <div *ngIf="passportFront" class="flex items-center justify-between border border-gray-200 p-2 rounded">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p class="text-sm">ID Card front side.pdf</p>
+              <p class="text-xs text-gray-500">200 KB</p>
+            </div>
+          </div>
+          <button (click)="removeDocument('passportFront')" class="text-gray-500 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        
+        <div *ngIf="!passportFront" class="border border-dashed border-gray-300 rounded p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50" (click)="simulateFileUpload('passportFront')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="text-sm text-gray-500">Click to upload or drag and drop</p>
+        </div>
+      </div>
+      
+      <div>
+        <p class="text-sm text-gray-700 mb-2">Back side</p>
+        
+        <div *ngIf="passportBack" class="flex items-center justify-between border border-gray-200 p-2 rounded">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p class="text-sm">ID Card back side.pdf</p>
+              <p class="text-xs text-gray-500">200 KB</p>
+            </div>
+          </div>
+          <button (click)="removeDocument('passportBack')" class="text-gray-500 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        
+        <div *ngIf="!passportBack" class="border border-dashed border-gray-300 rounded p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50" (click)="simulateFileUpload('passportBack')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="text-sm text-gray-500">Click to upload or drag and drop</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- License Section -->
+    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+      <h3 class="text-xl font-medium mb-4">Driving licence</h3>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-700 mb-2">Front side</p>
+        
+        <div *ngIf="licenseFront" class="flex items-center justify-between border border-gray-200 p-2 rounded">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p class="text-sm">Licence front side.pdf</p>
+              <p class="text-xs text-gray-500">200 KB</p>
+            </div>
+          </div>
+          <button (click)="removeDocument('licenseFront')" class="text-gray-500 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        
+        <div *ngIf="!licenseFront" class="border border-dashed border-gray-300 rounded p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50" (click)="simulateFileUpload('licenseFront')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="text-sm text-gray-500">Click to upload or drag and drop</p>
+        </div>
+      </div>
+      
+      <div>
+        <p class="text-sm text-gray-700 mb-2">Back side</p>
+        
+        <div *ngIf="licenseBack" class="flex items-center justify-between border border-gray-200 p-2 rounded">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p class="text-sm">License back side.pdf</p>
+              <p class="text-xs text-gray-500">200 KB</p>
+            </div>
+          </div>
+          <button (click)="removeDocument('licenseBack')" class="text-gray-500 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        
+        <div *ngIf="!licenseBack" class="border border-dashed border-gray-300 rounded p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50" (click)="simulateFileUpload('licenseBack')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="text-sm text-gray-500">Click to upload or drag and drop</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex justify-end">
+      <button 
+        (click)="saveChanges()"
+        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+      >
+        Save changes
+      </button>
+    </div>
+    
+    <!-- Delete Document Modal -->
+    <div *ngIf="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 class="text-lg font-medium mb-4">Delete document?</h3>
+        <p class="text-gray-600 mb-6">You are about to delete document. Are you sure you want to proceed?</p>
+        
+        <div class="flex justify-end space-x-2">
+          <button 
+            (click)="confirmDelete()"
+            class="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded hover:bg-gray-50"
+          >
+            Delete
+          </button>
+          <button 
+            (click)="cancelDelete()"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
