@@ -56,6 +56,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     this.userId = this.authService.currentUserValue;
+    console.log(this.userId?.id);
   }
 
   ngOnInit() {

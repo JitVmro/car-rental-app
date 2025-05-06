@@ -22,6 +22,15 @@ export interface Booking {
   droplocation: Location;
 }
 
+export interface createBooking {
+  "carId": string,
+  "clientId": string,
+  "dropOffDateTime": string,
+  "dropOffLocationId": string,
+  "pickupDateTime": string,
+  "pickupLocationId": string
+}
+
 export enum Location{
   Kyiv = 'Ukraine, Kyiv',
   Lviv = 'Ukraine, Lviv',

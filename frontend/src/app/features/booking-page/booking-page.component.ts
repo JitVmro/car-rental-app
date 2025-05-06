@@ -6,9 +6,10 @@ import { Car } from '../../models/car.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
-import { Booking, BookingState,Location } from '../../models/booking.model';
+import { Booking, BookingState,createBooking,Location } from '../../models/booking.model';
 import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
 import { CarFilterService } from '../../core/services/car-filter.service';
+import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-booking-page',
@@ -38,7 +39,8 @@ export class BookingPageComponent implements OnInit {
     private route: ActivatedRoute,
     private carFilterService: CarFilterService,
     private authService: AuthService,
-    private bookingService: BookingServiceService
+    private bookingService: BookingServiceService,
+    private http: HttpClient
   ) {
     this.currentUser = this.authService.currentUserValue
   }
@@ -53,6 +55,8 @@ export class BookingPageComponent implements OnInit {
       }
     }
   }
+
+
 
   toggleDatePicker() {
     this.datePickerDisplayStatus = !this.datePickerDisplayStatus;
@@ -92,6 +96,47 @@ export class BookingPageComponent implements OnInit {
       this.bookingService.createBooking(bookingObj)
       this.router.navigate(['/bookings/new', { bId: bookingObj.id }])
       console.log(bookingObj);
+
+    } else {
+      console.log("Failed to book")
+    }
+  }
+
+
+  // Headers
+  token:string|null = localStorage.getItem('auth_token')
+  headers = new HttpHeaders({
+   'Authorization': `Bearer ${this.token}`,
+   'Content-Type': 'application/json'
+ });
+
+  postBooking() {
+    const user = this.authService.currentUserValue;
+    
+    if (user && this.selectedCar) {
+      const bookingObj: createBooking = {
+        carId: this.selectedCar.carId,
+        clientId: user.id,
+        pickupDateTime: `${this.startDate.toISOString().split('T')[0]}T${this.startTime}:00Z`,
+        dropOffDateTime: `${this.endDate.toISOString().split('T')[0]}T${this.endTime}:00Z`,
+        pickupLocationId: this.pickuplocation,
+        dropOffLocationId: this.droplocation,
+
+      }
+      //console.log(bookingObj);
+
+      this.http.post('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings',bookingObj,{ headers: this.headers }).subscribe({
+        next: (response:any) => {
+          console.log('Booking created successfully:', response.message , response.bookingNumber);
+          this.router.navigate(['/bookings/new', { bId: bookingObj.carId }])
+          console.log(bookingObj);
+        },
+        error: (error) => {
+          console.error('Error creating booking:', error);
+        }
+
+      })
+      
 
     } else {
       console.log("Failed to book")
