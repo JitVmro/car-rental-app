@@ -10,7 +10,7 @@ export enum BookingState {
 
 export interface Booking {
   id: string;
-  user: User;
+  userId: User["id"];
   carimg: string;
   carname: string;
   state: BookingState;

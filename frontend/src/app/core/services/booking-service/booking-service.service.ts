@@ -16,12 +16,7 @@ export class BookingServiceService {
 
   currentBooking: Booking = {
     id: "6818854fe6df73d3ed28231e",
-    user: {
-      id: '',
-      name: '',
-      email: '',
-      role: ''
-    },
+    userId:' ',
     carimg: '',
     carname: '',
     state: BookingState.FinishedService,
@@ -34,98 +29,7 @@ export class BookingServiceService {
   }
 
   constructor() {
-    const initialBookings: Booking[] = [
-      {
-        id: "6818854fe6df73d3ed28231e",
-        user: {
-          id: '2',
-          name: 'Ravi Sharma',
-          email: 'ravi.sharma@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/mazda-cx5.jpg',
-        carname: 'Mazda CX5',
-        state: BookingState.Reserved,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: "6818854fe6df73d3ed28231e",
-        user: {
-          id: '2',
-          name: 'Anjali Mehta',
-          email: 'anjali.mehta@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/kia-sportage.jpg',
-        carname: 'Kia Sportage',
-        state: BookingState.InProgress,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: "6818854fe6df73d3ed28231e",
-        user: {
-          id: '2',
-          name: 'Aman Verma',
-          email: 'aman.verma@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/chevrolet-camaro.jpg',
-        carname: 'Chevrolet Camaro',
-        state: BookingState.FinishedBooking,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: "6818854fe6df73d3ed28231e",
-        user: {
-          id: '2',
-          name: 'Neha Sinha',
-          email: 'neha.sinha@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/lexus-rx.jpg',
-        carname: 'Lexus RX',
-        state: BookingState.Cancelled,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: "6818854fe6df73d3ed28231e",
-        user: {
-          id: '2',
-          name: 'Karan Patel',
-          email: 'karan.patel@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/volvo-xc60.jpg',
-        carname: 'Volvo XC60',
-        state: BookingState.FinishedService,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-    ];
+    const initialBookings: Booking[] = [];
 
     this.bookingsSubject = new BehaviorSubject<Booking[]>(initialBookings);
     this.bookings$ = this.bookingsSubject.asObservable();
@@ -151,7 +55,7 @@ export class BookingServiceService {
 
   getBookings(user: User): Observable<Booking[]> {
     return this.bookings$.pipe(
-      map(bookings => bookings.filter(booking => booking.user.id === user.id))
+      map(bookings => bookings.filter(booking => booking.userId === user.id))
     );
   }
 

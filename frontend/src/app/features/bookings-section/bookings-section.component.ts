@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Feedback } from '../../models/feedback';
 import { bookingFeedback } from '../../models/bookingFeedback';
-import { HttpClient,HttpClientModule } from '@angular/common/http';
+import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
 
 
 @Component({
@@ -80,13 +80,28 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
       }
     });
 
+    // this.bookings = bookings;
+    // this.filterBookingsByActiveTab();
+
     this.userId = this.authService.currentUserValue;
-    if (this.userId) {
-      this.bookingsSubscription = this.bookingService.getBookings(this.userId)
-        .subscribe(bookings => {
-          this.bookings = bookings;
+    if (this.userId?.id) {
+      const token = localStorage.getItem('auth_token')
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      });
+      const URL:string = `https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings/${this.userId.id}`;
+
+      this.http.get(URL,{headers}).subscribe({
+        next:(response:any)=>{this.bookings = response.bookings as Booking[];
+          console.log(this.bookings);
           this.filterBookingsByActiveTab();
-        });
+        },
+        error:(error) => {
+          console.error('Error fetching bookings:', error);
+        },
+
+      })
     }
   }
 
@@ -120,6 +135,8 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
         this.filteredBookings = this.bookings;
     }
   }
+  
+
 
   setshowPopup(bookingid: string) {
     this.showPopup = true;
@@ -163,7 +180,6 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.currentFeedback.feedbackText = this.reviewText;
     this.currentFeedback.rating = this.rating;
     console.log(this.currentFeedback);
-
     this.http.post(this.createFeedbackUrl, this.currentFeedback).subscribe(response => {console.log(response);});
 
 

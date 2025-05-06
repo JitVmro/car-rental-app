@@ -78,12 +78,7 @@ export class BookingPageComponent implements OnInit {
     if (user && this.selectedCar) {
       const bookingObj: Booking = {
         id: ""+this.bookingService.generateBookingId(),
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        userId: user.id,
         carimg: this.selectedCar?.imageURL,
         carname: this.selectedCar.brand + this.selectedCar.model,
         state: BookingState.Reserved,
