@@ -7,6 +7,7 @@ import { BookingsComponent } from './features/bookings/bookings.component';
 import { BookingPageComponent } from './features/booking-page/booking-page.component';
 import { CarBookingEditComponent } from './features/car-booking-edit/car-booking-edit.component';
 import { AuthGuard } from './core/guards/auth-guard.guard';
+import { ProfileComponent } from './features/profile-management/profile/profile.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'bookings', component: BookingsComponent,canActivate:[AuthGuard] },
   { path: 'cars/booking', component: BookingPageComponent,canActivate:[AuthGuard] },
   { path: 'bookings/edit', component: CarBookingEditComponent,canActivate:[AuthGuard] },
+  { path: 'profile', component: ProfileComponent,canActivate:[AuthGuard] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];

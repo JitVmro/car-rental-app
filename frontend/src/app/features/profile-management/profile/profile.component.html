@@ -1,0 +1,56 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">My profile</h1>
+    
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Sidebar Navigation -->
+      <div class="w-full md:w-1/4">
+        <nav class="flex flex-col space-y-2">
+          <button 
+            [class.text-red-500]="activeTab === 'reviews'"
+            [class.font-medium]="activeTab === 'reviews'"
+            class="text-left py-2 hover:text-red-500" 
+            (click)="setActiveTab('reviews')">
+            Reviews
+          </button>
+          <button 
+            [class.text-red-500]="activeTab === 'personal-info'"
+            [class.font-medium]="activeTab === 'personal-info'"
+            class="text-left py-2 hover:text-red-500" 
+            (click)="setActiveTab('personal-info')">
+            Personal info
+          </button>
+          <button 
+            [class.text-red-500]="activeTab === 'documents'"
+            [class.font-medium]="activeTab === 'documents'"
+            class="text-left py-2 hover:text-red-500" 
+            (click)="setActiveTab('documents')">
+            Documents
+          </button>
+          <button 
+            [class.text-red-500]="activeTab === 'change-password'"
+            [class.font-medium]="activeTab === 'change-password'"
+            class="text-left py-2 hover:text-red-500" 
+            (click)="setActiveTab('change-password')">
+            Change password
+          </button>
+        </nav>
+      </div>
+      
+      <!-- Content Area -->
+      <div class="w-full md:w-3/4">
+        <div *ngIf="activeTab === 'personal-info'">
+          <app-personal-info [userId]="userId"></app-personal-info>
+        </div>
+        <div *ngIf="activeTab === 'change-password'">
+          <app-profile-change-password [userId]="userId"></app-profile-change-password>
+        </div>
+        <div *ngIf="activeTab === 'documents'">
+          <app-documents [userId]="userId"></app-documents>
+        </div>
+        <div *ngIf="activeTab === 'reviews'">
+          <h2 class="text-2xl font-bold mb-4">Reviews</h2>
+          <p>Reviews functionality will be implemented later.</p>
+        </div>
+      </div>
+    </div>
+  </div>

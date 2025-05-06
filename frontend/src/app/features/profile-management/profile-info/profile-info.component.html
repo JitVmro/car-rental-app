@@ -1,0 +1,110 @@
+<div>
+    <h2 class="text-2xl font-bold mb-4">Personal info</h2>
+
+    <!-- User Photo and Email Section -->
+    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <!-- Show profile image if available -->
+                <ng-container *ngIf="imageUrl; else showInitial">
+                    <img [src]="imageUrl" alt="User photo" class="w-16 h-16 rounded-full mr-4 object-cover" />
+                </ng-container>
+
+                <!-- Show initial if no image -->
+                <ng-template #showInitial>
+                    <div class="w-16 h-16 rounded-full mr-4 flex items-center justify-center text-white font-bold text-xl"
+                        [style.backgroundColor]="randomColor">
+                        {{ userInitial }}
+                    </div>
+                </ng-template>
+
+                <div>
+                    <h3 class="font-medium">{{userForm.get('firstName')?.value}} {{userForm.get('lastName')?.value}}
+                    </h3>
+                    <p class="text-gray-500 text-sm">{{userEmail}}</p>
+                </div>
+            </div>
+            <button class="text-sm text-gray-700 hover:text-red-500" (click)="fileInput.click()">Change</button>
+            <input type="file" accept="image/*" #fileInput class="hidden" (change)="onFileSelected($event)" />
+        </div>
+    </div>
+
+    <!-- Personal Info Form -->
+    <div class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+        <h3 class="text-xl font-medium mb-4">Personal info</h3>
+
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Name</label>
+                    <input type="text" formControlName="firstName"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Surname</label>
+                    <input type="text" formControlName="lastName"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-700 mb-1">Phone</label>
+                <input type="tel" formControlName="phone"
+                    class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+
+            <h3 class="text-xl font-medium mt-6 mb-4">Address</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Country</label>
+                    <input type="text" formControlName="country"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">City</label>
+                    <input type="text" formControlName="city"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Postal code</label>
+                    <input type="text" formControlName="postalCode"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-700 mb-1">Street</label>
+                    <input type="text" formControlName="street"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500" />
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+                <button type="submit" [disabled]="userForm.invalid || userForm.pristine"
+                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                    Save changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="showSuccessMessage"
+        class="bg-green-100 border border-green-200 text-green-700 p-4 rounded-lg flex items-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd" />
+        </svg>
+        <span>Congratulations! Your profile has been successfully updated.</span>
+        <button (click)="showSuccessMessage = false" class="ml-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+</div>
