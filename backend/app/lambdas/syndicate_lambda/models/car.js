@@ -47,8 +47,7 @@ const carSchema = new Schema({
     trim: true
   }],
   location: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Location',
+    type:String,
     required: [true, 'Location is required']
   },
   model: {
