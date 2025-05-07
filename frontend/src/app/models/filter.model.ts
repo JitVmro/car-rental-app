@@ -1,11 +1,11 @@
 export interface FilterCriteria {
-    pickupLocation: string;
-    dropoffLocation: string;
-    pickupDate: string;
-    dropoffDate: string;
-    carCategory: string;
-    gearboxType: string;
-    engineType: string;
+    pickupLocationId: string;
+    dropoffLocationId: string;
+    pickupDateTime: string;
+    dropoffDateTime: string;
+    category: string;
+    gearBoxType: string;
+    fuelType: string;
     minPrice: number;
     maxPrice: number;
   }
