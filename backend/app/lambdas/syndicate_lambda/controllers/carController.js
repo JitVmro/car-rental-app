@@ -165,23 +165,34 @@ const getPopularCars = async (event) => {
 
     // Get popular cars based on car rating
     const popularCars = await Car.find()
+    // Get popular cars based on car rating
+    const popularCars = await Car.find()
       .sort({ carRating: -1 })
+      .limit(4);
       .limit(4);
 
     // Fetch locations document - this is the correct way based on your model structure
     const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
+    // Fetch locations document - this is the correct way based on your model structure
+    const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     const locationsMap = {};
 
+    // Create a map of location data for quick lookup
     // Create a map of location data for quick lookup
     if (locationsDoc && locationsDoc.content) {
       locationsDoc.content.forEach(loc => {
         locationsMap[loc.locationId] = {
           locationId: loc.locationId,
           name: loc.locationName
+          name: loc.locationName
         };
       });
     }
 
+    // console.log('Locations map:', locationsMap);
+    // console.log('Popular cars:', popularCars);
+
+    // Return popular cars with location data
     // console.log('Locations map:', locationsMap);
     // console.log('Popular cars:', popularCars);
 
@@ -208,6 +219,8 @@ const getPopularCars = async (event) => {
           pricePerDay: car.pricePerDay,
           location: locationName,
           imageURL: car.images && car.images.length > 0 ? car.images[0] : null,
+          location: locationName,
+          imageURL: car.images && car.images.length > 0 ? car.images[0] : null,
           carRating: car.carRating
         };
       })
@@ -216,6 +229,7 @@ const getPopularCars = async (event) => {
     console.error('Error in getPopularCars:', error);
     return {
       statusCode: 500,
+      body: { message: 'Internal server error', details: error.toString() }
       body: { message: 'Internal server error', details: error.toString() }
     };
   }
