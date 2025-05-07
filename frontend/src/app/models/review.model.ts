@@ -1,5 +1,5 @@
 export interface Review {
-    id: number;
+    id: number | string;
     carName: string;
     carYear: number;
     imageUrl: string;
