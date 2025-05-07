@@ -35,15 +35,21 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/auth/sign-in`, credentials)
       .pipe(
         map(response => {
-          console.log(response);
+          console.log('Login response:', response); // Add detailed logging
+          
+          // Ensure role exists and normalize it
+          const role = response.role ? response.role.toLowerCase() : 'client';
+          
           // Extract user data and token from response
           const user: User = {
             id: response.userId,
-            name: response.username||'',
+            name: response.username || '',
             email: response.email,
-            image:response.userImageUrl,
-            role: response.role.toLowerCase() // Convert role to lowercase for consistency
+            image: response.userImageUrl,
+            role: role
           };
+          
+          console.log('Processed user:', user); // Log the processed user object
           
           // Store token and user in localStorage
           localStorage.setItem(this.tokenKey, response.idToken);
@@ -75,7 +81,7 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/auth/sign-up`, apiUserData)
       .pipe(
         map(response => {
-          console.log(response);
+          console.log('Registration response:', response);
           const user: User = {
             id: response.userId,
             name: userData.name,
@@ -136,6 +142,7 @@ export class AuthService {
       }
     }
     
+    console.error('Auth error:', errorMessage);
     return throwError(() => new Error(errorMessage));
   }
 }

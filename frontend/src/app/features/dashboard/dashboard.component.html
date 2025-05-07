@@ -1,0 +1,278 @@
+<!-- dashboard.component.html -->
+<div class="min-h-screen flex flex-col bg-white">
+    <!-- Main Content -->
+    <main class="flex-grow px-6 py-6">
+      <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap items-center justify-between mb-6">
+        <div class="flex flex-wrap gap-4">
+          <!-- Report Type Filter -->
+          <div class="relative">
+            <label for="reportType" class="block text-xs text-gray-600 mb-1 ml-1">Report Type</label>
+            <button 
+              id="reportType"
+              (click)="toggleDropdown('reportType')"
+              class="bg-white border border-gray-300 rounded-md py-2 px-4 w-48 text-left flex justify-between items-center"
+              aria-label="Select report type"
+            >
+              <span class="text-sm">{{ filterForm.value.reportType || 'Select report type' }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div *ngIf="showReportTypeDropdown" class="absolute mt-1 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-2">
+                <div *ngFor="let type of reportTypes" 
+                     class="py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm"
+                     (click)="selectReportType(type)">
+                  {{ type }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Period Filter -->
+          <div class="relative">
+            <label for="period" class="block text-xs text-gray-600 mb-1 ml-1">Date Period</label>
+            <button 
+              id="period"
+              (click)="toggleDropdown('period')"
+              class="bg-white border border-gray-300 rounded-md py-2 px-4 w-72 text-left flex justify-between items-center"
+              aria-label="Select date period"
+            >
+              <span class="text-sm">{{ filterForm.value.period || 'Select date period' }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div *ngIf="showPeriodDropdown" class="absolute mt-1 w-[390px] bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-4">
+                <div class="grid grid-cols-2 gap-4">
+                  <!-- First Month Calendar -->
+                  <div>
+                    <div class="flex justify-between items-center mb-2">
+                      <button class="text-gray-600" (click)="navigateMonth(-1)" aria-label="Previous month">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      <div class="text-center">
+                        <span class="text-sm font-medium">{{ monthNames[displayedMonths[0].month] }} {{ displayedMonths[0].year }}</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Calendar Days Header -->
+                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                      <div *ngFor="let day of weekDays" class="text-xs text-gray-500">{{ day }}</div>
+                    </div>
+                    
+                    <!-- Calendar Days -->
+                    <div class="grid grid-cols-7 gap-1 text-center">
+                      <ng-container *ngFor="let week of getWeeks(displayedMonths[0].month + '-' + displayedMonths[0].year)">
+                        <div *ngFor="let day of week" 
+                            class="text-xs py-1 cursor-pointer"
+                            [ngClass]="{
+                              'text-gray-400': !day.isCurrentMonth,
+                              'bg-black text-white rounded-full': day.isSelected === true,
+                              'font-bold': day.isToday === true
+                            }"
+                            (click)="selectDay(day)"
+                            [attr.aria-label]="day.day + ' ' + monthNames[day.month] + ' ' + day.year">
+                          {{ day.day }}
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                  
+                  <!-- Second Month Calendar -->
+                  <div>
+                    <div class="flex justify-between items-center mb-2">
+                      <div class="text-center">
+                        <span class="text-sm font-medium">{{ monthNames[displayedMonths[1].month] }} {{ displayedMonths[1].year }}</span>
+                      </div>
+                      <button class="text-gray-600" (click)="navigateMonth(1)" aria-label="Next month">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <!-- Calendar Days Header -->
+                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                      <div *ngFor="let day of weekDays" class="text-xs text-gray-500">{{ day }}</div>
+                    </div>
+                    
+                    <!-- Calendar Days -->
+                    <div class="grid grid-cols-7 gap-1 text-center">
+                      <ng-container *ngFor="let week of getWeeks(displayedMonths[1].month + '-' + displayedMonths[1].year)">
+                        <!-- In your calendar days section, update the ngClass to show in-between dates -->
+<!-- In your calendar days section, update the ngClass -->
+<div *ngFor="let day of week" 
+    class="text-xs py-1 cursor-pointer"
+    [ngClass]="{
+      'text-gray-400': !day.isCurrentMonth,
+      'bg-black text-white rounded-full': isSelectedDate(day.day, day.month, day.year),
+      'bg-gray-200': isDayBetweenSelectedDates(day.day, day.month, day.year),
+      'font-bold': day.isToday === true
+    }"
+    (click)="selectDay(day)"
+    [attr.aria-label]="day.day + ' ' + monthNames[day.month] + ' ' + day.year">
+  {{ day.day }}
+</div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Location Filter -->
+          <div class="relative">
+            <label for="location" class="block text-xs text-gray-600 mb-1 ml-1">Location</label>
+            <button 
+              id="location"
+              (click)="toggleDropdown('location')"
+              class="bg-white border border-gray-300 rounded-md py-2 px-4 w-48 text-left flex justify-between items-center"
+              aria-label="Select location"
+            >
+              <span class="text-sm">{{ filterForm.value.location || 'Select location' }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div *ngIf="showLocationDropdown" class="absolute mt-1 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-2">
+                <div *ngFor="let location of locations" 
+                     class="py-1 px-2 hover:bg-gray-100 cursor-pointer rounded text-sm"
+                     (click)="selectLocation(location)">
+                  {{ location }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Create Report Button (positioned at right end) -->
+        <button 
+          (click)="createReport()"
+          class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-2xl text-sm"
+          aria-label="Create report"
+        >
+          Create report
+        </button>
+      </div>
+      
+      <!-- Report Table -->
+      <div *ngIf="reportData.length > 0" class="mb-6">
+        <div class="flex justify-between mb-4">
+          <div class="flex space-x-4">
+            <div class="text-sm">
+              <span class="font-medium">{{ filterForm.value.reportType || 'Report Type' }}</span>
+            </div>
+            <div class="text-sm">
+              <span>{{ filterForm.value.period || 'Date Period' }}</span>
+            </div>
+            <div class="text-sm">
+              <span>{{ filterForm.value.location || 'Location' }}</span>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <button 
+              (click)="toggleExportOptions()"
+              class="bg-white hover:bg-gray-50 text-gray-800 font-medium py-1 px-4 border border-gray-300 rounded-md flex items-center text-sm"
+              aria-label="Download options"
+            >
+              <span>Download</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
+            
+            <div *ngIf="showExportOptions" class="absolute right-0 mt-1 w-36 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+              <div class="p-1">
+                <button (click)="exportReport('pdf')" class="block w-full text-left py-2 px-4 hover:bg-gray-100 rounded text-sm" aria-label="Export as PDF">
+                  Export PDF
+                </button>
+                <button (click)="exportReport('xls')" class="block w-full text-left py-2 px-4 hover:bg-gray-100 rounded text-sm" aria-label="Export as Excel">
+                  Export XLS
+                </button>
+                <button (click)="exportReport('csv')" class="block w-full text-left py-2 px-4 hover:bg-gray-100 rounded text-sm" aria-label="Export as CSV">
+                  Export CSV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200" aria-label="Report data">
+            <thead class="bg-black text-white">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Period start</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Period end</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Location</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Car model</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Car ID</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Days of rent per car</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Reservations during period</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Mileage at the beginning (km)</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Mileage at the end (km)</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Total mileage (km)</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Average mileage</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Delta of Avg mileage</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Average Feedback</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Minimum Feedback</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Delta of Feedback</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Revenue (EUR)</th>
+                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider" scope="col">Delta of revenue</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let item of reportData">
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.periodStart || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.periodEnd || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.location || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.carModel || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.carId || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.daysOfRent || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.reservations || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.mileageAtBeginning || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.mileageAtEnd || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.totalMileage || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.averageMileage || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.deltaOfAvgMileage || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.averageFeedback || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.minimumFeedback || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.deltaOfFeedback || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.revenue || 'N/A' }}</td>
+                <td class="px-4 py-3 text-sm text-gray-900">{{ item.deltaOfRevenue || 'N/A' }}</td>
+              </tr>
+              <tr *ngIf="reportData.length === 0">
+                <td colspan="17" class="px-4 py-8 text-center text-gray-500">No data available. Please adjust your filters and try again.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && reportData.length === 0" class="flex flex-col items-center justify-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="text-gray-500 mb-2">No report data available</p>
+        <p class="text-gray-400 text-sm">Select filters and click 'Create report' to generate data</p>
+      </div>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="flex justify-center items-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    </main>
+  </div>
