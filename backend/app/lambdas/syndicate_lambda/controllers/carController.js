@@ -34,7 +34,7 @@ const getCars = async (event) => {
     if (queryParams.model) {
       filter.model = { $regex: queryParams.model, $options: 'i' };
     }
-
+    
 
     if (queryParams.minPrice) {
       filter.pricePerDay = { $gte: parseFloat(queryParams.minPrice) };
@@ -162,11 +162,17 @@ const getPopularCars = async (event) => {
   try {
     // Connect to database
     await connectToDatabase();
+
+    // Get popular cars based on car rating
+    const popularCars = await Car.find()
     // Get popular cars based on car rating
     const popularCars = await Car.find()
       .sort({ carRating: -1 })
       .limit(4);
+      .limit(4);
 
+    // Fetch locations document - this is the correct way based on your model structure
+    const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     // Fetch locations document - this is the correct way based on your model structure
     const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     const locationsMap = {};
@@ -178,9 +184,17 @@ const getPopularCars = async (event) => {
         locationsMap[loc.locationId] = {
           locationId: loc.locationId,
           name: loc.locationName
+          name: loc.locationName
         };
       });
     }
+
+    // console.log('Locations map:', locationsMap);
+    // console.log('Popular cars:', popularCars);
+
+    // Return popular cars with location data
+    // console.log('Locations map:', locationsMap);
+    // console.log('Popular cars:', popularCars);
 
     // Return popular cars with location data
     return {
@@ -215,6 +229,7 @@ const getPopularCars = async (event) => {
     console.error('Error in getPopularCars:', error);
     return {
       statusCode: 500,
+      body: { message: 'Internal server error', details: error.toString() }
       body: { message: 'Internal server error', details: error.toString() }
     };
   }
