@@ -78,21 +78,18 @@ const schemas = {
 
   // Car schemas
   getCars: Joi.object({
-    brand: Joi.string().optional(),
     model: Joi.string().optional(),
     minPrice: Joi.number().optional(),
     maxPrice: Joi.number().optional(),
     location: Joi.string().optional(),
     startDate: Joi.date().iso().optional(),
     endDate: Joi.date().iso().optional(),
-    transmission: Joi.string().valid("Automatic", "Manual").optional(),
-    fuelType: Joi.string()
-      .valid("Petrol", "Diesel", "Hybrid", "Electric")
-      .optional(),
+    transmission: Joi.string().valid('Automatic', 'Manual').optional(),
+    fuelType: Joi.string().valid('Petrol', 'Diesel', 'Hybrid', 'Electric').optional(),
     minSeats: Joi.number().integer().optional(),
     page: Joi.number().integer().min(1).optional(),
     limit: Joi.number().integer().min(1).optional(),
-    sort: Joi.string().optional(),
+    sort: Joi.string().optional()
   }),
 
   createCar: Joi.object({
@@ -161,7 +158,7 @@ const schemas = {
     pickupDateTime: Joi.string().required(),
     pickupLocationId: Joi.string().required(),
     dropOffDateTime: Joi.string().required(),
-    dropOffLocationId: Joi.string().required(),
+    dropOffLocationId: Joi.string().required()
   }),
 
   updateBooking: Joi.object({
@@ -185,9 +182,10 @@ const schemas = {
 
   // Feedback schemas
   createFeedback: Joi.object({
+    carId:Joi.string().required(),
     bookingId: Joi.string().required(),
     rating: Joi.number().integer().min(1).max(5).required(),
-    comment: Joi.string().max(1000).optional(),
+    comment: Joi.string().max(1000).optional()
   }),
 
   updateFeedback: Joi.object({
@@ -312,6 +310,12 @@ const schemas = {
       .required(),
   }),
   // Add this to your validator.js schemas
+  getUserBookings: Joi.object({
+    userId: Joi.string().required(),
+    status: Joi.string().valid('Pending', 'Confirmed', 'Active', 'Completed', 'Cancelled').optional(),
+    page: Joi.number().integer().min(1).optional(),
+    limit: Joi.number().integer().min(1).optional()
+  }),
   // Add this to your validator.js schemas
   getBookings: Joi.object({
     status: Joi.string()
@@ -322,6 +326,7 @@ const schemas = {
     page: Joi.number().integer().min(1).optional(),
     limit: Joi.number().integer().min(1).optional(),
   }),
+
   // Add this to your validator.js schemas
   changePassword: Joi.object({
     currentPassword: Joi.string().required(),
@@ -332,11 +337,10 @@ const schemas = {
       )
       .required()
       .messages({
-        "string.min": "Password must be at least 8 characters long",
-        "string.pattern.base":
-          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        'string.min': 'Password must be at least 8 characters long',
+        'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       }),
-  }),
+  })
 };
 
 // Export validator and schemas
