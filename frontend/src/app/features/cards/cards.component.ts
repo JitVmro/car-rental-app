@@ -29,7 +29,6 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // All cars in the system
   allCars: Car[] = [];
-
   // Featured cars for home page (first 4)
   featuredCars: Car[] = [];
 
@@ -219,3 +218,4 @@ export class CardsComponent implements OnInit, OnDestroy {
     this.updatePaginationArray();
   }
 }
+ 

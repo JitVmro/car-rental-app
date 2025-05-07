@@ -1,6 +1,7 @@
 import { NgClass, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { HttpClientModule,HttpClient } from '@angular/common/http';
+import { environment } from '../../../environment/environment';
 
 interface Location{
   locationId:string;
@@ -19,7 +20,8 @@ interface Location{
 
 export class MapComponent {
 
-  readonly mapsUrl='https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/home/locations';
+  baseUrl = environment.apiUrl;
+  readonly mapsUrl=this.baseUrl + '/home/locations';
   constructor(private http: HttpClient) {}
 
   apiData: any = null;

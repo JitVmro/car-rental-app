@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { Feedback } from '../../models/feedback';
 import { bookingFeedback } from '../../models/bookingFeedback';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environment/environment';
 
 
 @Component({
@@ -48,7 +49,8 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
 
   currentBookingID: any;
   latestBooking!: Booking;
-  createFeedbackUrl = 'https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/feedbacks';
+  baseUrl = environment.apiUrl;
+  createFeedbackUrl = this.baseUrl + '/feedbacks';
 
   constructor(
     public bookingService: BookingServiceService,
@@ -94,7 +96,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       });
-      const URL: string = `https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings/${this.userId.id}`;
+      const URL: string = this.baseUrl +  `/bookings/${this.userId.id}`;
 
       this.http.get(URL, { headers }).subscribe({
         next: (response: any) => {

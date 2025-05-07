@@ -11,6 +11,7 @@ import { DatePickerComponent } from "../../shared/date-picker/date-picker.compon
 import { CarFilterService } from '../../core/services/car-filter.service';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CarsService } from '../../core/services/cars/cars.service';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-booking-page',
@@ -148,7 +149,7 @@ export class BookingPageComponent implements OnInit {
       }
       console.log(bookingObj);
 
-      this.http.post('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings', bookingObj, { headers: this.headers }).subscribe({
+      this.http.post(environment.apiUrl + '/bookings', bookingObj, { headers: this.headers }).subscribe({
         next: (response: any) => {
           console.log('Booking created successfully:', response.message, response.bookingNumber);
           this.router.navigate(['/bookings/new', { bId: bookingObj.carId }])
