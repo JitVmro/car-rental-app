@@ -152,47 +152,51 @@ const getPopularCars = async (event) => {
     // Connect to database
     await connectToDatabase();
 
-    // Get popular cars based on booking count without populate
-    const popularCars = await Car.find({ available: true })
+    // Get popular cars based on car rating
+    const popularCars = await Car.find()
       .sort({ carRating: -1 })
-      .limit(10);
+      .limit(4);
 
-    // Get all locations to manually join with cars
-    const locationsDoc = await Locations.findOne({});
+    // Fetch locations document - this is the correct way based on your model structure
+    const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     const locationsMap = {};
 
+    // Create a map of location data for quick lookup
     if (locationsDoc && locationsDoc.content) {
       locationsDoc.content.forEach(loc => {
-        // Extract city and country from address
-        const addressParts = loc.locationAddress.split(',');
-        const city = addressParts.length > 0 ? addressParts[0].trim() : '';
-        const country = addressParts.length > 1 ? addressParts[addressParts.length - 1].trim() : '';
-
         locationsMap[loc.locationId] = {
           locationId: loc.locationId,
-          name: loc.locationName,
-          city: city,
-          country: country
+          name: loc.locationName
         };
       });
     }
 
-    // Return popular cars
+    // console.log('Locations map:', locationsMap);
+    // console.log('Popular cars:', popularCars);
+
+    // Return popular cars with location data
     return {
       statusCode: 200,
       body: popularCars.map(car => {
-        const locationId = car.locationId ? car.locationId.toString() : null;
-        const location = locationId && locationsMap[locationId] ? locationsMap[locationId] : null;
+        // Get location data from the map using the car's location ID
+        const locationId = car.location;
+        // console.log(`Car ${car._id} has location ID: ${locationId}`);
+        
+        let locationName = "Unknown Location";
+        
+        // Check if we have location data for this ID
+        if (locationId && locationsMap[locationId]) {
+          locationName = locationsMap[locationId].name;
+        }
+        
+        // console.log(`Location name for car ${car._id}: ${locationName}`);
+
         return {
           carId: car._id,
           model: car.model,
           pricePerDay: car.pricePerDay,
-          location: location ? {
-            locationId: location.locationId,
-            city: location.city,
-            country: location.country
-          } : null,
-          images: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
+          location: locationName,
+          imageURL: car.images && car.images.length > 0 ? car.images[0] : null,
           carRating: car.carRating
         };
       })
@@ -201,7 +205,7 @@ const getPopularCars = async (event) => {
     console.error('Error in getPopularCars:', error);
     return {
       statusCode: 500,
-      body: { message: 'Internal server error' }
+      body: { message: 'Internal server error', details: error.toString() }
     };
   }
 };

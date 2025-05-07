@@ -15,6 +15,11 @@ export class CarsService {
   getCars(): Observable<any> {
     return this.http.get(this.baseURL + "/cars")
   }
+  getPopularCars(): Observable<any> {
+    return this.http.get(this.baseURL + "/cars/popular")
+  }
+
+
 
 
 
