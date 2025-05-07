@@ -29,7 +29,7 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // All cars in the system
   allCars: Car[] = [];
-  
+
   // Featured cars for home page (first 4)
   featuredCars: Car[] = [];
 
@@ -51,18 +51,14 @@ export class CardsComponent implements OnInit, OnDestroy {
     private carService: CarDetailsService,
     private router: Router,
     private carsService: CarsService
-  ) {
-
-    console.log(this.allCars);
-
-  }
+  ) { }
 
   ngOnInit(): void {
     // Call cars loader
-    if(this.isHomePage){
+    if (this.isHomePage) {
       this.loadPopularCars()
     }
-    else{
+    else {
       this.loadCars()
     }
 
@@ -82,7 +78,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Load all cars from cars services
   loadCars() {
     this.carsService.getCars().subscribe(((cars) => {
-      this.allCars = cars.cars;
+      this.allCars = JSON.parse(cars).content;
       console.log(this.allCars)
 
       if (this.showAllCars || !this.isHomePage) {
@@ -93,7 +89,7 @@ export class CardsComponent implements OnInit, OnDestroy {
     }))
   }
 
-  loadPopularCars(){
+  loadPopularCars() {
     this.carsService.getPopularCars().subscribe(((cars) => {
       this.featuredCars = cars
       console.log(this.featuredCars)
