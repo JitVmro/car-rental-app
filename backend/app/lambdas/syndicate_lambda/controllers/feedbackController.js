@@ -128,58 +128,76 @@ const createFeedback = async (event) => {
  */
 const getRecentFeedbacks = async (event) => {
   try {
-    // Extract and validate query parameters
+    // Extract query parameters
     const queryParams = event.queryStringParameters || {};
-    const validatedParams = validate(queryParams, schemas.getRecentFeedbacks);
     
     // Connect to database
     await connectToDatabase();
     
     // Get count parameter
-    const count = validatedParams.count || 10;
+    const count = parseInt(queryParams.count) || 10;
+    const validCount = Math.min(Math.max(1, count), 50); // Limit between 1 and 50
     
     // Find recent feedbacks with good ratings
     const recentFeedbacks = await Feedback.find({ rating: { $gte: 4 } })
-      .populate('userId', 'firstName lastName imageUrl')
+      .populate('userId', 'firstName lastName location imageUrl')
       .populate('carId', 'brand model year imageUrls')
-      .limit(count)
+      .limit(validCount)
       .sort({ createdAt: -1 });
     
-    // Return recent feedbacks
+    // Format the response according to Swagger UI format
+    const formattedFeedbacks = recentFeedbacks.map(feedback => {
+      const date = new Date(feedback.createdAt);
+      const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+      
+      // Get user info
+      const userName = feedback.userId ? 
+        `${feedback.userId.firstName} ${feedback.userId.lastName}` : 
+        'Anonymous';
+      
+      const userLocation = feedback.userId && feedback.userId.location ? 
+        feedback.userId.location : 
+        '';
+      
+      const author = userLocation ? 
+        `${userName}, ${userLocation}` : 
+        userName;
+      
+      // Get car info
+      const carModel = feedback.carId ? 
+        `${feedback.carId.brand} ${feedback.carId.model} ${feedback.carId.year}` : 
+        'Unknown Model';
+      
+      const carImageUrl = feedback.carId && 
+                         feedback.carId.imageUrls && 
+                         feedback.carId.imageUrls.length > 0 ? 
+        feedback.carId.imageUrls[0] : 
+        null;
+      
+      return {
+        feedbackId: feedback._id.toString(),
+        feedbackText: feedback.comment,
+        rating: feedback.rating.toFixed(1),
+        date: formattedDate,
+        author: author,
+        carModel: carModel,
+        carImageUrl: carImageUrl,
+        orderHistory: `#${feedback._id.toString().substring(0, 4)} (${formattedDate})`
+      };
+    });
+    
+    // Return recent feedbacks in the format matching Swagger UI
     return {
       statusCode: 200,
-      body: recentFeedbacks.map(feedback => ({
-        feedbackId: feedback._id,
-        rating: feedback.rating,
-        comment: feedback.comment,
-        createdAt: feedback.createdAt,
-        user: feedback.userId ? {
-          userId: feedback.userId._id,
-          name: `${feedback.userId.firstName} ${feedback.userId.lastName}`,
-          imageUrl: feedback.userId.imageUrl || ''
-        } : null,
-        car: feedback.carId ? {
-          carId: feedback.carId._id,
-          brand: feedback.carId.brand,
-          model: feedback.carId.model,
-          year: feedback.carId.year,
-          imageUrl: feedback.carId.imageUrls && feedback.carId.imageUrls.length > 0 ? feedback.carId.imageUrls[0] : null
-        } : null
-      }))
+      headers: { "Content-Type": "application/json" },
+      body: formattedFeedbacks
     };
   } catch (error) {
     console.error('Error in getRecentFeedbacks:', error);
     
-    if (error.name === 'ValidationError') {
-      return {
-        statusCode: 400,
-        body: { message: 'Validation error', details: error.details }
-      };
-    }
-    
     return {
       statusCode: 500,
-      body: { message: 'Internal server error' }
+      body: JSON.stringify({ message: 'Internal server error' })
     };
   }
 };
