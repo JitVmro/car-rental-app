@@ -37,9 +37,17 @@ const bookingSchema = new Schema({
   },
   dropOffDateTime: {
     type: String,
-    required: [true, 'End date is required'],
-    
+    required: [true, 'End date is required']
   },
+  carImg: {
+    type: String,
+    required: [true, 'Car Img is required'],
+  },
+  carName: {
+    type: String,
+    required: [true, 'Car Name is required'],
+  },
+
   
   // Booking details
   totalPrice: {
@@ -50,7 +58,7 @@ const bookingSchema = new Schema({
   status: {
     type: String,
     enum: ['FinishedService','Cancelled','InProgress','FinishedBooking','Reserved',],
-    default: 'InProgress'
+    default: 'Reserved'
   },
   
   // Payment information

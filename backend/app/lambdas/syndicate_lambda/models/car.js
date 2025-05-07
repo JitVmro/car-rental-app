@@ -11,11 +11,6 @@ const Schema = mongoose.Schema;
  * Defines the structure and validation for car documents
  */
 const carSchema = new Schema({
-  carId: {
-    type: String,
-    required: [true, 'CarId is required'],
-    unique: true
-  },
   carRating: {
     type: String,
   },
@@ -47,7 +42,7 @@ const carSchema = new Schema({
     trim: true
   }],
   location: {
-    type:String,
+    type: String,
     required: [true, 'Location is required']
   },
   model: {
@@ -96,7 +91,6 @@ carSchema.index({ model: 1 });
 carSchema.index({ location: 1 });
 carSchema.index({ pricePerDay: 1 });
 carSchema.index({ status: 1 });
-carSchema.index({ carRating: 1 });
 
 // Create and export the Car model
 const Car = mongoose.model('Car', carSchema);

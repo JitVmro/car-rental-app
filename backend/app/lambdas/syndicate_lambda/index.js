@@ -140,6 +140,6 @@ const handleError = (error) => {
     }
   }
   
-  // Default to internal server error
+  // Changed
   return buildResponse(500, { message: 'Internal server error' });
 };
