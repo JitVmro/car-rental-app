@@ -23,10 +23,8 @@ const path = require('path');
  */
 const getReports = async (event) => {
   try {
-    // Authenticate and authorize admin
     const authorizedEvent = await authorize(['Admin'])(event);
-    
-    // Extract query parameters
+
     const queryParams = event.queryStringParameters || {};
     const {
       dateFrom,
@@ -35,56 +33,59 @@ const getReports = async (event) => {
       carId,
       supportAgentId
     } = queryParams;
-    
-    // Connect to database
+
     await connectToDatabase();
-    
-    // Build query filter
+
     const query = {};
-    
-    // Add date range filter
+
+    // Correct date range filter on pickupDateTime
     if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) {
-        query.createdAt.$gte = new Date(dateFrom);
-      }
-      if (dateTo) {
-        query.createdAt.$lte = new Date(dateTo);
-      }
+      query.pickupDateTime = {};
+      if (dateFrom) query.pickupDateTime.$gte = new Date(dateFrom);
+      if (dateTo) query.pickupDateTime.$lte = new Date(dateTo);
     }
-    
-    // Add location filter
-    if (locationId) {
-      query.pickupLocationId = locationId;
-    }
-    
-    // Add car filter
+
+    // Car ID filter
     if (carId) {
       query.carId = carId;
     }
-    
-    // Add support agent filter
+
+    // Support Agent filter
     if (supportAgentId) {
       query.supportAgentId = supportAgentId;
     }
-    
-    // Fetch bookings based on filters
+
+    // Location filter - assuming location is a string inside carId.location
     const bookings = await Booking.find(query)
-      .populate('clientId', 'firstName lastName email')
-      .populate('carId', 'model pricePerDay status images location')
-      .sort({ createdAt: -1 });
-    
-    // Format response
-    const reports = bookings.map(booking => ({
+      .populate({
+        path: 'clientId',
+        select: 'firstName lastName email'
+      })
+      .populate({
+        path: 'carId',
+        select: 'model pricePerDay status images location'
+      })
+      .sort({ pickupDateTime: -1 });
+
+    // Additional filtering on location (after population)
+    const filteredBookings = bookings.filter(booking => {
+      if (locationId && booking.carId?.location !== locationId) return false;
+      return true;
+    });
+
+    // Response formatting
+    const reports = filteredBookings.map(booking => ({
       reportId: booking._id.toString(),
       bookingPeriod: `${moment(booking.pickupDateTime).format('MMM DD')} - ${moment(booking.dropOffDateTime).format('MMM DD')}`,
-      carModel: booking.carName,
-      carNumber: booking.carId ? booking.carId._id.substring(0, 8).toUpperCase() : 'N/A',
-      carMillageStart: Math.floor(Math.random() * 10000) + 20000, // Placeholder - replace with actual data when available
-      carMillageEnd: Math.floor(Math.random() * 10000) + 30000, // Placeholder - replace with actual data when available
-      carServiceRating: booking.carId ? booking.carId.serviceRating || '4.5' : 'N/A',
+      carModel: booking.carId?.model || 'Unknown',
+      carNumber: booking.carId?._id?.toString().substring(0, 8).toUpperCase() || 'N/A',
+      carMillageStart: Math.floor(Math.random() * 10000) + 20000,
+      carMillageEnd: Math.floor(Math.random() * 10000) + 30000,
+      carServiceRating: booking.carId?.serviceRating || '4.5',
       supportAgent: booking.supportAgentId || 'Self-service',
-      madeBy: booking.clientId ? `${booking.clientId.firstName} ${booking.clientId.lastName} (Client)` : 'Unknown'
+      madeBy: booking.clientId
+        ? `${booking.clientId.firstName} ${booking.clientId.lastName} (Client)`
+        : 'Unknown'
     }));
 
     return {
@@ -95,20 +96,21 @@ const getReports = async (event) => {
     };
   } catch (error) {
     console.error('Error in getReports:', error);
-    
+
     if (error.name === 'UnauthorizedError' || error.name === 'ForbiddenError') {
       return {
         statusCode: error.name === 'UnauthorizedError' ? 401 : 403,
         body: { message: error.message }
       };
     }
-    
+
     return {
       statusCode: 500,
       body: { message: 'Internal server error' }
     };
   }
 };
+
 
 /**
  * Create and export aggregated report
