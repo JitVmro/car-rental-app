@@ -9,8 +9,9 @@ export enum BookingState {
 }
 
 export interface Booking {
-  id: number;
-  user: User;
+  id: string;
+  userId: User["id"];
+  carId: string;
   carimg: string;
   carname: string;
   state: BookingState;
@@ -20,6 +21,17 @@ export interface Booking {
   endTime: string;
   pickuplocation: Location;
   droplocation: Location;
+}
+
+export interface createBooking {
+  "carId": string,
+  "clientId": string,
+  "dropOffDateTime": string,
+  "dropOffLocationId": string,
+  "pickupDateTime": string,
+  "pickupLocationId": string,
+  "carImg": string,
+  "carName": string,
 }
 
 export enum Location{

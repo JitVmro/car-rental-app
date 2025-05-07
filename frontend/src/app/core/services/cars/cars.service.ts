@@ -40,4 +40,7 @@ export class CarsService {
     return this.http.get(`${this.baseURL}/cars`, { params });
   }
 
+  getCarById(carId: string): Observable<any> {
+    return this.http.get(this.baseURL + "/cars/" + carId)
+  }
 }

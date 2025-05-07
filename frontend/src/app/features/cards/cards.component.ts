@@ -215,3 +215,4 @@ export class CardsComponent implements OnInit, OnDestroy {
     this.updatePaginationArray();
   }
 }
+ 

@@ -94,7 +94,7 @@
     <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[393px] p-6 rounded-lg shadow-lg max-w-md ">
       <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">How was your experience?</h1>
 
-      <h3 class="text-lg font-normal mb-6">Audi A6 Quattro 2023</h3>
+      <h3 class="text-lg font-normal mb-6">{{this.carName}}</h3>
 
       <h5 class="text-[12px] font-normal text-[#666666]">Rate your experience</h5>
 
@@ -113,7 +113,7 @@
       <section class="w-full flex flex-col gap-1 mb-6">
         <h5 class="font-normal text-xs">Review</h5>
         <textarea class="border border-[#DCDCDD] rounded-lg px-3 py-2 outline-none h-[95px]" name="Review" id="Review"
-          placeholder="Add Your Comment"></textarea>
+          placeholder="Add Your Comment" [(ngModel)]="reviewText"></textarea>
       </section>
 
       <!-- Buttons Section -->

@@ -15,13 +15,9 @@ export class BookingServiceService {
   public singleBooking$: Observable<Booking>;
 
   currentBooking: Booking = {
-    id: 0,
-    user: {
-      id: '',
-      name: '',
-      email: '',
-      role: ''
-    },
+    id: '',
+    carId: '',
+    userId:' ',
     carimg: '',
     carname: '',
     state: BookingState.FinishedService,
@@ -34,98 +30,7 @@ export class BookingServiceService {
   }
 
   constructor() {
-    const initialBookings: Booking[] = [
-      {
-        id: 1,
-        user: {
-          id: '2',
-          name: 'Ravi Sharma',
-          email: 'ravi.sharma@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/mazda-cx5.jpg',
-        carname: 'Mazda CX5',
-        state: BookingState.Reserved,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: 2,
-        user: {
-          id: '2',
-          name: 'Anjali Mehta',
-          email: 'anjali.mehta@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/kia-sportage.jpg',
-        carname: 'Kia Sportage',
-        state: BookingState.InProgress,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: 3,
-        user: {
-          id: '2',
-          name: 'Aman Verma',
-          email: 'aman.verma@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/chevrolet-camaro.jpg',
-        carname: 'Chevrolet Camaro',
-        state: BookingState.FinishedBooking,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: 4,
-        user: {
-          id: '2',
-          name: 'Neha Sinha',
-          email: 'neha.sinha@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/lexus-rx.jpg',
-        carname: 'Lexus RX',
-        state: BookingState.Cancelled,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-      {
-        id: 5,
-        user: {
-          id: '2',
-          name: 'Karan Patel',
-          email: 'karan.patel@example.com',
-          role: 'admin',
-        },
-        carimg: 'assets/images/volvo-xc60.jpg',
-        carname: 'Volvo XC60',
-        state: BookingState.FinishedService,
-        startDate: new Date(),
-        endDate: new Date(),
-        startTime: '',
-        endTime: '',
-        pickuplocation: Location.Kyiv,
-        droplocation: Location.Kyiv
-      },
-    ];
+    const initialBookings: Booking[] = [];
 
     this.bookingsSubject = new BehaviorSubject<Booking[]>(initialBookings);
     this.bookings$ = this.bookingsSubject.asObservable();
@@ -151,11 +56,11 @@ export class BookingServiceService {
 
   getBookings(user: User): Observable<Booking[]> {
     return this.bookings$.pipe(
-      map(bookings => bookings.filter(booking => booking.user.id === user.id))
+      map(bookings => bookings.filter(booking => booking.userId === user.id))
     );
   }
 
-  cancelBooking(bookingId: number): void {
+  cancelBooking(bookingId: string): void {
     const currentBookings = this.bookingsSubject.value;
 
     // Create a new array without the cancelled booking
@@ -170,7 +75,7 @@ export class BookingServiceService {
     this.bookingsSubject.next(updatedBookings);
   }
 
-  completeBooking(bookingId: number): void {
+  completeBooking(bookingId: string): void {
     const currentBookings = this.bookingsSubject.value;
 
     // Create a new array without the cancelled booking
@@ -189,7 +94,7 @@ export class BookingServiceService {
     return this.bookings$;
   }
 
-  getBooking(id: number): Observable<Booking> {
+  getBooking(id: string): Observable<Booking> {
     const currentBookings = this.bookingsSubject.value;
     const booking = currentBookings.find((b) => b.id === id);
     if (booking) {
@@ -203,4 +108,17 @@ export class BookingServiceService {
     const bookingIndex = currentBookings.findIndex((b) => b.id === updatedBooking.id)
     currentBookings[bookingIndex] = updatedBooking;
   }
+
+  getBookingCarName(bookingId: string): Observable<string> {
+    return this.bookings$.pipe(
+      map(bookings => {
+        const booking = bookings.find(b => b.id === bookingId);
+        return booking?.carname ?? 'Unknown Booking';
+      })
+    );
+  }
+  
+  
 }
+
+
