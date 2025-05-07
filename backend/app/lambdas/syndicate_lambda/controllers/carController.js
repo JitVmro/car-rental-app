@@ -284,7 +284,7 @@ const getCarById = async (event) => {
         fuelType: car.fuelType,
         gearBoxType: car.gearBoxType,
         images: car.images || [],
-        location: locationData,
+        location: locationData.name,
         model: car.model,
         passengerCapacity: car.passengerCapacity || null,
         pricePerDay: car.pricePerDay,
