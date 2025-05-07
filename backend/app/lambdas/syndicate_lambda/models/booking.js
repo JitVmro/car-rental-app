@@ -12,48 +12,53 @@ const Schema = mongoose.Schema;
  */
 const bookingSchema = new Schema({
   // Booking relationships
-  userId: {
+  clientId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'User ID is required']
   },
   carId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Car',
+    type:String,
     required: [true, 'Car ID is required']
   },
-  locationId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Location',
+  dropOffLocationId: {
+    type: String,
+    required: [true, 'Location ID is required']
+  },
+  pickupLocationId: {
+    type: String,
     required: [true, 'Location ID is required']
   },
   
   // Booking dates
-  startDate: {
-    type: Date,
+  pickupDateTime: {
+    type: String,
     required: [true, 'Start date is required']
   },
-  endDate: {
-    type: Date,
-    required: [true, 'End date is required'],
-    validate: {
-      validator: function(endDate) {
-        return endDate > this.startDate;
-      },
-      message: 'End date must be after start date'
-    }
+  dropOffDateTime: {
+    type: String,
+    required: [true, 'End date is required']
   },
+  carImg: {
+    type: String,
+    required: [true, 'Car Img is required'],
+  },
+  carName: {
+    type: String,
+    required: [true, 'Car Name is required'],
+  },
+
   
   // Booking details
   totalPrice: {
     type: Number,
-    required: [true, 'Total price is required'],
+    required: [false, 'Total price is required'],
     min: [0, 'Total price cannot be negative']
   },
   status: {
     type: String,
-    enum: ['Active', 'Completed', 'Cancelled'],
-    default: 'Active'
+    enum: ['FinishedService','Cancelled','InProgress','FinishedBooking','Reserved',],
+    default: 'Reserved'
   },
   
   // Payment information
