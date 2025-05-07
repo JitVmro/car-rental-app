@@ -7,7 +7,6 @@
     <div class="w-full max-w-md">
       <h1 class="text-[42px] font-bold mb-1 text-center">Create an account</h1>
       <p class="text-gray-600 mb-8 text-center">Enter your details below to get started</p>
-
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1">
@@ -39,9 +38,17 @@
               placeholder="Write your surname">
             <!-- Error message with opacity transition -->
             <div class="h-5 mt-1">
-              <div *ngIf="registerForm.get('surname')?.invalid && registerForm.get('surname')?.touched"
+              <div *ngIf="registerForm.get('surname')?.invalid && registerForm.get('name')?.touched"
                 class="text-red-500 text-sm">
-                <div *ngIf="registerForm.get('surname')?.errors?.['pattern']">Only Latin letters are allowed</div>
+                <div *ngIf="registerForm.get('surname')?.errors?.['required']">
+                  Surame is required
+                </div>
+                <div *ngIf="registerForm.get('surname')?.errors?.['whitespace']">
+                  Surame can't be empty
+                </div>
+                <div *ngIf="registerForm.get('surname')?.errors?.['pattern']">
+                  Only Latin letters and spaces are allowed
+                </div>
               </div>
             </div>
           </div>

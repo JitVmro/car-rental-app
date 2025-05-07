@@ -19,13 +19,13 @@ const signIn = async (event) => {
     // Parse and validate request body
     const body = JSON.parse(event.body || '{}');
     const validatedData = validate(body, schemas.signIn);
-    
+
     // Connect to database
     await connectToDatabase();
-    
+
     // Find user by email
     const user = await User.findOne({ email: validatedData.email });
-    
+
     // Check if user exists and password is correct
     if (!user || !(await bcrypt.compare(validatedData.password, user.password))) {
       return {
@@ -33,7 +33,7 @@ const signIn = async (event) => {
         body: { message: 'Invalid email or password' }
       };
     }
-    
+
     // Generate JWT token
     const token = generateToken({
       sub: user._id.toString(),
@@ -41,7 +41,7 @@ const signIn = async (event) => {
       name: `${user.firstName} ${user.lastName}`,
       role: user.role
     });
-    
+
     // Return success response with token
     return {
       statusCode: 200,
@@ -55,7 +55,7 @@ const signIn = async (event) => {
     };
   } catch (error) {
     console.error('Error in signIn:', error);
-    
+
     // Handle validation errors
     if (error.name === 'ValidationError') {
       return {
@@ -63,7 +63,7 @@ const signIn = async (event) => {
         body: { message: 'Validation error', details: error.details }
       };
     }
-    
+
     // Handle other errors
     return {
       statusCode: 500,
@@ -82,23 +82,24 @@ const signUp = async (event) => {
     // Parse and validate request body
     const body = JSON.parse(event.body || '{}');
     const validatedData = validate(body, schemas.signUp);
-    
+
     // Connect to database
     await connectToDatabase();
-    
+
     // Check if user with this email already exists
     const existingUser = await User.findOne({ email: validatedData.email });
     if (existingUser) {
       return {
         statusCode: 409,
-        body: { message: 'User with this email already exists' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'User with this email already exists' })
       };
     }
-    
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(validatedData.password, salt);
-    
+
     // Create new user
     const newUser = new User({
       email: validatedData.email,
@@ -112,10 +113,10 @@ const signUp = async (event) => {
       postalCode: validatedData.postalCode,
       role: 'Client' // Default role for new users
     });
-    
+
     // Save user to database
     await newUser.save();
-    
+
     // Return success response
     return {
       statusCode: 201,
@@ -123,7 +124,7 @@ const signUp = async (event) => {
     };
   } catch (error) {
     console.error('Error in signUp:', error);
-    
+
     // Handle validation errors
     if (error.name === 'ValidationError') {
       return {
@@ -131,7 +132,7 @@ const signUp = async (event) => {
         body: { message: 'Validation error', details: error.details }
       };
     }
-    
+
     // Handle other errors
     return {
       statusCode: 500,

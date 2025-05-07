@@ -4,6 +4,7 @@ import { HeaderComponent } from "./layout/header/header.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({

@@ -31,7 +31,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group(
       {
         name: ['', [Validators.required, this.nameValidator]],
-        surname: ['', [Validators.pattern(/^[a-zA-Z\s]*$/)]],
+        surname: ['', [Validators.required,this.nameValidator]],
         email: [
           '',
           [
@@ -128,13 +128,11 @@ export class RegisterComponent implements OnInit {
         });
       },
       error: (error) => {
+        console.log('Full error:' + error);
+
         console.log(error);
-        if (
-          error?.status === 409 &&
-          error?.error?.message === 'User with this email already exists'
-        ) {
-          this.registerForm.get('email')?.setErrors({ alreadyRegistered: true });
-        }
+        this.registerForm.get('email')?.setErrors({ alreadyRegistered: true });
+
         this.isSubmitting = false;
       },
       complete: () => {

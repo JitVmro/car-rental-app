@@ -61,7 +61,7 @@ export class CarBookingEditComponent implements OnInit {
 
     if (this.currentBookingID) {
       this.subscription = this.bookingService
-        .getBooking(parseInt(this.currentBookingID))
+        .getBooking((this.currentBookingID))
         .subscribe({
           next: (value) => {
             this.currentBookingInfo = value;

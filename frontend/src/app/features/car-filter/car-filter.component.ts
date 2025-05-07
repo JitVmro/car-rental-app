@@ -8,6 +8,7 @@ import {
 import { CarFilterService } from '../../core/services/car-filter.service';
 import { FilterCriteria } from '../../models/filter.model';
 import { CommonModule } from '@angular/common';
+import { CarsService } from '../../core/services/cars/cars.service';
 
 @Component({
   selector: 'app-car-filter',
@@ -24,7 +25,7 @@ export class CarFilterComponent implements OnInit {
   engineTypes: string[] = [];
 
   minPrice: number = 50;
-  maxPrice: number = 700;
+  maxPrice: number = 1500;
   draggingHandle: 'min' | 'max' | null = null;
   sliderElement: HTMLElement | null = null;
   touchStartX: number | null = null;
@@ -38,7 +39,8 @@ export class CarFilterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private carFilterService: CarFilterService
+    private carFilterService: CarFilterService,
+    private carsService: CarsService
   ) {
     this.selectedPickupDate.setDate(this.selectedPickupDate.getDate());
     this.selectedDropoffDate.setDate(this.selectedPickupDate.getDate() + 1);
@@ -58,25 +60,28 @@ export class CarFilterComponent implements OnInit {
   ngOnInit(): void {
     this.locations = this.carFilterService.getLocations();
     this.carCategories = this.carFilterService.getCarCategories();
-    this.gearboxTypes = this.carFilterService.getGearboxTypes();
+    this.gearboxTypes = this.carFilterService.getgearBoxTypes();
     this.engineTypes = this.carFilterService.getEngineTypes();
-    this.findCars();
   }
 
   findCars(): void {
     const formValues = this.filterForm.value;
     const filters: FilterCriteria = {
-      pickupLocation: formValues.pickupLocation,
-      dropoffLocation: formValues.dropoffLocation,
-      pickupDate: formValues.pickupDate,
-      dropoffDate: formValues.dropoffDate,
-      carCategory: formValues.carCategory,
-      gearboxType: formValues.gearboxType,
-      engineType: formValues.engineType,
+      pickupLocationId: formValues.pickupLocation,
+      dropoffLocationId: formValues.dropoffLocation,
+      pickupDateTime: formValues.pickupDate,
+      dropoffDateTime: formValues.dropoffDate,
+      category: formValues.carCategory,
+      gearBoxType: formValues.gearboxType,
+      fuelType: formValues.engineType,
       minPrice: formValues.priceRange[0],
       maxPrice: formValues.priceRange[1],
     };
-    this.carFilterService.filterCars(filters);
+    this.carsService.getFilteredCar(filters).subscribe(data => {
+      const cars = data.cars;
+      console.log("FILTERED CARS: ",cars)
+    });
+    // const vari = this.carsService.getFilteredCar(filters);
   }
 
   clearFilters(): void {
@@ -144,7 +149,7 @@ export class CarFilterComponent implements OnInit {
     } else {
       // Allow same day for dropoff (Issue 1 fix)
       if (date < this.selectedPickupDate) return;
-      
+
       this.selectedDropoffDate = new Date(date);
       this.filterForm.patchValue({ dropoffDate: this.formatDate(date) });
       this.showDropoffCalendar = false;
@@ -239,9 +244,8 @@ export class CarFilterComponent implements OnInit {
       'November',
       'December',
     ];
-    return `${
-      months[this.currentMonth.getMonth()]
-    } ${this.currentMonth.getFullYear()}`;
+    return `${months[this.currentMonth.getMonth()]
+      } ${this.currentMonth.getFullYear()}`;
   }
 
   isDateSelected(date: Date, type: 'pickup' | 'dropoff'): boolean {
@@ -264,12 +268,12 @@ export class CarFilterComponent implements OnInit {
   isDropoffDateDisabled(date: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // For pickup calendar, only disable dates before today
     if (!this.showDropoffCalendar) {
       return date < today;
     }
-    
+
     // For dropoff calendar, disable dates before today and before pickup date
     return date < today || date < this.selectedPickupDate;
   }
