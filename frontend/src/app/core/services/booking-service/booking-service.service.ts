@@ -15,7 +15,8 @@ export class BookingServiceService {
   public singleBooking$: Observable<Booking>;
 
   currentBooking: Booking = {
-    id: "6818854fe6df73d3ed28231e",
+    id: '',
+    carId: '',
     userId:' ',
     carimg: '',
     carname: '',

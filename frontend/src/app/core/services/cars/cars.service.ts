@@ -15,4 +15,12 @@ export class CarsService {
   getCars(): Observable<any> {
     return this.http.get(this.baseURL + "/cars")
   }
+
+
+
+
+
+  getCarById(carId: string): Observable<Car> {
+    return this.http.get<Car>(this.baseURL + "/cars/" + carId);
+  }
 }

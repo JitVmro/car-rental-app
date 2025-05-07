@@ -6,10 +6,11 @@ import { Car } from '../../models/car.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
-import { Booking, BookingState,createBooking,Location } from '../../models/booking.model';
+import { Booking, BookingState, createBooking, Location } from '../../models/booking.model';
 import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
 import { CarFilterService } from '../../core/services/car-filter.service';
-import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { CarsService } from '../../core/services/cars/cars.service';
 
 @Component({
   selector: 'app-booking-page',
@@ -19,7 +20,7 @@ import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
 })
 export class BookingPageComponent implements OnInit {
 
-  selectedCar: Car | null = null
+  selectedCar!: Car;
   currentUser: User | null;
 
   startDate!: Date;
@@ -37,7 +38,8 @@ export class BookingPageComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private carFilterService: CarFilterService,
+    // private carFilterService: CarFilterService,
+    private carsService: CarsService,
     private authService: AuthService,
     private bookingService: BookingServiceService,
     private http: HttpClient
@@ -50,15 +52,16 @@ export class BookingPageComponent implements OnInit {
   ngOnInit(): void {
     this.currentCarID = this.route.snapshot.paramMap.get('carId');
     if (this.currentCarID) {
-      const allCars = this.carFilterService.getAllCars();
-      const currentCar = allCars.find(c => this.currentCarID === c.carId)
-      if (currentCar) {
-        this.selectedCar = currentCar;
-      }
+      this.loadCarById(this.currentCarID)
     }
   }
 
-
+  loadCarById(carId: string) {
+    this.carsService.getCarById(carId).subscribe(((car) => {
+      this.selectedCar = car;
+      console.log(this.selectedCar)
+    }))
+  }
 
   toggleDatePicker() {
     this.datePickerDisplayStatus = !this.datePickerDisplayStatus;
@@ -74,10 +77,12 @@ export class BookingPageComponent implements OnInit {
 
   createBooking() {
     const user = this.authService.currentUserValue
+    console.log(user?.id);
 
     if (user && this.selectedCar) {
       const bookingObj: Booking = {
-        id: ""+this.bookingService.generateBookingId(),
+        id: "" + this.bookingService.generateBookingId(),
+        carId: this.selectedCar.carId,
         userId: user.id,
         carimg: this.selectedCar?.imageURL,
         carname: this.selectedCar.brand + this.selectedCar.model,
@@ -101,30 +106,51 @@ export class BookingPageComponent implements OnInit {
 
 
   // Headers
-  token:string|null = localStorage.getItem('auth_token')
+  token: string | null = localStorage.getItem('auth_token')
   headers = new HttpHeaders({
-   'Authorization': `Bearer ${this.token}`,
-   'Content-Type': 'application/json'
- });
+    'Authorization': `Bearer ${this.token}`,
+    'Content-Type': 'application/json'
+  });
+
+
+  formatDateTime(date: Date, time: string): string {
+
+    // Extract YYYY-MM-DD from the Date object
+    const datePart = date.toISOString().split('T')[0];
+
+    // Ensure time is in HH:mm format
+    if (!/^\d{2}:\d{2}$/.test(time)) throw new Error("Invalid time format");
+
+    // Construct combined string
+    const combined = `${datePart}T${time}:00`;
+
+    // Create new Date object and return ISO string
+    return new Date(combined).toISOString();
+  }
+
 
   postBooking() {
     const user = this.authService.currentUserValue;
-    
+    console.log("DATA", this.startDate, this.startTime, this.endDate, this.endTime);
+
+
     if (user && this.selectedCar) {
       const bookingObj: createBooking = {
         carId: this.selectedCar.carId,
         clientId: user.id,
-        pickupDateTime: `${this.startDate.toISOString().split('T')[0]}T${this.startTime}:00Z`,
-        dropOffDateTime: `${this.endDate.toISOString().split('T')[0]}T${this.endTime}:00Z`,
+        carImg: this.selectedCar.images[0],
+        carName: this.selectedCar.model,
+        pickupDateTime: this.formatDateTime(this.startDate, this.startTime),
+        dropOffDateTime: this.formatDateTime(this.endDate, this.endTime),
+
         pickupLocationId: this.pickuplocation,
         dropOffLocationId: this.droplocation,
-
       }
       console.log(bookingObj);
 
-      this.http.post('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings',bookingObj,{ headers: this.headers }).subscribe({
-        next: (response:any) => {
-          console.log('Booking created successfully:', response.message , response.bookingNumber);
+      this.http.post('https://trpcstt2r6.execute-api.eu-west-2.amazonaws.com/dev/bookings', bookingObj, { headers: this.headers }).subscribe({
+        next: (response: any) => {
+          console.log('Booking created successfully:', response.message, response.bookingNumber);
           this.router.navigate(['/bookings/new', { bId: bookingObj.carId }])
           console.log(bookingObj);
         },
@@ -133,7 +159,7 @@ export class BookingPageComponent implements OnInit {
         }
 
       })
-      
+
 
     } else {
       console.log("Failed to book")
@@ -227,7 +253,7 @@ export class BookingPageComponent implements OnInit {
     this.selectDropLocation(index);
   }
 
-  toggleLocationDrop(){
+  toggleLocationDrop() {
     this.showLocationPopup = true;
   }
 

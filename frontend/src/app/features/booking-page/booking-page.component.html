@@ -34,7 +34,8 @@
                 <p class="text-sm text-gray-500">Pick-up location</p>
                 <p class="font-medium">{{this.pickuplocation}}</p>
               </div>
-              <button class="text-gray-600 hover:text-gray-800 cursor-pointer " (click)="toggleLocationDrop()">Change</button>
+              <button class="text-gray-600 hover:text-gray-800 cursor-pointer "
+                (click)="toggleLocationDrop()">Change</button>
             </div>
             <div class="flex justify-between items-center">
               <div>
@@ -44,31 +45,31 @@
             </div>
           </div>
           <!-- Location Popup -->
-        <section class="flex" *ngIf="showLocationPopup">
-          <section class="p-4 w-[300px]">
+          <section class="flex" *ngIf="showLocationPopup">
+            <section class="p-4 w-[300px]">
               <select
-                  class="inline-blockblock w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  (change)="onPickupChange($event)">
-                  <option>Kyiv</option>
-                  <option>Lviv</option>
-                  <option>Odesa</option>
-                  <option>Dniper</option>
-                  <option>Kharkhiv</option>
+                class="inline-blockblock w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                (change)="onPickupChange($event)">
+                <option>Kyiv</option>
+                <option>Lviv</option>
+                <option>Odesa</option>
+                <option>Dniper</option>
+                <option>Kharkhiv</option>
               </select>
-          </section>
+            </section>
 
-          <section class="p-4 w-[300px]">
+            <section class="p-4 w-[300px]">
               <select
-                  class="inline-block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  (change)="onDropChange($event)">
-                  <option>Kyiv</option>
-                  <option>Lviv</option>
-                  <option>Odesa</option>
-                  <option>Dniper</option>
-                  <option>Kharkhiv</option>
+                class="inline-block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                (change)="onDropChange($event)">
+                <option>Kyiv</option>
+                <option>Lviv</option>
+                <option>Odesa</option>
+                <option>Dniper</option>
+                <option>Kharkhiv</option>
               </select>
+            </section>
           </section>
-      </section>
         </div>
       </div>
 
@@ -118,10 +119,10 @@
     <!-- Right Column - Car Details -->
     <div class="mt-13">
       <div class="bg-[#F0F0F0] rounded-lg overflow-hidden p-4">
-        <img [src]="selectedCar?.imageURL" alt="Audi A6 Quattro" class="w-full object-cover rounded-lg">
+        <img [src]="selectedCar.images[0]" alt="Audi A6 Quattro" class="w-full object-cover rounded-lg">
         <div class="p-4">
-          <h3 class="text-xl font-semibold">{{selectedCar?.brand + " " + selectedCar?.model}}</h3>
-          <p class="text-gray-500">{{selectedCar?.location}}</p>
+          <h3 class="text-xl font-semibold">{{selectedCar.model}}</h3>
+          <p class="text-gray-500">{{selectedCar.location}}</p>
 
           <!-- Total Section -->
           <div class="mt-6 pt-4 border-t">

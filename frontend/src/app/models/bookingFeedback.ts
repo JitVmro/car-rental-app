@@ -1,9 +1,8 @@
 export interface bookingFeedback {
     bookingId: string;
-    clientId: string;
     carId: string;
-    rating: number;
-    feedbackText: string;
+    rating: string;
+    comment: string;
 
     
     date?: Date;
