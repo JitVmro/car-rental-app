@@ -15,15 +15,30 @@ const reportController = require('../controllers/reportController');
 const handleRequest = async (path, method, event) => {
   console.log(`Report route: ${method} ${path}`);
   
-  // Get available reports
+  // Get reports based on filtered parameters
   if (path === '/reports' && method === 'GET') {
-    return await reportController.getAvailableReports(event);
+    return await reportController.getReports(event);
   }
   
-  // Generate report
+  // Create and export aggregated report
   if (path.match(/^\/reports\/(csv|pdf|xlsx)$/) && method === 'POST') {
-    const extension = path.split('/')[2];
-    return await reportController.generateReport(event, extension);
+    // Set the extension in the event's pathParameters
+    if (!event.pathParameters) {
+      event.pathParameters = {};
+    }
+    event.pathParameters.extension = path.split('/')[2];
+    
+    return await reportController.createAggregationReport(event);
+  }
+  
+  // Schedule weekly reports (new functionality)
+  if (path === '/reports/schedule' && method === 'POST') {
+    return await reportController.scheduleWeeklyReports(event);
+  }
+  
+  // Send reports manually (new functionality)
+  if (path === '/reports/send' && method === 'POST') {
+    return await reportController.sendReportsManually(event);
   }
   
   // If no route matches

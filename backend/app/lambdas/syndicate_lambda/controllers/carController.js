@@ -20,10 +20,8 @@ const getCars = async (event) => {
   try {
     console.log('Incoming Query Parameters:', event.queryStringParameters);
 
+    // Use query parameters directly without validation
     const queryParams = event.queryStringParameters || {};
-    const validatedParams = validate(queryParams, schemas.getCars);
-
-    console.log('Validated Query Parameters:', validatedParams);
 
     // Connect to the database
     await connectToDatabase();
@@ -32,59 +30,77 @@ const getCars = async (event) => {
     // Build filter query
     const filter = {};
 
-    // Apply filters based on validated parameters
-    if (validatedParams.model) {
-      filter.model = { $regex: validatedParams.model, $options: 'i' };
+    // Apply filters based on query parameters
+    if (queryParams.model) {
+      filter.model = { $regex: queryParams.model, $options: 'i' };
+    }
+    
+
+    if (queryParams.minPrice) {
+      filter.pricePerDay = { $gte: parseFloat(queryParams.minPrice) };
     }
 
-    if (validatedParams.minPrice) {
-      filter.pricePerDay = { $gte: parseFloat(validatedParams.minPrice) };
+    if (queryParams.maxPrice) {
+      filter.pricePerDay = { ...filter.pricePerDay, $lte: parseFloat(queryParams.maxPrice) };
     }
 
-    if (validatedParams.maxPrice) {
-      filter.pricePerDay = { ...filter.pricePerDay, $lte: parseFloat(validatedParams.maxPrice) };
+    if (queryParams.location) {
+      filter.location = { $regex: queryParams.location, $options: 'i' };
     }
 
-    if (validatedParams.location) {
-      filter.location = { $regex: validatedParams.location, $options: 'i' };
+    if (queryParams.status) {
+      filter.status = queryParams.status.toUpperCase();
     }
 
-    if (validatedParams.status) {
-      filter.status = validatedParams.status.toUpperCase();
+    if (queryParams.fuelType) {
+      filter.fuelType = queryParams.fuelType.toUpperCase();
     }
 
-    if (validatedParams.fuelType) {
-      filter.fuelType = validatedParams.fuelType.toUpperCase();
+    if (queryParams.gearBoxType) {
+      filter.gearBoxType = queryParams.gearBoxType.toUpperCase();
     }
 
-    if (validatedParams.gearBoxType) {
-      filter.gearBoxType = validatedParams.gearBoxType.toUpperCase();
+    // Support both categoryType and category
+    if (queryParams.categoryType) {
+      filter.category = queryParams.categoryType.toUpperCase();
+    } else if (queryParams.category) {
+      filter.category = queryParams.category.toUpperCase();
     }
 
     // Handle date availability filtering (optional)
-    if (validatedParams.startDate && validatedParams.endDate) {
-      const startDate = new Date(validatedParams.startDate);
-      const endDate = new Date(validatedParams.endDate);
+    // Accept multiple date parameter naming conventions
+    const startDate = queryParams.startDate || queryParams.pickupDateTime || queryParams.pickupDate;
+    const endDate = queryParams.endDate || queryParams.dropOffDateTime || queryParams.dropoffDate;
 
-      if (isNaN(startDate) || isNaN(endDate)) {
+    if (startDate && endDate) {
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+
+      if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
         throw new Error('Invalid Date Format');
       }
 
-      console.log('Start Date:', startDate, 'End Date:', endDate);
+      console.log('Start Date:', parsedStartDate, 'End Date:', parsedEndDate);
 
       const bookedCarIds = await Booking.find({
         status: 'Active',
-        $or: [{ startDate: { $lte: endDate }, endDate: { $gte: startDate } }],
+        $or: [{ startDate: { $lte: parsedEndDate }, endDate: { $gte: parsedStartDate } }],
       }).distinct('carId');
 
       console.log('Booked Car IDs:', bookedCarIds);
 
-      filter.carId = { $nin: bookedCarIds };
+      filter._id = { $nin: bookedCarIds };
+    }
+
+    // Location handling - support multiple parameter naming conventions
+    const pickupLocationId = queryParams.pickupLocationId || queryParams.pickupLocation;
+    if (pickupLocationId) {
+      filter.locationId = pickupLocationId;
     }
 
     // Pagination Logic
-    const page = parseInt(validatedParams.page, 10) || 1;
-    const pageSize = parseInt(validatedParams.pageSize, 10) || 10;
+    const page = parseInt(queryParams.page, 10) || 1;
+    const pageSize = parseInt(queryParams.pageSize, 10) || 10;
     const skip = (page - 1) * pageSize;
 
     // Debug log: Filter query
@@ -98,7 +114,7 @@ const getCars = async (event) => {
     const totalCount = await Car.countDocuments(filter);
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    // Prepare and return the response as plain JavaScript objects
+    // Prepare and return the response
     return {
       statusCode: 200,
       body: {
@@ -111,6 +127,10 @@ const getCars = async (event) => {
           pricePerDay: car.pricePerDay,
           serviceRating: car.serviceRating,
           status: car.status,
+          // Include additional fields that may be useful for filtering
+          category: car.category,
+          fuelType: car.fuelType,
+          gearBoxType: car.gearBoxType,
         })),
         currentPage: page,
         totalElements: totalCount,
@@ -120,22 +140,13 @@ const getCars = async (event) => {
   } catch (error) {
     console.error('Error in getCars:', error);
 
-    // Handle validation errors
-    if (error.name === 'ValidationError') {
-      return {
-        statusCode: 400,
-        body: {
-          message: 'Validation error',
-          details: error.details,
-        },
-      };
-    }
-
-    // Handle other internal errors
+    // Since we're not using validation, simplify error handling
     return {
-      statusCode: 500,
+      statusCode: error.message === 'Invalid Date Format' ? 400 : 500,
       body: {
-        message: 'Internal server error',
+        message: error.message === 'Invalid Date Format' ?
+          'Invalid date format in request parameters' :
+          'Internal server error',
         details: error.toString(),
       },
     };
@@ -152,47 +163,51 @@ const getPopularCars = async (event) => {
     // Connect to database
     await connectToDatabase();
 
-    // Get popular cars based on booking count without populate
-    const popularCars = await Car.find({ available: true })
+    // Get popular cars based on car rating
+    const popularCars = await Car.find()
       .sort({ carRating: -1 })
-      .limit(10);
+      .limit(4);
 
-    // Get all locations to manually join with cars
-    const locationsDoc = await Locations.findOne({});
+    // Fetch locations document - this is the correct way based on your model structure
+    const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     const locationsMap = {};
 
+    // Create a map of location data for quick lookup
     if (locationsDoc && locationsDoc.content) {
       locationsDoc.content.forEach(loc => {
-        // Extract city and country from address
-        const addressParts = loc.locationAddress.split(',');
-        const city = addressParts.length > 0 ? addressParts[0].trim() : '';
-        const country = addressParts.length > 1 ? addressParts[addressParts.length - 1].trim() : '';
-
         locationsMap[loc.locationId] = {
           locationId: loc.locationId,
-          name: loc.locationName,
-          city: city,
-          country: country
+          name: loc.locationName
         };
       });
     }
 
-    // Return popular cars
+    // console.log('Locations map:', locationsMap);
+    // console.log('Popular cars:', popularCars);
+
+    // Return popular cars with location data
     return {
       statusCode: 200,
       body: popularCars.map(car => {
-        const locationId = car.locationId ? car.locationId.toString() : null;
-        const location = locationId && locationsMap[locationId] ? locationsMap[locationId] : null;
+        // Get location data from the map using the car's location ID
+        const locationId = car.location;
+        // console.log(`Car ${car._id} has location ID: ${locationId}`);
+
+        let locationName = "Unknown Location";
+
+        // Check if we have location data for this ID
+        if (locationId && locationsMap[locationId]) {
+          locationName = locationsMap[locationId].name;
+        }
+
+        // console.log(`Location name for car ${car._id}: ${locationName}`);
+
         return {
           carId: car._id,
           model: car.model,
           pricePerDay: car.pricePerDay,
-          location: location ? {
-            locationId: location.locationId,
-            city: location.city,
-            country: location.country
-          } : null,
-          images: car.imageUrls && car.imageUrls.length > 0 ? car.imageUrls[0] : null,
+          location: locationName,
+          imageURL: car.images && car.images.length > 0 ? car.images[0] : null,
           carRating: car.carRating
         };
       })
@@ -201,7 +216,7 @@ const getPopularCars = async (event) => {
     console.error('Error in getPopularCars:', error);
     return {
       statusCode: 500,
-      body: { message: 'Internal server error' }
+      body: { message: 'Internal server error', details: error.toString() }
     };
   }
 };
@@ -280,7 +295,7 @@ const getCarById = async (event) => {
         fuelType: car.fuelType,
         gearBoxType: car.gearBoxType,
         images: car.images || [],
-        location: locationData,
+        location: locationData.name,
         model: car.model,
         passengerCapacity: car.passengerCapacity || null,
         pricePerDay: car.pricePerDay,
