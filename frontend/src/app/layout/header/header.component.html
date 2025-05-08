@@ -44,15 +44,15 @@
           class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
           <div class="py-1 flex flex-col">
             <!-- Admin-specific menu option -->
-            <div *ngIf="isAdmin" class="px-2 py-2">
+            <!-- <div *ngIf="!isAdmin" class="px-2 py-2">
               <a (click)="navigateToDashboard()"
                 class="block p-2 text-sm text-center text-white bg-black hover:bg-gray-900 cursor-pointer font-medium rounded-md">
                 Dashboard
               </a>
-            </div>
+            </div> -->
             
             <!-- Regular user menu option -->
-            <div *ngIf="!isAdmin" class="px-2 py-2">
+            <div class="px-2 py-2">
               <a (click)="navigateToProfile()"
                 class="block p-2 text-sm text-center text-white bg-black hover:bg-gray-900 cursor-pointer font-medium rounded-md">
                 My profile
