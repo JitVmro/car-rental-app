@@ -44,7 +44,7 @@
       <!-- Thumbnail Column -->
       <section class="flex flex-row justify-between lg:grid lg:col-span-4 gap-2 lg:gap-4">
         <section *ngFor="let image of carImages; let i = index" (click)="setMainImage(i)"
-          class="cursor-pointer hover:opacity-75 transition-opacity w-full">
+          class="cursor-pointer hover:opacity-75 transition-opacity w-full h-fit">
           <img [src]="image" [alt]="'Car thumbnail ' + (i + 1)"
             class="rounded-lg object-cover w-1/5 h-full lg:w-full lg:h-1/5">
         </section>
@@ -52,14 +52,14 @@
 
       <!-- Main Image Column -->
       <section class=" lg:col-span-21">
-        <img [src]="carImages[selectedImageIndex]" [alt]="'car_image'" class="w-full object-cover rounded-2xl h-full">
+        <img [src]="carImage" [alt]="selectedCar.model" class="w-full object-cover rounded-lg h-full">
       </section>
 
       <!-- Car Details Column -->
       <section class="bg-[#f0f0f0] flex flex-col gap-6 p-4 rounded-lg lg:col-span-11 lg:text-xs xl:text-base">
         <section class="flex items-baseline justify-between border-b-[1px] border-gray-400">
           <section class="flex flex-col">
-            <h2 class="lg:text-lg xl:text-2xl">{{ selectedCar.brand +" "+ selectedCar.model }}</h2>
+            <h2 class="lg:text-lg xl:text-2xl">{{selectedCar.model }}</h2>
             <p class="text-gray-600 mb-4">{{ selectedCar.location }}</p>
           </section>
           <section class="flex items-center gap-1 xl:text-xl">

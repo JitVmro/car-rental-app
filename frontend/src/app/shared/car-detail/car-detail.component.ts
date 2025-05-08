@@ -82,6 +82,7 @@ export class CarDetailComponent implements OnInit {
   pricePerDay: number = 0;
   sortOrder: string = 'newest';
   carImages!: string[];
+  carImage!: string;
   carFeatures: CarFeature[] = []
   currentPage: number = 1;
   itemsPerPage: number = 3;
@@ -122,6 +123,8 @@ export class CarDetailComponent implements OnInit {
         { icon: "cardetail-icons/Vector-4.svg", value: this.selectedCar.fuelConsumption + " L/100km" },
         { icon: "cardetail-icons/Vector-5.svg", value: this.selectedCar.climateControlOption },
       ];
+      // this.carImages = this.selectedCar.images;
+      this.carImage = this.selectedCar.images[0];
       this.carImages = this.selectedCar.images;
       this.selectedImageIndex = 0; // Reset image index when car changes
       this.pricePerDay = parseFloat(this.selectedCar.pricePerDay); // Set initial price
@@ -204,7 +207,7 @@ export class CarDetailComponent implements OnInit {
   bookCar(): void {
     if (this.isValidBooking()) {
       // Implement booking logic
-      if (this.selectedCar){
+      if (this.selectedCar) {
         console.log('Booking car:', {
           carId: this.selectedCar.carId,
           startDate: this.startDate,
