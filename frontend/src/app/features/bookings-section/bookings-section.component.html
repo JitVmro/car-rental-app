@@ -89,7 +89,7 @@
   </section>
 
 
-  <!-- Feedback -->
+  <!--Create Feedback -->
   <section *ngIf="showFeedback" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
     <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[393px] p-6 rounded-lg shadow-lg max-w-md ">
       <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">How was your experience?</h1>
@@ -129,4 +129,49 @@
 
     </section>
   </section>
+
+    <!--View Feedback -->
+    <section *ngIf="viewFeedback" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
+      <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[353px] p-6 rounded-lg shadow-lg max-w-md ">
+        <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">Your Feedback</h1>
+  
+        <h3 class="text-lg font-normal mb-6">{{this.carName}}</h3>
+  
+        
+  
+        <!-- Star Component -->
+        <section class="flex space-x-1 mb-6">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+            <svg
+              [ngClass]="star <= feedbackRating ? 'text-yellow-400' : 'text-[#DCDCDD]'"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              class="w-5 h-5 transition-colors duration-200"
+            >
+              <path
+                d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+              />
+            </svg>
+          </ng-container>
+        </section>
+        
+  
+        <!-- TextBox Component -->
+        <section class="w-full flex flex-col gap-1 mb-6">
+          <h5 class="font-normal text-xs">Review</h5>
+          <section class="border border-[#DCDCDD] rounded-lg px-3 py-2 outline-none h-[95px]" 
+          >{{feedbackText}}</section>
+        </section>
+  
+        <!-- Buttons Section -->
+        <section class="flex w-full justify-between gap-1.5 font-medium text-lg flex-col sm:flex-row">
+          <button (click)="viewFeedback = false"
+            class="cursor-pointer px-3 py-2 border-1 w-full  border-black hover:text-white hover:bg-black rounded-4xl text-nowrap">
+            Cancel
+          </button>
+        </section>
+  
+      </section>
+    </section>
 </div>
