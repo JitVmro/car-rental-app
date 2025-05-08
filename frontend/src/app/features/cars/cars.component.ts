@@ -14,11 +14,18 @@ import { Router } from '@angular/router';
   styleUrl: './cars.component.css'
 })
 export class CarsComponent {
+
+  filteredCarsBuffer!: any;
+
   constructor(private router: Router) {
   }
 
+  getFilterdCars(filteredCars: any) {
+    this.filteredCarsBuffer = filteredCars;
+  }
+
   loginPopup: boolean = false;
-  
+
   handleLoginPopup() {
     this.loginPopup = true;
   }

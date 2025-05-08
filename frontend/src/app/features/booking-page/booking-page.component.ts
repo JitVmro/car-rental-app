@@ -31,6 +31,10 @@ export class BookingPageComponent implements OnInit {
   Location!: Location;
   pickuplocation!: Location;
   droplocation!: Location;
+
+  pickuplocationId: string = '0';
+  dropOfflocationId: string = '0';
+
   showLocationPopup: boolean = false;
 
   datePickerDisplayStatus: boolean = false;
@@ -76,34 +80,7 @@ export class BookingPageComponent implements OnInit {
     // Implement dates change logic
   }
 
-  createBooking() {
-    const user = this.authService.currentUserValue
-    console.log(user?.id);
 
-    if (user && this.selectedCar) {
-      const bookingObj: Booking = {
-        id: "" + this.bookingService.generateBookingId(),
-        carId: this.selectedCar.carId,
-        userId: user.id,
-        carimg: this.selectedCar?.imageURL,
-        carname: this.selectedCar.brand + this.selectedCar.model,
-        state: BookingState.Reserved,
-        startDate: this.startDate,
-        endDate: this.endDate,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        pickuplocation: this.pickuplocation,
-        droplocation: this.droplocation,
-
-      }
-      this.bookingService.createBooking(bookingObj)
-      this.router.navigate(['/bookings/new', { bId: bookingObj.id }])
-      console.log(bookingObj);
-
-    } else {
-      console.log("Failed to book")
-    }
-  }
 
 
   // Headers
@@ -144,8 +121,8 @@ export class BookingPageComponent implements OnInit {
         pickupDateTime: this.formatDateTime(this.startDate, this.startTime),
         dropOffDateTime: this.formatDateTime(this.endDate, this.endTime),
 
-        pickupLocationId: this.pickuplocation,
-        dropOffLocationId: this.droplocation,
+        pickupLocationId: this.pickuplocationId,
+        dropOffLocationId: this.dropOfflocationId,
       }
       console.log(bookingObj);
 
@@ -260,20 +237,20 @@ export class BookingPageComponent implements OnInit {
 
   selectPickupLocation(index: number) {
     switch (index) {
-      case 0: this.pickuplocation = Location.Kyiv; break;
-      case 1: this.pickuplocation = Location.Lviv; break;
-      case 2: this.pickuplocation = Location.Odesa; break;
-      case 3: this.pickuplocation = Location.Kharkiv; break;
-      case 4: this.pickuplocation = Location.Dnipro; break;
+      case 0: this.pickuplocation = Location.Kyiv; this.pickuplocationId='0'; break;
+      case 1: this.pickuplocation = Location.Lviv;  this.pickuplocationId='2'; break;
+      case 2: this.pickuplocation = Location.Odesa;  this.pickuplocationId='1'; break;
+      case 3: this.pickuplocation = Location.Kharkiv;  this.pickuplocationId='4'; break;
+      case 4: this.pickuplocation = Location.Dnipro;  this.pickuplocationId='3'; break;
     }
   }
   selectDropLocation(index: number) {
     switch (index) {
-      case 0: this.droplocation = Location.Kyiv; break;
-      case 1: this.droplocation = Location.Lviv; break;
-      case 2: this.droplocation = Location.Odesa; break;
-      case 3: this.droplocation = Location.Kharkiv; break;
-      case 4: this.droplocation = Location.Dnipro; break;
+      case 0: this.droplocation = Location.Kyiv; this.dropOfflocationId='0'; break;
+      case 1: this.droplocation = Location.Lviv;  this.dropOfflocationId='2'; break;
+      case 2: this.droplocation = Location.Odesa;  this.dropOfflocationId='1';break;
+      case 3: this.droplocation = Location.Kharkiv;  this.dropOfflocationId='4';break;
+      case 4: this.droplocation = Location.Dnipro;  this.dropOfflocationId='3';break;
     }
   }
 }

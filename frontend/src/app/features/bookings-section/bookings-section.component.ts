@@ -32,10 +32,13 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   active: number = 0;
   showPopup: boolean = false;
   showFeedback: boolean = false;
+  viewFeedback: boolean = false;
   bookingid: string = "";
   carId: string = "";
   carName: string = '';
   rating: number = 0;
+  feedbackRating: number = 3;
+  feedbackText: string = 'This is a feedback text.';
   congo: boolean = false;
   reviewText: string = '';
 
@@ -201,6 +204,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
 
   HandleViewFeedback(bookingid: string) {
     this.bookingid = bookingid;
+    this.viewFeedback = true;
     console.log("view feedback clicked");
   }
 
