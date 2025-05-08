@@ -14,24 +14,15 @@
   <section ngClass="{'min-[1200px]:ml-[240px]':loggedIn}"
     class="navbar-links max-[700px]:hidden flex justify-center items-center gap-[21px] min-[750px]:gap-[42px] min-[800px]:ml-[80px]">
     <!-- Admin Navigation -->
-    <ng-container *ngIf="isAdmin; else supportOrRegularNav">
+    <ng-container *ngIf="isAdmin; else regularNav">
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     </ng-container>
     
-    <!-- Support or Regular User Navigation -->
-    <ng-template #supportOrRegularNav>
-      <ng-container *ngIf="isSupportAgent; else regularNav">
-        <a routerLink="/bookings" routerLinkActive="active">Bookings</a>
-        <a routerLink="/cars" routerLinkActive="active">Cars</a>
-        <a routerLink="/clients" routerLinkActive="active">Clients</a>
-      </ng-container>
-      
-      <!-- Regular User Navigation -->
-      <ng-template #regularNav>
-        <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-        <a routerLink="/cars" routerLinkActive="active">Cars</a>
-        <a *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
-      </ng-template>
+    <!-- Regular User Navigation -->
+    <ng-template #regularNav>
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/cars" routerLinkActive="active">Cars</a>
+      <a *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My Bookings</a>
     </ng-template>
   </section>
 
@@ -60,16 +51,8 @@
               </a>
             </div>
             
-            <!-- Support agent-specific menu option -->
-            <div *ngIf="isSupportAgent" class="px-2 py-2">
-              <a (click)="navigateToBookings()"
-                class="block p-2 text-sm text-center text-white bg-black hover:bg-gray-900 cursor-pointer font-medium rounded-md">
-                Bookings
-              </a>
-            </div>
-            
             <!-- Regular user menu option -->
-            <div *ngIf="!isAdmin && !isSupportAgent" class="px-2 py-2">
+            <div *ngIf="!isAdmin" class="px-2 py-2">
               <a (click)="navigateToProfile()"
                 class="block p-2 text-sm text-center text-white bg-black hover:bg-gray-900 cursor-pointer font-medium rounded-md">
                 My profile
@@ -108,26 +91,17 @@
 <section *ngIf="ham"
   class="z-10 flex flex-col w-2/3 h-dvh gap-2 bg-[#f0f0f0] absolute top-16 min-[426px]:top-21 left-0">
   <!-- Admin Mobile Navigation -->
-  <ng-container *ngIf="isAdmin; else supportOrRegularMobileNav">
+  <ng-container *ngIf="isAdmin; else regularMobileNav">
     <a class="text-lg cursor-pointer p-2" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
   </ng-container>
   
-  <!-- Support or Regular User Mobile Navigation -->
-  <ng-template #supportOrRegularMobileNav>
-    <ng-container *ngIf="isSupportAgent; else regularMobileNav">
-      <a class="text-lg cursor-pointer p-2" routerLink="/bookings" routerLinkActive="active">Bookings</a>
-      <a class="text-lg cursor-pointer p-2" routerLink="/cars" routerLinkActive="active">Cars</a>
-      <a class="text-lg cursor-pointer p-2" routerLink="/clients" routerLinkActive="active">Clients</a>
-    </ng-container>
-    
-    <!-- Regular User Mobile Navigation -->
-    <ng-template #regularMobileNav>
-      <a class="text-lg cursor-pointer p-2" routerLink="/home" routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a class="text-lg cursor-pointer p-2" routerLink="/cars" routerLinkActive="active">Cars</a>
-      <a class="text-lg cursor-pointer p-2" *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My
-        Bookings</a>
-    </ng-template>
+  <!-- Regular User Mobile Navigation -->
+  <ng-template #regularMobileNav>
+    <a class="text-lg cursor-pointer p-2" routerLink="/home" routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a class="text-lg cursor-pointer p-2" routerLink="/cars" routerLinkActive="active">Cars</a>
+    <a class="text-lg cursor-pointer p-2" *ngIf="loggedIn" routerLink="/bookings" routerLinkActive="active">My
+      Bookings</a>
   </ng-template>
 
   <select class="text-lg outline-0 border-0 w-1/4 p-2 ">

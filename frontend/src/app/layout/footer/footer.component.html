@@ -1,3 +1,4 @@
+<!-- footer.component.html -->
 <footer class="flex items-center justify-between px-4 py-4 md:px-8 md:py-8 bg-[#FFFBF3] border-t border-t-[#D9D9D9]">
     <!-- Logo -->
     <div class="flex items-center">
@@ -7,24 +8,15 @@
     <!-- Navigation Links -->
     <div class="hidden sm:flex items-center space-x-8">
         <!-- Admin Navigation -->
-        <ng-container *ngIf="isAdmin; else supportOrRegularNav">
+        <ng-container *ngIf="isAdmin; else regularNav">
             <a routerLink="/dashboard" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Dashboard</a>
         </ng-container>
         
-        <!-- Support or Regular User Navigation -->
-        <ng-template #supportOrRegularNav>
-            <ng-container *ngIf="isSupportAgent; else regularNav">
-                <a routerLink="/bookings" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Bookings</a>
-                <a routerLink="/cars" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Cars</a>
-                <a routerLink="/clients" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Clients</a>
-            </ng-container>
-            
-            <!-- Regular User Navigation -->
-            <ng-template #regularNav>
-                <a routerLink="/home" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Home</a>
-                <a routerLink="/cars" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Cars</a>
-                <a routerLink="/bookings" *ngIf="isLoggedIn" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">My bookings</a>
-            </ng-template>
+        <!-- Regular User Navigation -->
+        <ng-template #regularNav>
+            <a routerLink="/home" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Home</a>
+            <a routerLink="/cars" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">Cars</a>
+            <a routerLink="/bookings" *ngIf="isLoggedIn" class="hover:text-[#CC1D1D] font-normal text-sm cursor-pointer">My bookings</a>
         </ng-template>
     </div>
 

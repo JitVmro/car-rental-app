@@ -169,10 +169,10 @@ const getPopularCars = async (event) => {
     const popularCars = await Car.find()
       .sort({ carRating: -1 })
       .limit(4);
-      // .limit(4);
+      .limit(4);
 
     // Fetch locations document - this is the correct way based on your model structure
-    // const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
+    const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     // Fetch locations document - this is the correct way based on your model structure
     const locationsDoc = await Locations.findOne({}); // Locations seems to be a single document with a content array
     const locationsMap = {};
@@ -184,7 +184,7 @@ const getPopularCars = async (event) => {
         locationsMap[loc.locationId] = {
           locationId: loc.locationId,
           name: loc.locationName
-          // name: loc.locationName
+          name: loc.locationName
         };
       });
     }
@@ -230,7 +230,7 @@ const getPopularCars = async (event) => {
     return {
       statusCode: 500,
       body: { message: 'Internal server error', details: error.toString() }
-      // body: { message: 'Internal server error', details: error.toString() }
+      body: { message: 'Internal server error', details: error.toString() }
     };
   }
 };
