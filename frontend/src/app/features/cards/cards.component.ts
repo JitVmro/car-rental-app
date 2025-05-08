@@ -95,7 +95,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Load all cars from cars services
   loadCars() {
     this.carsService.getCars().subscribe(((cars) => {
-      this.allCars = JSON.parse(cars).content;
+      this.allCars = cars.content;
       console.log(this.allCars)
 
       if (this.showAllCars || !this.isHomePage) {
