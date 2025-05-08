@@ -27,7 +27,7 @@
 
 
   <h1
-    class="text-5xl sm:text-[56px] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-4 mb-4">
+    class="text-5xl sm:text-[2.5rem] flex justify-center ml-0 min-[800px]:justify-start min-[800px]:ml-[40px] leading-16 font-semibold mt-4 mb-4">
     My Bookings</h1>
 
 
@@ -66,7 +66,7 @@
     </app-bookings-card>
   </section>
 
-  <section *ngIf="filteredBookings.length === 0" class="h-screen flex flex-col justify-center items-center">
+  <section *ngIf="filteredBookings.length === 0" class="lg:h-[360px] h-[65vh] flex flex-col justify-center items-center">
     <h1 class="text-2xl text-center font-semibold mt-4">No Bookings Found</h1>
     <p class="text-center text-[#666]">You have no bookings in this category.</p>
   </section>
