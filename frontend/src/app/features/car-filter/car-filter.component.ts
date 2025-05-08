@@ -73,8 +73,7 @@ export class CarFilterComponent implements OnInit {
   findCars(): void {
     const formValues = this.filterForm.value;
     const filters: FilterCriteria = {
-      pickupLocationId: "" + this.locations.indexOf(formValues.pickupLocation),
-      dropoffLocationId: "" + this.locations.indexOf(formValues.pickupLocation),
+      pickupLocationId: (this.locations.indexOf(formValues.pickupLocation) === -1) ? '' : this.locations.indexOf(formValues.pickupLocation) + "",
       category: formValues.carCategory,
       gearBoxType: formValues.gearboxType,
       fuelType: formValues.engineType,
@@ -83,6 +82,7 @@ export class CarFilterComponent implements OnInit {
     };
     this.carsService.getFilteredCar(filters).subscribe(data => {
       console.log(filters)
+      console.log("Fetched from Backend", data.content)
       this.filteredCars.emit(data.content);
     });
     this.router.navigate(["/cars"])
@@ -106,7 +106,7 @@ export class CarFilterComponent implements OnInit {
       engineType: '',
       priceRange: [this.minPrice, this.maxPrice],
     });
-
+    this.findCars()
     this.carFilterService.resetFilters();
   }
 

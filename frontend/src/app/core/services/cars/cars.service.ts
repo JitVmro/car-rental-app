@@ -36,6 +36,8 @@ export class CarsService {
     });
     // Log the final URL that will be called (for debugging)
     const urlWithParams = `${this.baseURL}/cars?${params.toString()}`;
+    console.log(urlWithParams);
+    
     // Make the HTTP request
     return this.http.get(urlWithParams)
   }
