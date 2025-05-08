@@ -11,7 +11,7 @@
         </svg></figure>
       <section class="flex flex-col gap-2 h-full">
         <h4 class="font-normal text-sm leading-5 ">Congratulations!</h4>
-        <p class="font-normal text-xs leading-4 "><strong>{{latestBooking.carname}}</strong> is booked for {{latestBooking.startDate | date: "dd MMMM YYYY"}} - {{latestBooking.endDate | date: "dd MMMM YYYY"}} You can change
+        <p class="font-normal text-xs leading-4 "><strong>Your Car</strong> is booked for {{latestBooking.startDate | date: "dd MMMM YYYY"}} - {{latestBooking.endDate | date: "dd MMMM YYYY"}} You can change
           booking details until {{latestBooking.startDate | date: "dd MMMM YYYY"}}.
           Your order: #{{latestBooking.id}} {{latestBooking.startDate | date: "dd MMMM YYYY"}} </p>
       </section>
