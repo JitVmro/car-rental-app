@@ -1,5 +1,5 @@
-<app-car-filter></app-car-filter>
-<app-cards (loginPopup)="handleLoginPopup()" [isHomePage]="false"></app-cards>
+<app-car-filter (filteredCars)="getFilterdCars($event)"></app-car-filter>
+<app-cards (loginPopup)="handleLoginPopup()" [filteredCars]=filteredCarsBuffer  [isHomePage]="false"></app-cards>
 
 <!-- Login Popup -->
 <div *ngIf="loginPopup" class="fixed inset-0 flex items-start justify-center z-50"> 

@@ -9,7 +9,7 @@ export interface Car {
   engineCapacity: string
   seats: string;
   fuelConsumption: string;
-  pricePerDay: string;
+  pricePerDay: number;
   imageURL: string;
   location: string;
   available: boolean;
