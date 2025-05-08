@@ -10,7 +10,7 @@
            sm:grid-cols-2
            lg:grid-cols-3
            xl:grid-cols-4 2xl:grid-cols-4"
-    style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));"
+           [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }"
   >
     <app-card 
       *ngFor="let car of isHomePage ? featuredCars : displayedCars" 
