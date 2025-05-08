@@ -1,0 +1,40 @@
+/* Add any specific styles for the bookings component here */
+.container {
+  max-width: 1200px;
+}
+
+/* Table styles */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Ensure the action menu is properly positioned */
+.relative {
+  position: relative;
+}
+
+/* Style for the datepicker */
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.5em 0;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  padding: 0 0.75em;
+  margin-top: -0.25em;
+}
+
+/* Smaller calendar icon */
+::ng-deep .mat-datepicker-toggle {
+  scale: 0.8;
+}
+
+/* Ensure the datepicker popup is above other elements */
+::ng-deep .mat-datepicker-content {
+  z-index: 1000 !important;
+}

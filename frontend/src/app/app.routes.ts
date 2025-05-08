@@ -10,6 +10,7 @@ import { AuthGuard } from './core/guards/auth-guard.guard';
 import { ProfileComponent } from './features/profile-management/profile/profile.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { AdminGuard } from './core/guards/admin.guard';
+import { SupportGuard } from './core/guards/support.guard';
 // import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 
 
@@ -20,7 +21,7 @@ export const routes: Routes = [
   { path: 'cars', component: CarsComponent },
   { path: 'dashboard', component: DashboardComponent ,  canActivate: [AuthGuard, AdminGuard]},
   { path: 'bookings/new', component: BookingsComponent,canActivate:[AuthGuard] },
-  { path: 'bookings', component: BookingsComponent,canActivate:[AuthGuard] },
+  { path: 'bookings', component: BookingsComponent,canActivate:[AuthGuard,SupportGuard] },
   { path: 'cars/booking', component: BookingPageComponent,canActivate:[AuthGuard] },
   { path: 'bookings/edit', component: CarBookingEditComponent,canActivate:[AuthGuard] },
   { path: 'profile', component: ProfileComponent,canActivate:[AuthGuard] },

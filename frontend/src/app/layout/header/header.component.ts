@@ -1,4 +1,3 @@
-// header.component.ts
 import { NgClass, NgIf } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
@@ -16,6 +15,7 @@ export class HeaderComponent implements OnInit {
   isProfileMenuOpen = false;
   userImage: boolean = true;
   isAdmin: boolean = false;
+  isSupportAgent: boolean = false;
 
   user: User | null;
 
@@ -28,12 +28,15 @@ export class HeaderComponent implements OnInit {
     this.loggedIn = this.authService.isLoggedIn();
     this.user = this.authService.currentUserValue;
     this.isAdmin = this.user?.role === 'admin';
+    this.isSupportAgent = this.user?.role === 'SupportAgent';
   }
   
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.user = user;
+      this.loggedIn = !!user;
       this.isAdmin = user?.role === 'admin';
+      this.isSupportAgent = user?.role === 'SupportAgent';
       this.userImage = this.user?.image ? true : false;
     });
   }
@@ -64,17 +67,22 @@ export class HeaderComponent implements OnInit {
     this.closeProfileMenu();
   }
 
-  // header.component.ts
-logout(): void {
-  this.authService.logout();
-  this.closeProfileMenu();
+  navigateToBookings(): void {
+    this.router.navigate(['/bookings']);
+    this.closeProfileMenu();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeProfileMenu();
+    
+    // First navigate to home
+    this.router.navigate(['/home']).then(() => {
+      // After navigation is complete, refresh the page to ensure all auth states are reset
+      window.location.href = '/home';
+    });
+  }
   
-  // First navigate to home
-  this.router.navigate(['/home']).then(() => {
-    // After navigation is complete, refresh the page to ensure all auth states are reset
-    window.location.href = '/home';
-  });
-}
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const clickedElement = event.target as HTMLElement;
