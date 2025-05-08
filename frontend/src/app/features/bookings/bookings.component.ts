@@ -3,11 +3,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth-service.service';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
 
 interface Booking {
   date: string;
@@ -17,7 +12,6 @@ interface Booking {
   madeBy: string;
   bookingStatus: string;
   bookingPeriod: string;
-  // Add these properties for date filtering
   startDate: Date;
   endDate: Date;
 }
@@ -27,18 +21,19 @@ interface DateRange {
   end: Date | null;
 }
 
+interface CalendarDay {
+  date: number;
+  month: number;
+  year: number;
+  isCurrentMonth: boolean;
+  isSelected: boolean;
+  isToday: boolean;
+}
+
 @Component({
   selector: 'app-bookings',
   standalone: true,
-  imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule,
-    MatIconModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './bookings.component.html',
   styleUrls: ['./bookings.component.css']
 })
@@ -56,11 +51,17 @@ export class BookingsComponent implements OnInit {
   statuses: string[] = ['All', 'Reserved', 'Service started', 'Service provided', 'Booking finished'];
   dateRange = 'Nov 01 - Nov 15, 2024';
   
-  // Date range for the calendar
-  selectedDateRange: DateRange = {
-    start: new Date(2024, 10, 1), // November 1, 2024
-    end: new Date(2024, 10, 15)   // November 15, 2024
-  };
+  // Calendar variables
+  currentMonth: Date = new Date();
+  nextMonth: Date = new Date();
+  calendarDays: CalendarDay[] = [];
+  nextCalendarDays: CalendarDay[] = [];
+  weekdays: string[] = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  
+  // Selected dates
+  selectedStartDate: Date | null = new Date(2024, 10, 1); // Nov 1, 2024
+  selectedEndDate: Date | null = new Date(2024, 10, 15);  // Nov 15, 2024
   
   constructor(
     private fb: FormBuilder,
@@ -69,10 +70,12 @@ export class BookingsComponent implements OnInit {
   ) {
     this.filterForm = this.fb.group({
       client: ['All'],
-      bookingStatus: ['All'],
-      startDate: [this.selectedDateRange.start],
-      endDate: [this.selectedDateRange.end]
+      bookingStatus: ['All']
     });
+    
+    // Initialize next month
+    this.nextMonth = new Date(this.currentMonth);
+    this.nextMonth.setMonth(this.currentMonth.getMonth() + 1);
   }
 
   ngOnInit(): void {
@@ -92,6 +95,9 @@ export class BookingsComponent implements OnInit {
     
     // Initialize mock data
     this.initializeBookings();
+    
+    // Generate calendar days
+    this.generateCalendar();
     
     // Apply initial filtering
     this.applyFilters();
@@ -166,11 +172,174 @@ export class BookingsComponent implements OnInit {
     this.filteredBookings = [...this.bookings];
   }
 
+  generateCalendar(): void {
+    // Generate current month calendar
+    this.calendarDays = this.getCalendarDays(this.currentMonth);
+    
+    // Generate next month calendar
+    this.nextCalendarDays = this.getCalendarDays(this.nextMonth);
+  }
+
+  getCalendarDays(month: Date): CalendarDay[] {
+    const days: CalendarDay[] = [];
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    
+    // Get first day of month
+    const firstDay = new Date(year, monthIndex, 1);
+    // Get last day of month
+    const lastDay = new Date(year, monthIndex + 1, 0);
+    
+    // Get day of week for first day (0 = Sunday, 1 = Monday, etc.)
+    let firstDayOfWeek = firstDay.getDay();
+    // Convert Sunday (0) to 7 to match our calendar layout where Monday is first
+    firstDayOfWeek = firstDayOfWeek === 0 ? 7 : firstDayOfWeek;
+    
+    // Add days from previous month
+    const daysFromPrevMonth = firstDayOfWeek - 1;
+    if (daysFromPrevMonth > 0) {
+      const prevMonth = new Date(year, monthIndex - 1, 1);
+      const prevMonthLastDay = new Date(year, monthIndex, 0).getDate();
+      
+      for (let i = prevMonthLastDay - daysFromPrevMonth + 1; i <= prevMonthLastDay; i++) {
+        days.push({
+          date: i,
+          month: prevMonth.getMonth(),
+          year: prevMonth.getFullYear(),
+          isCurrentMonth: false,
+          isSelected: this.isDateSelected(new Date(prevMonth.getFullYear(), prevMonth.getMonth(), i)),
+          isToday: this.isToday(new Date(prevMonth.getFullYear(), prevMonth.getMonth(), i))
+        });
+      }
+    }
+    
+    // Add days from current month
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push({
+        date: i,
+        month: monthIndex,
+        year: year,
+        isCurrentMonth: true,
+        isSelected: this.isDateSelected(new Date(year, monthIndex, i)),
+        isToday: this.isToday(new Date(year, monthIndex, i))
+      });
+    }
+    
+    // Add days from next month to complete the grid (6 rows x 7 days = 42 cells)
+    const totalDays = 42;
+    const remainingDays = totalDays - days.length;
+    
+    if (remainingDays > 0) {
+      const nextMonth = new Date(year, monthIndex + 1, 1);
+      
+      for (let i = 1; i <= remainingDays; i++) {
+        days.push({
+          date: i,
+          month: nextMonth.getMonth(),
+          year: nextMonth.getFullYear(),
+          isCurrentMonth: false,
+          isSelected: this.isDateSelected(new Date(nextMonth.getFullYear(), nextMonth.getMonth(), i)),
+          isToday: this.isToday(new Date(nextMonth.getFullYear(), nextMonth.getMonth(), i))
+        });
+      }
+    }
+    
+    return days;
+  }
+
+  isDateSelected(date: Date): boolean {
+    if (!this.selectedStartDate && !this.selectedEndDate) return false;
+    
+    const dateWithoutTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    if (this.selectedStartDate && this.selectedEndDate) {
+      const start = new Date(this.selectedStartDate.getFullYear(), this.selectedStartDate.getMonth(), this.selectedStartDate.getDate());
+      const end = new Date(this.selectedEndDate.getFullYear(), this.selectedEndDate.getMonth(), this.selectedEndDate.getDate());
+      return dateWithoutTime >= start && dateWithoutTime <= end;
+    } else if (this.selectedStartDate) {
+      const start = new Date(this.selectedStartDate.getFullYear(), this.selectedStartDate.getMonth(), this.selectedStartDate.getDate());
+      return dateWithoutTime.getTime() === start.getTime();
+    }
+    
+    return false;
+  }
+
+  // Check if a date is exactly one of the selected boundary dates (start or end)
+  isExactSelectedDate(date: Date): boolean {
+    if (!this.selectedStartDate) return false;
+    
+    const dateWithoutTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const start = this.selectedStartDate ? new Date(this.selectedStartDate.getFullYear(), this.selectedStartDate.getMonth(), this.selectedStartDate.getDate()) : null;
+    const end = this.selectedEndDate ? new Date(this.selectedEndDate.getFullYear(), this.selectedEndDate.getMonth(), this.selectedEndDate.getDate()) : null;
+    
+    if (start && dateWithoutTime.getTime() === start.getTime()) return true;
+    if (end && dateWithoutTime.getTime() === end.getTime()) return true;
+    
+    return false;
+  }
+
+  // Check if a date is between the selected range but not a boundary
+  isDateInRange(date: Date): boolean {
+    if (!this.selectedStartDate || !this.selectedEndDate) return false;
+    
+    const dateWithoutTime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const start = new Date(this.selectedStartDate.getFullYear(), this.selectedStartDate.getMonth(), this.selectedStartDate.getDate());
+    const end = new Date(this.selectedEndDate.getFullYear(), this.selectedEndDate.getMonth(), this.selectedEndDate.getDate());
+    
+    return dateWithoutTime > start && dateWithoutTime < end;
+  }
+
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() && 
+           date.getMonth() === today.getMonth() && 
+           date.getFullYear() === today.getFullYear();
+  }
+
+  selectDate(day: CalendarDay): void {
+    const selectedDate = new Date(day.year, day.month, day.date);
+    
+    if (!this.selectedStartDate || (this.selectedStartDate && this.selectedEndDate)) {
+      // Start new selection
+      this.selectedStartDate = selectedDate;
+      this.selectedEndDate = null;
+    } else {
+      // Complete the selection
+      if (selectedDate < this.selectedStartDate) {
+        this.selectedEndDate = this.selectedStartDate;
+        this.selectedStartDate = selectedDate;
+      } else {
+        this.selectedEndDate = selectedDate;
+      }
+    }
+    
+    // Update calendar to reflect selection
+    this.generateCalendar();
+    
+    // If we have both start and end dates, update the date range display
+    if (this.selectedStartDate && this.selectedEndDate) {
+      this.dateRange = `${this.formatDateShort(this.selectedStartDate)} - ${this.formatDateShort(this.selectedEndDate)}`;
+    } else if (this.selectedStartDate) {
+      this.dateRange = `${this.formatDateShort(this.selectedStartDate)}`;
+    }
+  }
+
+  changeMonth(increment: number): void {
+    this.currentMonth.setMonth(this.currentMonth.getMonth() + increment);
+    this.nextMonth.setMonth(this.nextMonth.getMonth() + increment);
+    this.generateCalendar();
+  }
+
+  applyDateSelection(): void {
+    if (this.selectedStartDate && this.selectedEndDate) {
+      this.applyFilters();
+      this.showDatepicker = false;
+    }
+  }
+
   applyFilters(): void {
     const clientFilter = this.filterForm.get('client')?.value;
     const statusFilter = this.filterForm.get('bookingStatus')?.value;
-    const startDate = this.filterForm.get('startDate')?.value;
-    const endDate = this.filterForm.get('endDate')?.value;
     
     this.filteredBookings = this.bookings.filter(booking => {
       // Apply client filter if not "All"
@@ -181,21 +350,23 @@ export class BookingsComponent implements OnInit {
       
       // Apply date range filter if dates are selected
       let dateMatch = true;
-      if (startDate && endDate) {
+      if (this.selectedStartDate && this.selectedEndDate) {
         // Check if booking period overlaps with selected date range
         dateMatch = (
-          (booking.startDate <= endDate && booking.endDate >= startDate) ||
-          (booking.date >= this.formatDate(startDate) && booking.date <= this.formatDate(endDate))
+          (booking.startDate <= this.selectedEndDate && booking.endDate >= this.selectedStartDate) ||
+          (new Date(this.parseDate(booking.date)) >= this.selectedStartDate && 
+           new Date(this.parseDate(booking.date)) <= this.selectedEndDate)
         );
       }
       
       return clientMatch && statusMatch && dateMatch;
     });
-    
-    // Update the displayed date range
-    if (startDate && endDate) {
-      this.dateRange = `${this.formatDateShort(startDate)} - ${this.formatDateShort(endDate)}`;
-    }
+  }
+
+  // Parse date string in format DD.MM.YYYY to Date object
+  parseDate(dateStr: string): Date {
+    const parts = dateStr.split('.');
+    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
   }
 
   toggleDropdown(dropdown: string): void {
@@ -222,17 +393,6 @@ export class BookingsComponent implements OnInit {
   selectStatus(status: string): void {
     this.filterForm.patchValue({ bookingStatus: status });
     this.showStatusDropdown = false;
-  }
-
-  updateDateRange(): void {
-    const startDate = this.filterForm.get('startDate')?.value;
-    const endDate = this.filterForm.get('endDate')?.value;
-    
-    if (startDate && endDate) {
-      this.selectedDateRange = { start: startDate, end: endDate };
-      this.showDatepicker = false;
-      this.applyFilters();
-    }
   }
 
   applyDateFilters(): void {
@@ -280,6 +440,10 @@ export class BookingsComponent implements OnInit {
   closeSuccessMessage(): void {
     this.successMessage = null;
   }
+  // Helper method to create a Date object from a CalendarDay
+createDate(day: CalendarDay): Date {
+  return new Date(day.year, day.month, day.date);
+}
   
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {

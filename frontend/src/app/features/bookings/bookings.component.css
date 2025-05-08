@@ -1,40 +1,33 @@
-/* Add any specific styles for the bookings component here */
-.container {
-  max-width: 1200px;
+/* Calendar styles */
+.datepicker-container {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Table styles */
-table {
-  border-collapse: collapse;
-  width: 100%;
+/* Selected date style */
+.selected-date {
+  background-color: #9333ea; /* Purple 600 */
+  color: white;
+  border-radius: 9999px;
 }
 
-/* Ensure the action menu is properly positioned */
-.relative {
-  position: relative;
+/* Today's date style */
+.today-date {
+  font-weight: bold;
 }
 
-/* Style for the datepicker */
-::ng-deep .mat-form-field-wrapper {
-  padding-bottom: 0;
-  margin-bottom: 0;
+/* Non-current month days */
+.other-month {
+  color: #9ca3af; /* Gray 400 */
 }
 
-::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.5em 0;
+/* Hover effect for calendar days */
+.calendar-day:hover {
+  background-color: #f3f4f6; /* Gray 100 */
 }
 
-::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
-  padding: 0 0.75em;
-  margin-top: -0.25em;
-}
-
-/* Smaller calendar icon */
-::ng-deep .mat-datepicker-toggle {
-  scale: 0.8;
-}
-
-/* Ensure the datepicker popup is above other elements */
-::ng-deep .mat-datepicker-content {
-  z-index: 1000 !important;
+/* Calendar container */
+.calendar-container {
+  border: 2px solid black; /* Purple 300 */
+  border-radius: 0.375rem;
 }
