@@ -58,7 +58,7 @@
   </section>
 
   <!-- Cards Section -->
-  <section
+  <section *ngIf="filteredBookings.length > 0"
     class="flex flex-col justify-center items-center min-[680px]:grid min-[680px]:grid-cols-2 min-[1035px]:grid-cols-3 min-[1370px]:grid-cols-4 min-[1700px]:grid-cols-5 gap-4 mx-2 my-4 min-[800px]:ml-8">
     <app-bookings-card *ngFor="let booking of filteredBookings" [booking]="booking"
       (showFeedBackEvent)="setshowFeedback($event)" (cancelBookingEvent)="setshowPopup($event)"
@@ -66,6 +66,10 @@
     </app-bookings-card>
   </section>
 
+  <section *ngIf="filteredBookings.length === 0" class="h-screen flex flex-col justify-center items-center">
+    <h1 class="text-2xl text-center font-semibold mt-4">No Bookings Found</h1>
+    <p class="text-center text-[#666]">You have no bookings in this category.</p>
+  </section>
 
 
 
