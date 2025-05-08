@@ -14,7 +14,7 @@ export class CarFilterService {
   filteredCars$: Observable<Car[]> = this.filteredCarsSubject.asObservable();
 
   // Mock cars data
-  private mockCars: Car[] = [
+  private mockCars: any = [
     {
       carId: '1',
       brand: 'Nissan',
@@ -25,7 +25,7 @@ export class CarFilterService {
       engineCapacity: '3.0L',
       seats: '2',
       fuelConsumption: '10',
-      pricePerDay: '550',
+      pricePerDay: 550,
       carRating: '4.8',
       imageURL: '/assets/images/Nissan-Z-2021.jpg',
       location: 'Ukraine, Kyiv',
@@ -48,7 +48,7 @@ export class CarFilterService {
       engineCapacity: '2.0L',
       seats: '5',
       fuelConsumption: '8',
-      pricePerDay: '180',
+      pricePerDay: 180,
       carRating: '4.8',
       imageURL: 'assets/images/Audi-rs7-2022.jpg',
       location: 'Ukraine, Kyiv',
@@ -71,7 +71,7 @@ export class CarFilterService {
       engineCapacity: '1.5L',
       seats: '5',
       fuelConsumption: '6',
-      pricePerDay: '110',
+      pricePerDay: 110,
       carRating: '4.8',
       imageURL: 'assets/images/ford-focus.jpg',
       location: 'Ukraine, Lviv',
@@ -94,7 +94,7 @@ export class CarFilterService {
       engineCapacity: '3.6L',
       seats: '5',
       fuelConsumption: '12',
-      pricePerDay: '220',
+      pricePerDay: 220,
       carRating: '4.8',
       imageURL: 'assets/images/jeep.jpg',
       location: 'Ukraine, Odesa',
@@ -117,7 +117,7 @@ export class CarFilterService {
       engineCapacity: 'N/A',
       seats: '5',
       fuelConsumption: '0',
-      pricePerDay: '300',
+      pricePerDay: 300,
       carRating: '4.9',
       imageURL: 'assets/images/tesla-model3.jpg',
       location: 'Ukraine, Kyiv',
@@ -544,29 +544,34 @@ export class CarFilterService {
 
   // Get available locations from the cars
   getLocations(): string[] {
-    const locations = new Set<string>();
-    this.mockCars.forEach(car => locations.add(car.location));
-    return Array.from(locations);
+    const locations = [
+      'Kyiv Ukraine',
+      'Odesa Ukraine',
+      'Lviv Ukraine',
+      'Dnipro Ukraine',
+      'Kharkiv Ukraine'
+    ];
+    return locations;
   }
 
   // Get available car categories from the cars
   getCarCategories(): string[] {
     const categories = new Set<string>();
-    this.mockCars.forEach(car => categories.add(car.category));
+    this.mockCars.forEach((car: any) => categories.add(car.category));
     return Array.from(categories);
   }
 
   // Get available gearbox types from the cars
   getgearBoxTypes(): string[] {
     const types = new Set<string>();
-    this.mockCars.forEach(car => types.add(car.gearBoxType));
+    this.mockCars.forEach((car: any) => types.add(car.gearBoxType));
     return Array.from(types);
   }
 
   // Get available engine types from the cars
   getEngineTypes(): string[] {
     const types = new Set<string>();
-    this.mockCars.forEach(car => types.add(car.fuelType));
+    this.mockCars.forEach((car: any) => types.add(car.fuelType));
     return Array.from(types);
   }
 

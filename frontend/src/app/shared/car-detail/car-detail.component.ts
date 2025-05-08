@@ -127,7 +127,7 @@ export class CarDetailComponent implements OnInit {
       this.carImage = this.selectedCar.images[0];
       this.carImages = this.selectedCar.images;
       this.selectedImageIndex = 0; // Reset image index when car changes
-      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay); // Set initial price
+      this.pricePerDay = this.selectedCar.pricePerDay // Set initial price
     }
   }
 
@@ -137,9 +137,9 @@ export class CarDetailComponent implements OnInit {
 
   calculatePrice(): void {
     if (this.startDate && this.endDate && this.selectedCar) {
-      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay);
+      this.pricePerDay = this.selectedCar.pricePerDay;
     } else if (this.selectedCar) {
-      this.pricePerDay = parseFloat(this.selectedCar.pricePerDay);
+      this.pricePerDay = this.selectedCar.pricePerDay;
     }
   }
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardComponent } from '../../shared/card/card.component';
 import { Car } from '../../models/car.model';
@@ -15,12 +15,13 @@ import { CarsService } from '../../core/services/cars/cars.service';
   standalone: true,
   imports: [CommonModule, CardComponent]
 })
-export class CardsComponent implements OnInit, OnDestroy {
+export class CardsComponent implements OnInit, OnDestroy, OnChanges {
   // Reference to the cars container element
   @ViewChild('carsContainer') carsContainer!: ElementRef;
 
   // Input to determine if this is the home page or cars page
   @Input() isHomePage: boolean = true;
+  @Input() filteredCars: any;
   @Output() loginPopup: EventEmitter<void> = new EventEmitter<void>();
 
   handleLoginPopup() {
@@ -68,6 +69,14 @@ export class CardsComponent implements OnInit, OnDestroy {
     this.updatePaginationArray();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges called', changes);
+    if (changes['filteredCars'].currentValue){
+      this.allCars = changes['filteredCars'].currentValue;
+      this.updateDisplayedCars();
+    }
+  }
+
   ngOnDestroy(): void {
     // Clean up subscription
     if (this.subscription) {
@@ -78,9 +87,9 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Load all cars from cars services
   loadCars() {
     this.carsService.getCars().subscribe(((cars) => {
-      this.allCars = JSON.parse(cars).content;
-      console.log(this.allCars)
-
+      if (cars) {
+        this.allCars = cars.content;
+      }
       if (this.showAllCars || !this.isHomePage) {
         this.calculateTotalPages();
         this.updateDisplayedCars();
@@ -215,4 +224,3 @@ export class CardsComponent implements OnInit, OnDestroy {
     this.updatePaginationArray();
   }
 }
- 

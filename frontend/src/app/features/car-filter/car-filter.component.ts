@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,9 @@ import { CarFilterService } from '../../core/services/car-filter.service';
 import { FilterCriteria } from '../../models/filter.model';
 import { CommonModule } from '@angular/common';
 import { CarsService } from '../../core/services/cars/cars.service';
+import { filter } from 'rxjs';
+import { Router } from '@angular/router';
+import { CardsComponent } from '../cards/cards.component';
 
 @Component({
   selector: 'app-car-filter',
@@ -37,10 +40,13 @@ export class CarFilterComponent implements OnInit {
   selectedPickupDate: Date = new Date();
   selectedDropoffDate: Date = new Date();
 
+  @Output() filteredCars: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(
     private fb: FormBuilder,
     private carFilterService: CarFilterService,
-    private carsService: CarsService
+    private carsService: CarsService,
+    private router: Router,
   ) {
     this.selectedPickupDate.setDate(this.selectedPickupDate.getDate());
     this.selectedDropoffDate.setDate(this.selectedPickupDate.getDate() + 1);
@@ -67,10 +73,8 @@ export class CarFilterComponent implements OnInit {
   findCars(): void {
     const formValues = this.filterForm.value;
     const filters: FilterCriteria = {
-      pickupLocationId: formValues.pickupLocation,
-      dropoffLocationId: formValues.dropoffLocation,
-      pickupDateTime: formValues.pickupDate,
-      dropoffDateTime: formValues.dropoffDate,
+      pickupLocationId: "" + this.locations.indexOf(formValues.pickupLocation),
+      dropoffLocationId: "" + this.locations.indexOf(formValues.pickupLocation),
       category: formValues.carCategory,
       gearBoxType: formValues.gearboxType,
       fuelType: formValues.engineType,
@@ -78,10 +82,10 @@ export class CarFilterComponent implements OnInit {
       maxPrice: formValues.priceRange[1],
     };
     this.carsService.getFilteredCar(filters).subscribe(data => {
-      const cars = data.cars;
-      console.log("FILTERED CARS: ",cars)
+      console.log(filters)
+      this.filteredCars.emit(data.content);
     });
-    // const vari = this.carsService.getFilteredCar(filters);
+    this.router.navigate(["/cars"])
   }
 
   clearFilters(): void {

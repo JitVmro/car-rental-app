@@ -1,8 +1,8 @@
 export interface FilterCriteria {
     pickupLocationId: string;
     dropoffLocationId: string;
-    pickupDateTime: string;
-    dropoffDateTime: string;
+    pickupDateTime?: string;
+    dropoffDateTime?: string;
     category: string;
     gearBoxType: string;
     fuelType: string;

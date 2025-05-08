@@ -20,24 +20,24 @@ export class CarsService {
     return this.http.get(this.baseURL + "/cars/popular")
   }
 
-  getFilteredCar(filters = {}): Observable<any> {
+  getFilteredCar(filters: any): Observable<any> {
     // Initialize HttpParams object
     let params = new HttpParams();
-
     // Add each filter parameter to the params if it exists
     Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== '') {
         // Convert Date objects to ISO strings if needed
         if (value instanceof Date) {
-          params = params.append(key, value.toISOString());
+          params = params.set(key, value.toISOString());
         } else {
-          params = params.append(key, value.toString());
+          params = params.set(key, value.toString());
         }
       }
     });
-
-    // Return the HTTP request with the parameters
-    return this.http.get(`${this.baseURL}/cars`, { params });
+    // Log the final URL that will be called (for debugging)
+    const urlWithParams = `${this.baseURL}/cars?${params.toString()}`;
+    // Make the HTTP request
+    return this.http.get(urlWithParams)
   }
 
   getCarById(carId: string): Observable<any> {
