@@ -164,7 +164,7 @@ const getPopularCars = async (event) => {
     await connectToDatabase();
 
     // Get popular cars based on car rating
-    const popularCars = await Car.find()
+    // const popularCars = await Car.find()
     // Get popular cars based on car rating
     const popularCars = await Car.find()
       .sort({ carRating: -1 })

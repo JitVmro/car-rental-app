@@ -1,0 +1,57 @@
+/* dashboard.component.css */
+:host {
+  display: block;
+}
+
+/* Make calendar day selection match the design */
+.bg-black.text-white.rounded-full {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Ensure proper spacing in the calendar */
+.grid-cols-7 > div {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style for the report table */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  background-color: black;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+}
+
+td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Ensure the create report button has the exact styling */
+.bg-red-600 {
+  background-color: #cc1d1d;
+}
+
+.bg-red-600:hover {
+  background-color: #b71c1c;
+}
+
+/* Ensure dropdown styling matches design */
+.absolute.mt-1 {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 0.375rem;
+}

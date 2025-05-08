@@ -148,50 +148,76 @@ const getRecentFeedbacks = async (event) => {
     
     // Find recent feedbacks with good ratings
     const recentFeedbacks = await Feedback.find({ rating: { $gte: 4 } })
-      .populate('userId', 'firstName lastName location imageUrl')
-      .populate('carId', 'brand model images')
-      .limit(validCount)
+      .populate('userId', 'firstName lastName imageUrl')
+      .populate('carId', 'brand model year imageUrls')
+      .limit(count)
       .sort({ createdAt: -1 });
     
-    // Format the response according to Swagger UI format
-    const formattedFeedbacks = recentFeedbacks.map(feedback => {
-      const date = new Date(feedback.createdAt);
-      const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
-      
-      // Get user info
-      const userName = feedback.userId ? 
-        `${feedback.userId.firstName} ${feedback.userId.lastName}` : 
-        'Anonymous';
-      
-      const userLocation = feedback.userId && feedback.userId.location ? 
-        feedback.userId.location : 
-        '';
-      
-      const author = userLocation ? 
-        `${userName}, ${userLocation}` : 
-        userName;
-      
-      // Get car info
-      const carModel = feedback.carId ? 
-        `${feedback.carId.model}` : 
-        'Unknown Model';
-      const carImageUrl = feedback.carId && 
-                         feedback.carId.images && 
-                         feedback.carId.images.length > 0 ? 
-        feedback.carId.images[0] : 
-        null;
-      
+    // Return recent feedbacks
+    return {
+      statusCode: 200,
+      body: recentFeedbacks.map(feedback => ({
+        feedbackId: feedback._id,
+        rating: feedback.rating,
+        comment: feedback.comment,
+        createdAt: feedback.createdAt,
+        user: feedback.userId ? {
+          userId: feedback.userId._id,
+          name: `${feedback.userId.firstName} ${feedback.userId.lastName}`,
+          imageUrl: feedback.userId.imageUrl || ''
+        } : null,
+        car: feedback.carId ? {
+          carId: feedback.carId._id,
+          brand: feedback.carId.brand,
+          model: feedback.carId.model,
+          year: feedback.carId.year,
+          imageUrl: feedback.carId.imageUrls && feedback.carId.imageUrls.length > 0 ? feedback.carId.imageUrls[0] : null
+        } : null
+      }))
+    };
+  } catch (error) {
+    console.error('Error in getRecentFeedbacks:', error);
+    
+    if (error.name === 'ValidationError') {
       return {
-        feedbackId: feedback._id.toString(),
-        feedbackText: feedback.comment,
-        rating: feedback.rating.toFixed(1),
-        date: formattedDate,
-        author: author,
-        carModel: carModel,
-        carImageUrl: carImageUrl,
-        orderHistory: `#${feedback._id.toString().substring(0, 4)} (${formattedDate})`
+        statusCode: 400,
+        body: { message: 'Validation error', details: error.details }
       };
-    });
+    }
+    
+    return {
+      statusCode: 500,
+      body: { message: 'Internal server error' }
+    };
+  }
+};
+
+/**
+ * Get all feedbacks (admin/agent only)
+ * @param {Object} event - API Gateway event
+ * @returns {Promise<Object>} Response with all feedbacks
+ */
+const getAllFeedbacks = async (event) => {
+  try {
+    // Authenticate and authorize admin or support agent
+    const authorizedEvent = await authorize(['Admin', 'SupportAgent'])(event);
+    
+    // Extract pagination parameters
+    const queryParams = event.queryStringParameters || {};
+    const page = parseInt(queryParams.page) || 1;
+    const pageSize = parseInt(queryParams.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
+    
+    // Connect to database
+    await connectToDatabase();
+    
+    // Find all feedbacks with pagination
+    const feedbacks = await Feedback.find()
+      .populate('userId', 'firstName lastName email')
+      .populate('carId', 'brand model year')
+      .skip(skip)
+      .limit(pageSize)
+      .sort({ createdAt: -1 });
     
     // Return recent feedbacks in the format matching Swagger UI
     return {

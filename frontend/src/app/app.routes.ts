@@ -8,6 +8,8 @@ import { BookingPageComponent } from './features/booking-page/booking-page.compo
 import { CarBookingEditComponent } from './features/car-booking-edit/car-booking-edit.component';
 import { AuthGuard } from './core/guards/auth-guard.guard';
 import { ProfileComponent } from './features/profile-management/profile/profile.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { AdminGuard } from './core/guards/admin.guard';
 // import { DashboardComponent } from './features/admin/dashboard/dashboard.component';
 
 
@@ -16,7 +18,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'cars', component: CarsComponent },
-  // { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent ,  canActivate: [AuthGuard, AdminGuard]},
   { path: 'bookings/new', component: BookingsComponent,canActivate:[AuthGuard] },
   { path: 'bookings', component: BookingsComponent,canActivate:[AuthGuard] },
   { path: 'cars/booking', component: BookingPageComponent,canActivate:[AuthGuard] },

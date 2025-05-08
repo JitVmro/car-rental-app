@@ -52,18 +52,24 @@ export class LoginComponent implements OnInit {
       const control = this.loginForm.get(key);
       control?.markAsTouched();
     });
-
+  
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
-
+  
     this.isSubmitting = true;
     this.errorMessage = null;
-
+  
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
+      next: (user) => {
+        // Check user role and redirect accordingly
+        if (user && user.role === 'admin') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          // For non-admin users or if returnUrl is specified
+          this.router.navigate([this.returnUrl !== '/' ? this.returnUrl : '/home']);
+        }
         console.log('Login Success');
       },
       error: (error) => {
