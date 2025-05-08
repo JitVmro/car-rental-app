@@ -37,8 +37,8 @@ export class AuthService {
         map(response => {
           console.log('Login response:', response); // Add detailed logging
           
-          // Ensure role exists and normalize it
-          const role = response.role ? response.role.toLowerCase() : 'client';
+          // Extract role from response - IMPORTANT: Keep the original role name
+          const role = response.role || 'client';
           
           // Extract user data and token from response
           const user: User = {

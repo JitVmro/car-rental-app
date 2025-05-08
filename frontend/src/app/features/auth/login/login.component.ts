@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
   hidePassword = true;
   registrationSuccess = false;
   returnUrl = '/';
+  
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -37,8 +39,17 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/home']);
+      // Check user role and redirect accordingly
+      const user = this.authService.currentUserValue;
+      if (user?.role === 'admin') {
+        this.router.navigate(['/dashboard']);
+      } else if (user?.role === 'SupportAgent') {
+        this.router.navigate(['/bookings']);
+      } else {
+        this.router.navigate(['/home']);
+      }
     }
+    
     this.registrationSuccess =
       this.route.snapshot.queryParams['registered'] === 'true';
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -66,8 +77,11 @@ export class LoginComponent implements OnInit {
         // Check user role and redirect accordingly
         if (user && user.role === 'admin') {
           this.router.navigate(['/dashboard']);
+        } else if (user && user.role === 'SupportAgent') {
+          // Redirect support agents to bookings page
+          this.router.navigate(['/bookings']);
         } else {
-          // For non-admin users or if returnUrl is specified
+          // For regular clients or if returnUrl is specified
           this.router.navigate([this.returnUrl !== '/' ? this.returnUrl : '/home']);
         }
         console.log('Login Success');
@@ -85,6 +99,7 @@ export class LoginComponent implements OnInit {
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
   }
+  
   navigateToRegister(): void {
     this.router.navigate(['/register']);
   }

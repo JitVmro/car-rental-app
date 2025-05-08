@@ -1,0 +1,33 @@
+/* Calendar styles */
+.datepicker-container {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Selected date style */
+.selected-date {
+  background-color: #9333ea; /* Purple 600 */
+  color: white;
+  border-radius: 9999px;
+}
+
+/* Today's date style */
+.today-date {
+  font-weight: bold;
+}
+
+/* Non-current month days */
+.other-month {
+  color: #9ca3af; /* Gray 400 */
+}
+
+/* Hover effect for calendar days */
+.calendar-day:hover {
+  background-color: #f3f4f6; /* Gray 100 */
+}
+
+/* Calendar container */
+.calendar-container {
+  border: 2px solid black; /* Purple 300 */
+  border-radius: 0.375rem;
+}
