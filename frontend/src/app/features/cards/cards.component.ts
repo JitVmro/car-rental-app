@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, Output, EventEmitter, Host, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardComponent } from '../../shared/card/card.component';
 import { Car } from '../../models/car.model';
@@ -29,6 +29,7 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   // All cars in the system
   allCars: Car[] = [];
+  gridTemplateColumns: string = '';
 
   // Featured cars for home page (first 4)
   featuredCars: Car[] = [];
@@ -53,7 +54,23 @@ export class CardsComponent implements OnInit, OnDestroy {
     private carsService: CarsService
   ) { }
 
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateGridTemplateColumns();
+  }
+
+  private updateGridTemplateColumns() {
+    this.gridTemplateColumns =
+      window.innerWidth < 340
+        ? 'repeat(auto-fill, minmax(300px, 1fr))'
+        : 'repeat(auto-fill, minmax(330px, 1fr))';
+  }
+
   ngOnInit(): void {
+    // For Resize
+    this.updateGridTemplateColumns();
+
     // Call cars loader
     if (this.isHomePage) {
       this.loadPopularCars()
@@ -78,7 +95,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   // Load all cars from cars services
   loadCars() {
     this.carsService.getCars().subscribe(((cars) => {
-      this.allCars = JSON.parse(cars).content;
+      this.allCars = cars.content;
       console.log(this.allCars)
 
       if (this.showAllCars || !this.isHomePage) {
