@@ -88,10 +88,8 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ngOnChanges called', changes);
-    if (changes['filteredCars'].currentValue) {
-      this.allCars = changes['filteredCars'].currentValue;
-      this.updateDisplayedCars();
-    }
+    this.allCars = changes['filteredCars']?.currentValue;
+    this.updateDisplayedCars();
   }
 
   ngOnDestroy(): void {
@@ -133,14 +131,14 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
 
   // Calculate total pages based on cars array length and items per page
   calculateTotalPages(): void {
-    this.totalPages = Math.ceil(this.allCars.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.allCars?.length / this.itemsPerPage);
   }
 
   // Update displayed cars based on current page
   updateDisplayedCars(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = Math.min(startIndex + this.itemsPerPage, this.allCars.length);
-    this.displayedCars = this.allCars.slice(startIndex, endIndex);
+    const endIndex = Math.min(startIndex + this.itemsPerPage, this.allCars?.length);
+    this.displayedCars = this.allCars?.slice(startIndex, endIndex);
   }
 
   // Update the pagination array based on the current page and total pages
