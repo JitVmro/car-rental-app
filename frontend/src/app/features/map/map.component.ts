@@ -1,18 +1,18 @@
 import { NgClass, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
-import { HttpClientModule,HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { environment } from '../../../environment/environment';
 
-interface Location{
-  locationId:string;
-  locationName:string;
-  locationAddress:string;
-  locationImageUrl:string;
+interface Location {
+  locationId: string;
+  locationName: string;
+  locationAddress: string;
+  locationImageUrl: string;
 }
 
 @Component({
   selector: 'app-map',
-  imports: [NgFor,NgClass,HttpClientModule ],
+  imports: [NgFor, NgClass, HttpClientModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.css',
 })
@@ -21,8 +21,8 @@ interface Location{
 export class MapComponent {
 
   baseUrl = environment.apiUrl;
-  readonly mapsUrl=this.baseUrl + '/home/locations';
-  constructor(private http: HttpClient) {}
+  readonly mapsUrl = this.baseUrl + '/home/locations';
+  constructor(private http: HttpClient) { }
 
   apiData: any = null;
 
@@ -30,7 +30,7 @@ export class MapComponent {
     this.http.get(this.mapsUrl).subscribe({
       next: (data) => {
         this.apiData = data;
-        this.locations=this.apiData.content // ✅ Now this logs the actual data from the API
+        this.locations = this.apiData.content // ✅ Now this logs the actual data from the API
         console.log(this.locations);
       },
       error: (error) => {
@@ -38,13 +38,13 @@ export class MapComponent {
       }
     });
   }
-  
+
   ngOnInit() {
     this.getLocations();
-    
+
   }
 
-  locations:Location[] = [
+  locations: Location[] = [
     // {
     //   loactionName: 'Kyiv Ukraine',
     //   locationAddress: '5, Ally Tarasovoyi st',
@@ -83,11 +83,11 @@ export class MapComponent {
     this.selectedIndex = index;
   }
 
-  get selectedLocation():Location {
+  get selectedLocation(): Location | null {
     return this.locations[this.selectedIndex];
   }
 
-  get imgUrl():string {
-    return this.selectedLocation.locationImageUrl;
-}
+  get imgUrl(): string | undefined {
+    return this.selectedLocation?.locationImageUrl;
+  }
 }

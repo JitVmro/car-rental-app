@@ -10,5 +10,5 @@
             <p class="text-[#666] font-normal text-[8px] md:text-sm lg:text-md xl:text-lg leading-6" [ngClass]="{'text-white':i===selectedIndex}">{{locn.locationAddress}}</p>
         </article>
     </section>
-    <img [src]="selectedLocation.locationImageUrl" [alt]="selectedLocation.locationName" class="lg:w-3/4 w-full object-cover h-[576px]">
+    <img [src]="selectedLocation?.locationImageUrl" [alt]="selectedLocation?.locationName" class="lg:w-3/4 w-full object-cover h-[576px]">
 </section>
