@@ -37,7 +37,7 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
 
   // Pagination properties
   currentPage: number = 1;
-  itemsPerPage: number = 8; // Set to 12 cars per page
+  itemsPerPage: number = 8; // Set to 8 cars per page
   totalPages: number = 1;
   displayedCars: Car[] = [];
   paginationArray: number[] = [];
@@ -89,6 +89,7 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ngOnChanges called', changes);
     this.allCars = changes['filteredCars']?.currentValue;
+    this.calculateTotalPages()
     this.updateDisplayedCars();
   }
 
