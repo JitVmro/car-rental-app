@@ -1,13 +1,11 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, effect, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, effect, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'
-import { CarFeature, ClimateControlOption, FuelType, GearBoxType, Status } from '../../models/car.model';
+import { CarFeature } from '../../models/car.model';
 import { Car } from '../../models/car.model';
 import { Feedback } from '../../models/feedback';
-import { CalendarMonth, CalendarDate } from '../../models/calendar.model';
 import { CarDetailsService } from '../../core/services/car-details/car-details.service';
-import { Subscription } from 'rxjs';
 import { DatePickerComponent } from "../date-picker/date-picker.component";
 import { AuthService } from '../../core/services/auth/auth-service.service';
 
@@ -20,61 +18,7 @@ import { AuthService } from '../../core/services/auth/auth-service.service';
 })
 export class CarDetailComponent implements OnInit {
 
-  feedbacks: Feedback[] = [
-    {
-      userName: 'Sarah L.',
-      date: new Date('2024-01-12'),
-      rating: 5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.',
-      userImage: ''
-    },
-    {
-      userName: 'Sarah L.',
-      date: new Date('2024-01-11'),
-      rating: 5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Thiruvananthapuram L.',
-      date: new Date('2024-01-11'),
-      rating: 4.5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Sarah L.',
-      date: new Date('2024-01-07'),
-      rating: 5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Thiruvananthapuram L.',
-      date: new Date('2024-01-13'),
-      rating: 4.5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Sarah L.',
-      userImage: 'assets/user1.jpg',
-      date: new Date('2024-01-14'),
-      rating: 5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Thiruvananthapuram L.',
-      userImage: 'assets/user1.jpg',
-      date: new Date('2024-01-10'),
-      rating: 4.5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    },
-    {
-      userName: 'Thiruvananthapuram L.',
-      userImage: 'assets/user1.jpg',
-      date: new Date('2024-01-11'),
-      rating: 4.5,
-      comment: 'Fantastic service from start to finish! The booking process was smooth, and the staff was incredibly helpful in answering all my questions.'
-    }
-    // Add more feedback items
-  ];
+  feedbacks: Feedback[] = [];
 
   selectedImageIndex: number = 0;
   startDate: Date = new Date();
@@ -95,16 +39,20 @@ export class CarDetailComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private carService: CarDetailsService,
-    private authService: AuthService
+    private carDetailsService: CarDetailsService,
+    private authService: AuthService,
   ) {
-
     effect(() => {
-      const car = this.carService.selectedCar();
+      const car = this.carDetailsService.selectedCar();
       if (car) {
         this.selectedCar = car;
         this.setCarFeaturesAndImages();
         this.calculatePrice();
+        console.log(car.carId)
+        carDetailsService.getCarReviews(car.carId).subscribe((reviews) => {
+          this.feedbacks = reviews.content;
+          console.log("FEEDBACKS : ", this.feedbacks);
+        })
       }
     });
   }
@@ -222,13 +170,18 @@ export class CarDetailComponent implements OnInit {
 
   sortFeedback(): void {
     this.feedbacks.sort((a, b) => {
+      console.log(b.date, a.date)
+      const aDate = new Date(a.date);
+      const bDate = new Date(b.date);
       switch (this.sortOrder) {
         case 'newest':
-          return b.date.getTime() - a.date.getTime();
+          return bDate.getTime() - aDate.getTime();
         case 'oldest':
-          return a.date.getTime() - b.date.getTime();
-        case 'rating':
-          return b.rating - a.rating;
+          return aDate.getTime() - bDate.getTime();
+        case 'hRating':
+          return b.rentalExperience - a.rentalExperience;
+        case 'lRating':
+          return a.rentalExperience - b.rentalExperience;
         default:
           return 0;
       }
@@ -260,13 +213,13 @@ export class CarDetailComponent implements OnInit {
   //  Computed property to get paginated feedbacks
   get paginatedFeedbacks(): Feedback[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.feedbacks.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.feedbacks?.slice(startIndex, startIndex + this.itemsPerPage);
 
   }
 
   //  Computed property to get total pages
   get totalPages(): number {
-    return Math.ceil(this.feedbacks.length / this.itemsPerPage);
+    return Math.ceil(this.feedbacks?.length / this.itemsPerPage);
   }
 
   //  Methods to handle Fedback pagination
@@ -289,7 +242,7 @@ export class CarDetailComponent implements OnInit {
   }
 
   closeDetails(): void {
-    this.carService.clearSelectedCar();
+    this.carDetailsService.clearSelectedCar();
     this.selectedCar = null;
   }
 
@@ -304,12 +257,8 @@ export class CarDetailComponent implements OnInit {
     this.endTime = event.endTime;
   }
 
-  openDatePicker() {
-    document.getElementById('d1')?.classList.remove('hidden');
-  }
-
-  closeDatePicker() {
-    document.getElementById('d1')?.classList.add('hidden')
+  toggleDatePicker() {
+    document.getElementById('d1')?.classList.toggle('hidden');
   }
 
   onCancel() {

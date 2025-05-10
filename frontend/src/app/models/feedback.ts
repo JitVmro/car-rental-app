@@ -1,7 +1,7 @@
 export interface Feedback {
-    userName: string;
-    userImage?: string;
+    author: string;
+    authorImageUrl?: string;
     date: Date;
-    rating: number;
-    comment: string;
+    rentalExperience: number;
+    text: string;
 }

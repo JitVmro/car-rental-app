@@ -24,7 +24,7 @@
 
 
   <!-- No Results Message -->
-  <div *ngIf="(isHomePage && featuredCars.length === 0) || (!isHomePage && allCars.length === 0)" 
+  <div *ngIf="(isHomePage && featuredCars?.length === 0) || (!isHomePage && allCars?.length === 0)" 
        class="text-center py-8">
     <p class="text-gray-500 text-lg">No cars found matching your criteria.</p>
     <p class="text-gray-500">Try adjusting your filters.</p>
