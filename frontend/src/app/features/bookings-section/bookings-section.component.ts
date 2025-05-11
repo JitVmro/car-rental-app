@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BookingsCardComponent } from "../bookings-card/bookings-card.component";
+import { BookingsCardComponent } from '../bookings-card/bookings-card.component';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
 import { Booking, BookingState, Location } from '../../models/booking.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
@@ -10,18 +10,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Feedback } from '../../models/feedback';
 import { bookingFeedback } from '../../models/bookingFeedback';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpHeaders,
+} from '@angular/common/http';
 import { environment } from '../../../environment/environment';
-
 
 @Component({
   selector: 'app-bookings-section',
   imports: [CommonModule, BookingsCardComponent, FormsModule, HttpClientModule],
   templateUrl: './bookings-section.component.html',
-  styleUrl: './bookings-section.component.css'
+  styleUrl: './bookings-section.component.css',
 })
 export class BookingsSectionComponent implements OnInit, OnDestroy {
-
+  isLoading: boolean = true;
   bookings: Booking[] = [];
   userId: User | null;
   filteredBookings: Booking[] = [];
@@ -33,8 +36,8 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   showPopup: boolean = false;
   showFeedback: boolean = false;
   viewFeedback: boolean = false;
-  bookingid: string = "";
-  carId: string = "";
+  bookingid: string = '';
+  carId: string = '';
   carName: string = '';
   rating: number = 0;
   feedbackRating: number = 3;
@@ -42,13 +45,12 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   congo: boolean = false;
   reviewText: string = '';
 
-
   currentFeedback: bookingFeedback = {
     bookingId: '',
     carId: '',
     comment: '',
     rating: '0',
-  }
+  };
 
   currentBookingID: any;
   latestBooking!: Booking;
@@ -67,57 +69,54 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
-
+    this.isLoading = true; // START LOADING
 
     this.currentBookingID = this.route.snapshot.paramMap.get('bId');
     if (this.currentBookingID) {
       this.latestBookingSubscription = this.bookingService
-        .getBooking((this.currentBookingID))
+        .getBooking(this.currentBookingID)
         .subscribe({
           next: (value) => {
             this.latestBooking = value;
           },
           error: (error) => {
             console.error('Error fetching booking:', error);
-          }
+          },
         });
     }
 
-    this.route.url.subscribe(urlSegments => {
-      if (urlSegments[1].path === "new") {
+    this.route.url.subscribe((urlSegments) => {
+      if (urlSegments[1].path === 'new') {
         this.congo = true;
       }
     });
 
-
-    //Getting the bookings of the current user
+    // Getting the bookings of the current user
     this.userId = this.authService.currentUserValue;
     if (this.userId?.id) {
-      const token = localStorage.getItem('auth_token')
+      const token = localStorage.getItem('auth_token');
       const headers = new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
-      const URL: string = this.baseUrl +  `/bookings/${this.userId.id}`;
+      const URL: string = this.baseUrl + `/bookings/${this.userId.id}`;
 
       this.http.get(URL, { headers }).subscribe({
         next: (response: any) => {
           this.bookings = this.mapBookings(response.bookings);
           console.log(response.bookings);
-
           this.filterBookingsByActiveTab();
+          this.isLoading = false; // STOP LOADING after success
         },
         error: (error) => {
           console.error('Error fetching bookings:', error);
+          this.isLoading = false; // STOP LOADING on error too
         },
-
-      })
+      });
+    } else {
+      this.isLoading = false; // STOP LOADING if no user ID
     }
   }
-
-
-
 
   ngOnDestroy() {
     if (this.bookingsSubscription) {
@@ -125,20 +124,26 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     }
   }
 
-
   mapBookings(bookings: any[]): Booking[] {
     return bookings.map((booking: any): Booking => {
       const pickupDateTime = new Date(booking.pickupDateTime);
       const dropOffDateTime = new Date(booking.dropOffDateTime);
-      
+
       // Date parts (as Date objects with time 00:00:00)
-      const pickupDate = new Date(pickupDateTime.getFullYear(), pickupDateTime.getMonth(), pickupDateTime.getDate());
-      const dropOffDate = new Date(dropOffDateTime.getFullYear(), dropOffDateTime.getMonth(), dropOffDateTime.getDate());
-      
+      const pickupDate = new Date(
+        pickupDateTime.getFullYear(),
+        pickupDateTime.getMonth(),
+        pickupDateTime.getDate()
+      );
+      const dropOffDate = new Date(
+        dropOffDateTime.getFullYear(),
+        dropOffDateTime.getMonth(),
+        dropOffDateTime.getDate()
+      );
+
       // Time parts (as "HH:mm" strings)
       const pickupTime = pickupDateTime.toISOString().substring(11, 16); // "22:09"
       const dropOffTime = dropOffDateTime.toISOString().substring(11, 16); // "09:30"
-      
 
       return {
         id: booking._id,
@@ -152,12 +157,10 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
         startTime: pickupTime,
         endTime: dropOffTime,
         pickuplocation: booking.pickupLocationId as Location,
-        droplocation: booking.dropOffLocationId as Location
+        droplocation: booking.dropOffLocationId as Location,
       };
     });
   }
-
-
 
   filterBookingsByActiveTab() {
     switch (this.active) {
@@ -165,26 +168,34 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
         this.filteredBookings = this.bookings;
         break;
       case 1:
-        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Reserved);
+        this.filteredBookings = this.bookings.filter(
+          (booking) => booking.state === BookingState.Reserved
+        );
         break;
       case 2:
-        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.InProgress);
+        this.filteredBookings = this.bookings.filter(
+          (booking) => booking.state === BookingState.InProgress
+        );
         break;
       case 3:
-        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedService);
+        this.filteredBookings = this.bookings.filter(
+          (booking) => booking.state === BookingState.FinishedService
+        );
         break;
       case 4:
-        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.FinishedBooking);
+        this.filteredBookings = this.bookings.filter(
+          (booking) => booking.state === BookingState.FinishedBooking
+        );
         break;
       case 5:
-        this.filteredBookings = this.bookings.filter(booking => booking.state === BookingState.Cancelled);
+        this.filteredBookings = this.bookings.filter(
+          (booking) => booking.state === BookingState.Cancelled
+        );
         break;
       default:
         this.filteredBookings = this.bookings;
     }
   }
-
-
 
   setshowPopup(bookingid: string) {
     this.showPopup = true;
@@ -195,7 +206,7 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.congo = false;
   }
 
-  setshowFeedback([bookingid,carId,carName]: string[]) {
+  setshowFeedback([bookingid, carId, carName]: string[]) {
     this.bookingid = bookingid;
     this.carId = carId;
     this.carName = carName;
@@ -205,26 +216,26 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
   HandleViewFeedback(bookingid: string) {
     this.bookingid = bookingid;
     this.viewFeedback = true;
-    console.log("view feedback clicked");
+    console.log('view feedback clicked');
   }
 
   HandleEditBooking(bookingid: string) {
     this.bookingid = bookingid;
-    this.router.navigate(['bookings/edit', { bId: this.bookingid }])
-    console.log("edit booking clicked");
+    this.router.navigate(['bookings/edit', { bId: this.bookingid }]);
+    console.log('edit booking clicked');
   }
 
   HandleCancelBooking() {
     this.showPopup = false;
     this.bookingService.cancelBooking(this.bookingid);
-    console.log("cancel booking clicked");
+    console.log('cancel booking clicked');
   }
 
   // Headers
   token: string | null = localStorage.getItem('auth_token');
   headers = new HttpHeaders({
-    'Authorization': `Bearer ${this.token}`,
-    'Content-Type': 'application/json'
+    Authorization: `Bearer ${this.token}`,
+    'Content-Type': 'application/json',
   });
 
   HandleFeedbackSubmit() {
@@ -237,12 +248,14 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     this.currentFeedback.rating = this.rating.toString();
     console.log(this.currentFeedback);
 
-  
-
-    this.http.post(this.createFeedbackUrl, this.currentFeedback, { headers: this.headers }).subscribe( (response) => { console.log(response);window.location.reload(); });
-    
-
-
+    this.http
+      .post(this.createFeedbackUrl, this.currentFeedback, {
+        headers: this.headers,
+      })
+      .subscribe((response) => {
+        console.log(response);
+        window.location.reload();
+      });
   }
 
   setActive(index: number) {
@@ -258,6 +271,4 @@ export class BookingsSectionComponent implements OnInit, OnDestroy {
     console.log(star);
     this.rating = star;
   }
-
-
 }

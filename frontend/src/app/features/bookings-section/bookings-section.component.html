@@ -1,4 +1,4 @@
-<div class="relative">
+<div class="relative m-0 p-0">
   <!-- Congratulations PopUp! -->
   <div *ngIf="congo" class="absolute top-0 flex justify-center items-center w-full z-9">
     <section
@@ -11,7 +11,8 @@
         </svg></figure>
       <section class="flex flex-col gap-2 h-full">
         <h4 class="font-normal text-sm leading-5 ">Congratulations!</h4>
-        <p class="font-normal text-xs leading-4 "><strong>Your Car</strong> is booked for {{latestBooking.startDate | date: "dd MMMM YYYY"}} - {{latestBooking.endDate | date: "dd MMMM YYYY"}} You can change
+        <p class="font-normal text-xs leading-4 "><strong>Your Car</strong> is booked for {{latestBooking.startDate |
+          date: "dd MMMM YYYY"}} - {{latestBooking.endDate | date: "dd MMMM YYYY"}} You can change
           booking details until {{latestBooking.startDate | date: "dd MMMM YYYY"}}.
           Your order: #{{latestBooking.id}} {{latestBooking.startDate | date: "dd MMMM YYYY"}} </p>
       </section>
@@ -66,10 +67,17 @@
     </app-bookings-card>
   </section>
 
-  <section *ngIf="filteredBookings.length === 0" class="lg:h-[360px] h-[65vh] flex flex-col justify-center items-center">
+  <section *ngIf="!isLoading && filteredBookings.length === 0"
+    class="lg:h-[360px] h-[65vh] flex flex-col justify-center items-center">
     <h1 class="text-2xl text-center font-semibold mt-4">No Bookings Found</h1>
     <p class="text-center text-[#666]">You have no bookings in this category.</p>
   </section>
+  <div *ngIf="isLoading" class="flex justify-center items-center py-8 lg:h-[360px] h-[65vh]">
+    <div>
+      <div class="ml-2 w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      <p>Loading...</p>
+    </div>
+  </div>
 
 
 
@@ -134,48 +142,41 @@
     </section>
   </section>
 
-    <!--View Feedback -->
-    <section *ngIf="viewFeedback" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
-      <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[353px] p-6 rounded-lg shadow-lg max-w-md ">
-        <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">Your Feedback</h1>
-  
-        <h3 class="text-lg font-normal mb-6">{{this.carName}}</h3>
-  
-        
-  
-        <!-- Star Component -->
-        <section class="flex space-x-1 mb-6">
-          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-            <svg
-              [ngClass]="star <= feedbackRating ? 'text-yellow-400' : 'text-[#DCDCDD]'"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              class="w-5 h-5 transition-colors duration-200"
-            >
-              <path
-                d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-              />
-            </svg>
-          </ng-container>
-        </section>
-        
-  
-        <!-- TextBox Component -->
-        <section class="w-full flex flex-col gap-1 mb-6">
-          <h5 class="font-normal text-xs">Review</h5>
-          <section class="border border-[#DCDCDD] rounded-lg px-3 py-2 outline-none h-[95px]" 
-          >{{feedbackText}}</section>
-        </section>
-  
-        <!-- Buttons Section -->
-        <section class="flex w-full justify-between gap-1.5 font-medium text-lg flex-col sm:flex-row">
-          <button (click)="viewFeedback = false"
-            class="cursor-pointer px-3 py-2 border-1 w-full  border-black hover:text-white hover:bg-black rounded-4xl text-nowrap">
-            Cancel
-          </button>
-        </section>
-  
+  <!--View Feedback -->
+  <section *ngIf="viewFeedback" class="fixed inset-0  bg-[#0000004D] flex items-center justify-center z-50">
+    <section class="bg-[#FFFBF3] w-[300px] sm:w-[400px] sm:h-[353px] p-6 rounded-lg shadow-lg max-w-md ">
+      <h1 class="text-[26px] leading-6 font-medium max-sm:text-center mb-6">Your Feedback</h1>
+
+      <h3 class="text-lg font-normal mb-6">{{this.carName}}</h3>
+
+
+
+      <!-- Star Component -->
+      <section class="flex space-x-1 mb-6">
+        <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+          <svg [ngClass]="star <= feedbackRating ? 'text-yellow-400' : 'text-[#DCDCDD]'"
+            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+            class="w-5 h-5 transition-colors duration-200">
+            <path d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+        </ng-container>
       </section>
+
+
+      <!-- TextBox Component -->
+      <section class="w-full flex flex-col gap-1 mb-6">
+        <h5 class="font-normal text-xs">Review</h5>
+        <section class="border border-[#DCDCDD] rounded-lg px-3 py-2 outline-none h-[95px]">{{feedbackText}}</section>
+      </section>
+
+      <!-- Buttons Section -->
+      <section class="flex w-full justify-between gap-1.5 font-medium text-lg flex-col sm:flex-row">
+        <button (click)="viewFeedback = false"
+          class="cursor-pointer px-3 py-2 border-1 w-full  border-black hover:text-white hover:bg-black rounded-4xl text-nowrap">
+          Cancel
+        </button>
+      </section>
+
     </section>
+  </section>
 </div>
