@@ -28,6 +28,7 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
     this.loginPopup.emit();
   }
 
+  loading!:boolean;
   // All cars in the system
   allCars: Car[] = [];
   gridTemplateColumns: string = '';
@@ -102,28 +103,29 @@ export class CardsComponent implements OnInit, OnDestroy, OnChanges {
 
   // Load all cars from cars services
   loadCars() {
-    this.carsService.getCars().subscribe(((cars) => {
-      this.allCars = cars.content;
-      console.log(this.allCars)
-
-      if (cars) {
-        this.allCars = cars.content;
-      }
+    this.loading = true;
+    this.carsService.getCars().subscribe((cars) => {
+      this.allCars = cars?.content || [];
+      this.loading = false;
+  
       if (this.showAllCars || !this.isHomePage) {
         this.calculateTotalPages();
         this.updateDisplayedCars();
         this.updatePaginationArray();
       }
-    }))
+    }, () => this.loading = false);
   }
+  
 
   loadPopularCars() {
-    this.carsService.getPopularCars().subscribe(((cars) => {
-      this.featuredCars = cars
-      console.log(this.featuredCars)
+    this.loading = true;
+    this.carsService.getPopularCars().subscribe((cars) => {
+      this.featuredCars = cars || [];
+      this.loading = false;
       this.updateDisplayedCars();
-    }))
+    }, () => this.loading = false);
   }
+  
 
   // Selecting single car card for detail popup
   showCarDetails(car: Car) {
