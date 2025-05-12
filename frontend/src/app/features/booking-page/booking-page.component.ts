@@ -6,23 +6,34 @@ import { Car } from '../../models/car.model';
 import { AuthService } from '../../core/services/auth/auth-service.service';
 import { User } from '../../models/User';
 import { BookingServiceService } from '../../core/services/booking-service/booking-service.service';
-import { Booking, BookingState, createBooking, Location } from '../../models/booking.model';
-import { DatePickerComponent } from "../../shared/date-picker/date-picker.component";
+import {
+  Booking,
+  BookingState,
+  createBooking,
+  Location,
+} from '../../models/booking.model';
+import { DatePickerComponent } from '../../shared/date-picker/date-picker.component';
 import { CarFilterService } from '../../core/services/car-filter.service';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HttpHeaders,
+} from '@angular/common/http';
 import { CarsService } from '../../core/services/cars/cars.service';
 import { environment } from '../../../environment/environment';
+import { ProfileService } from '../../core/services/profile/profile.service';
 
 @Component({
   selector: 'app-booking-page',
   templateUrl: './booking-page.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerComponent]
+  imports: [CommonModule, FormsModule, DatePickerComponent],
 })
 export class BookingPageComponent implements OnInit {
-
   selectedCar!: Car;
   currentUser: User | null;
+  phone!: string;
+  email!:string;
 
   startDate!: Date;
   endDate!: Date;
@@ -47,7 +58,8 @@ export class BookingPageComponent implements OnInit {
     private carsService: CarsService,
     private authService: AuthService,
     private bookingService: BookingServiceService,
-    private http: HttpClient
+    private http: HttpClient,
+    private profileService: ProfileService
   ) {
     this.currentUser = this.authService.currentUserValue;
     this.pickuplocation = Location.Kyiv;
@@ -57,47 +69,40 @@ export class BookingPageComponent implements OnInit {
   ngOnInit(): void {
     this.currentCarID = this.route.snapshot.paramMap.get('carId');
     if (this.currentCarID) {
-      this.loadCarById(this.currentCarID)
+      this.loadCarById(this.currentCarID);
     }
+    this.profileService.getUserInfo(this.currentUser?.id || '').subscribe({
+      next: (val) => {
+        this.phone = val.phoneNumber;
+        this.email = val.email;
+      },
+    });
   }
 
   loadCarById(carId: string) {
-    this.carsService.getCarById(carId).subscribe(((car) => {
+    this.carsService.getCarById(carId).subscribe((car) => {
       this.selectedCar = car;
-      console.log(this.selectedCar)
-    }))
+      console.log(this.selectedCar);
+    });
   }
 
   toggleDatePicker() {
     this.datePickerDisplayStatus = !this.datePickerDisplayStatus;
   }
 
-  changeLocation() {
-    // Implement location change logic
-  }
-
-  changeDates() {
-    // Implement dates change logic
-  }
-
-
-
-
   // Headers
-  token: string | null = localStorage.getItem('auth_token')
+  token: string | null = localStorage.getItem('auth_token');
   headers = new HttpHeaders({
-    'Authorization': `Bearer ${this.token}`,
-    'Content-Type': 'application/json'
+    Authorization: `Bearer ${this.token}`,
+    'Content-Type': 'application/json',
   });
 
-
   formatDateTime(date: Date, time: string): string {
-
     // Extract YYYY-MM-DD from the Date object
     const datePart = date.toISOString().split('T')[0];
 
     // Ensure time is in HH:mm format
-    if (!/^\d{2}:\d{2}$/.test(time)) throw new Error("Invalid time format");
+    if (!/^\d{2}:\d{2}$/.test(time)) throw new Error('Invalid time format');
 
     // Construct combined string
     const combined = `${datePart}T${time}:00`;
@@ -106,11 +111,15 @@ export class BookingPageComponent implements OnInit {
     return new Date(combined).toISOString();
   }
 
-
   postBooking() {
     const user = this.authService.currentUserValue;
-    console.log("DATA", this.startDate, this.startTime, this.endDate, this.endTime);
-
+    console.log(
+      'DATA',
+      this.startDate,
+      this.startTime,
+      this.endDate,
+      this.endTime
+    );
 
     if (user && this.selectedCar) {
       const bookingObj: createBooking = {
@@ -123,33 +132,43 @@ export class BookingPageComponent implements OnInit {
 
         pickupLocationId: this.pickuplocationId,
         dropOffLocationId: this.dropOfflocationId,
-      }
+      };
       console.log(bookingObj);
 
-      this.http.post(environment.apiUrl + '/bookings', bookingObj, { headers: this.headers }).subscribe({
-        next: (response: any) => {
-          console.log('Booking created successfully:', response.message, response.bookingNumber);
-          this.router.navigate(['/bookings/new', { bId: bookingObj.carId }])
-          console.log(bookingObj);
-        },
-        error: (error) => {
-          console.error('Error creating booking:', error);
-        }
-
-      })
-
-
+      this.http
+        .post(environment.apiUrl + '/bookings', bookingObj, {
+          headers: this.headers,
+        })
+        .subscribe({
+          next: (response: any) => {
+            console.log(
+              'Booking created successfully:',
+              response.message,
+              response.bookingNumber
+            );
+            this.router.navigate(['/bookings/new', { bId: bookingObj.carId }]);
+            console.log(bookingObj);
+          },
+          error: (error) => {
+            console.error('Error creating booking:', error);
+          },
+        });
     } else {
-      console.log("Failed to book")
+      console.log('Failed to book');
     }
   }
 
-  onDateRangeSelected(event: { startDate: Date; endDate: Date; startTime: string; endTime: string }) {
+  onDateRangeSelected(event: {
+    startDate: Date;
+    endDate: Date;
+    startTime: string;
+    endTime: string;
+  }) {
     this.startDate = event.startDate;
     this.endDate = event.endDate;
     this.startTime = event.startTime;
     this.endTime = event.endTime;
-    console.log(this.isValidBooking())
+    console.log(this.isValidBooking());
   }
 
   isValidBooking(): boolean {
@@ -176,7 +195,11 @@ export class BookingPageComponent implements OnInit {
     }
 
     // Reset time part of dates for date-only comparisons
-    const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const startDate = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
     const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
 
     // Check if booking is in the past
@@ -214,8 +237,14 @@ export class BookingPageComponent implements OnInit {
   }
 
   get totalPrice() {
-    const start = this.startDate.getFullYear() + this.startDate.getMonth() + this.startDate.getDate();
-    const end = this.endDate.getFullYear() + this.endDate.getMonth() + this.endDate.getDate();
+    const start =
+      this.startDate.getFullYear() +
+      this.startDate.getMonth() +
+      this.startDate.getDate();
+    const end =
+      this.endDate.getFullYear() +
+      this.endDate.getMonth() +
+      this.endDate.getDate();
     return end - start;
   }
 
@@ -237,20 +266,50 @@ export class BookingPageComponent implements OnInit {
 
   selectPickupLocation(index: number) {
     switch (index) {
-      case 0: this.pickuplocation = Location.Kyiv; this.pickuplocationId='0'; break;
-      case 1: this.pickuplocation = Location.Lviv;  this.pickuplocationId='2'; break;
-      case 2: this.pickuplocation = Location.Odesa;  this.pickuplocationId='1'; break;
-      case 3: this.pickuplocation = Location.Kharkiv;  this.pickuplocationId='4'; break;
-      case 4: this.pickuplocation = Location.Dnipro;  this.pickuplocationId='3'; break;
+      case 0:
+        this.pickuplocation = Location.Kyiv;
+        this.pickuplocationId = '0';
+        break;
+      case 1:
+        this.pickuplocation = Location.Lviv;
+        this.pickuplocationId = '2';
+        break;
+      case 2:
+        this.pickuplocation = Location.Odesa;
+        this.pickuplocationId = '1';
+        break;
+      case 3:
+        this.pickuplocation = Location.Kharkiv;
+        this.pickuplocationId = '4';
+        break;
+      case 4:
+        this.pickuplocation = Location.Dnipro;
+        this.pickuplocationId = '3';
+        break;
     }
   }
   selectDropLocation(index: number) {
     switch (index) {
-      case 0: this.droplocation = Location.Kyiv; this.dropOfflocationId='0'; break;
-      case 1: this.droplocation = Location.Lviv;  this.dropOfflocationId='2'; break;
-      case 2: this.droplocation = Location.Odesa;  this.dropOfflocationId='1';break;
-      case 3: this.droplocation = Location.Kharkiv;  this.dropOfflocationId='4';break;
-      case 4: this.droplocation = Location.Dnipro;  this.dropOfflocationId='3';break;
+      case 0:
+        this.droplocation = Location.Kyiv;
+        this.dropOfflocationId = '0';
+        break;
+      case 1:
+        this.droplocation = Location.Lviv;
+        this.dropOfflocationId = '2';
+        break;
+      case 2:
+        this.droplocation = Location.Odesa;
+        this.dropOfflocationId = '1';
+        break;
+      case 3:
+        this.droplocation = Location.Kharkiv;
+        this.dropOfflocationId = '4';
+        break;
+      case 4:
+        this.droplocation = Location.Dnipro;
+        this.dropOfflocationId = '3';
+        break;
     }
   }
 }
